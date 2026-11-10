@@ -189,9 +189,9 @@ function px(){return custom[ix]??A[ix][1]}
 function makeBars(){if(liveBars&&liveBars.length>5)return liveBars;let p=px(),arr=[];for(let i=0;i<55;i++){let base=p+Math.sin(i*1.53+ix)*p*.0007+(i-27)*p*.000006;let close=base+Math.sin(i*2.17+ix*.8)*p*.00035;arr.push({o:base,c:close,h:Math.max(base,close)+p*.00018,l:Math.min(base,close)-p*.00017})}return arr}
 function ema(v,n){let k=2/(n+1),x=v[0];for(let i=1;i<v.length;i++)x=v[i]*k+x*(1-k);return x}
 function rsi(v){let g=0,l=0;for(let i=v.length-14;i<v.length;i++){let d=v[i]-v[i-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/14/(l/14))}
-let fpChart=null,fpCandleSeries=null,fpResizeObserver=null,fpRsiChart=null,fpRsiSeries=null,fpLines={},fpVisible={ema9:true,ema21:true,ema50:false,ema200:false,bb:false};
+let fpChart=null,fpCandleSeries=null,fpResizeObserver=null,fpRsiChart=null,fpRsiSeries=null,fpMacdChart=null,fpMacdLine=null,fpMacdSignal=null,fpMacdHist=null,fpLines={},fpVisible={ema9:true,ema21:true,ema50:false,ema200:false,bb:false};
 function emaArray(values,n){let k=2/(n+1),v=values[0],out=[v];for(let i=1;i<values.length;i++){v=values[i]*k+v*(1-k);out.push(v)}return out}
-function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";if(fpLines[key])Object.keys(fpLines).filter(k=>k===key||(key==="bb"&&k.startsWith("bb"))).forEach(k=>fpLines[k].applyOptions({visible:fpVisible[key]}));}
+function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";Object.keys(fpLines).filter(k=>k===key||(key==="bb"&&k.startsWith("bb"))).forEach(k=>fpLines[k].applyOptions({visible:fpVisible[key]}));}
 function draw(b){
  const host=$("chart"),rh=$("rsiChart"),mh=$("macdChart");
  if(!window.LightweightCharts){host.innerHTML='<div id="chartLoading">Chart library unavailable. Connect to internet and reload.</div>';return}
