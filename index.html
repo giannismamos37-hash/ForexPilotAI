@@ -131,7 +131,21 @@ button:active{transform:scale(.97)}
 .opp-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}.opp-copy b{font-size:11px;letter-spacing:.5px;color:#63efc4}
 .opp-copy span{font-size:10px;color:#d5e7f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opp-arrow{font-size:22px;color:#70d9bd}
 #chart{height:min(48vh,430px)!important;min-height:300px!important}
-@media(max-width:420px){#chart{height:min(46vh,390px)!important;min-height:290px!important}.opportunity-banner{margin-top:6px;padding:9px 10px}}</style></head><body>
+@media(max-width:420px){#chart{height:min(46vh,390px)!important;min-height:290px!important}.opportunity-banner{margin-top:6px;padding:9px 10px}}
+/* ForexPilot AI terminal UI — verified refresh */
+.tabs{display:flex;gap:10px;overflow-x:auto;padding:12px 13px 15px;scroll-snap-type:x mandatory}
+.tab{flex:0 0 auto;min-width:112px;border-radius:12px;padding:12px 15px;background:linear-gradient(145deg,#15283d,#0d1928);border:1px solid #2a4058;color:#b8c9d9}
+.tab.active{background:linear-gradient(145deg,#123e38,#102b32);border-color:#19d6a0;color:#5df0c4;box-shadow:inset 0 0 0 1px #19d6a044}
+#scan>.card:first-child{padding:17px 14px 18px}
+#scan>.card:first-child .price{font-size:38px}
+#chart{height:min(52vh,480px)!important;min-height:320px!important;border:1px solid #29415a!important;border-radius:14px!important}
+#rsiChart{height:115px!important}
+#macdChart{height:130px!important}
+.trade-actions{gap:11px;margin:16px 0 8px}
+.trade-actions button{min-height:58px;border-radius:12px;font-size:15px}
+.card{border-radius:17px}
+@media(max-width:420px){#chart{height:45vh!important;min-height:300px!important}.card{padding:14px}}
+</style></head><body>
 <header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
 <div class="tabs" id="assets"></div>
