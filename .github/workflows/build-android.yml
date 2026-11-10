@@ -1,0 +1,44 @@
+name: Build Android APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'manifest.json'
+      - 'sw.js'
+      - 'package.json'
+      - 'capacitor.config.json'
+      - '.github/workflows/build-android.yml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install dependencies and prepare web app
+        run: npm install
+      - name: Inject live API endpoint
+        env:
+          API_BASE: ${{ vars.FOREXPILOT_API_BASE }}
+        run: |
+          npm run build
+          node --input-type=module -e "import fs from 'node:fs'; const p='www/index.html'; let s=fs.readFileSync(p,'utf8'); const v=process.env.API_BASE||''; s=s.replace('<body>','<body><script>window.FOREXPILOT_API_BASE='+JSON.stringify(v)+'</script>'); fs.writeFileSync(p,s);"
+      - name: Create Android project
+        run: npx cap add android
+      - name: Sync Android project
+        run: npx cap sync android
+      - name: Build debug APK
+        run: cd android && ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ForexPilotAI-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
