@@ -107,6 +107,24 @@ footer button.active{color:#40e4b5;background:#12342f}
 :root[data-theme="purple"] .card,:root[data-theme="purple"] #scan>.card:first-child{background:linear-gradient(145deg,#211735,#171126);border-color:#44345f}
 :root[data-theme="purple"] .metric,:root[data-theme="purple"] input,:root[data-theme="purple"] select,:root[data-theme="purple"] #chart,:root[data-theme="purple"] #rsiChart{background:#140f22;border-color:#44345f;color:#f7f1ff}
 
+
+/* ForexPilot terminal refresh */
+header{background:linear-gradient(135deg,#101c2d,#172b43);border-bottom:1px solid var(--line)}
+header h1{letter-spacing:.5px;font-size:20px}
+.card{border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 26px rgba(0,0,0,.16);padding:15px}
+.card h2{letter-spacing:.25px;font-size:15px}
+#scan>.card:first-child{background:linear-gradient(145deg,var(--panel),var(--panel2));border-color:#31506b}
+#chart{height:390px!important;background:var(--panel)!important;border:1px solid var(--line)!important;border-radius:13px!important}
+.chart-label{font-size:11px;font-weight:900;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.metric{border:1px solid var(--line);border-radius:12px}
+footer{backdrop-filter:blur(16px);background:color-mix(in srgb,var(--bg) 92%,transparent);border-top:1px solid var(--line)}
+footer button{border-radius:12px;background:transparent;color:var(--muted)}
+footer button.active{background:var(--panel2);color:var(--green)}
+button{transition:transform .12s ease,filter .12s ease}
+button:active{transform:scale(.97)}
+:root[data-theme="light"] .metric,:root[data-theme="light"] input,:root[data-theme="light"] select{background:#f7f9fc;color:#172638}
+:root[data-theme="light"] #chart,:root[data-theme="light"] #rsiChart,:root[data-theme="light"] #macdChart{background:#fff!important}
+@media(max-width:420px){#chart{height:330px!important}.card{padding:12px;margin:9px 10px}header{padding:14px 14px 12px}}
 </style></head><body>
 <header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
@@ -116,10 +134,11 @@ footer button.active{color:#40e4b5;background:#12342f}
   <div class="row"><div><div class="muted tiny" id="symbol">EUR/USD</div><div class="price" id="price">1.08500</div><div class="tiny muted"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><span class="pill demo" id="quoteBadge">WAITING</span></div>
   <hr><div class="row"><div><div class="tiny muted">FOREXPILOT SIGNAL</div><div id="signal" class="signal wait">WAIT</div></div><div style="text-align:right"><div class="tiny muted">RSI 14</div><div class="price" id="rsi">—</div></div></div>
   <p class="tiny muted" id="explain">Waiting for analysis…</p><div class="row" style="margin:12px 0 7px"><div class="chart-label">TRADINGVIEW-STYLE CHART</div><span class="pill">CROSSHAIR · ZOOM · PAN</span></div>
-  <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">Bollinger</button></div>
+  <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">Bollinger Bands</button></div>
   <div id="chart" aria-label="Interactive candlestick chart"><div id="chartLoading">Loading interactive chart…</div></div>
-  <div class="chart-label" style="margin-top:12px">RSI · 14</div><div id="rsiChart" style="height:105px;width:100%;border:1px solid #1e3148;border-radius:10px;background:#0a1421"></div>
-  <div class="row tiny muted" style="margin:8px 0"><span>MACD / Momentum</span><b id="macdValue">—</b><span>Volume / Tick activity</span><b id="volumeValue">—</b></div><div class="trade-actions"><button class="buy-action" onclick="quickTrade(&quot;BUY&quot;)">BUY / LONG</button><button class="sell-action" onclick="quickTrade(&quot;SELL&quot;)">SELL / SHORT</button></div>
+  <div class="chart-label" style="margin-top:12px">RSI · 14</div><div id="rsiChart" style="height:105px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div>
+  <div class="chart-label" style="margin-top:12px">MACD · 12 / 26 / 9</div><div id="macdChart" style="height:125px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div>
+  <div class="row tiny muted" style="margin:8px 0"><span>MACD</span><b id="macdValue">—</b><span>Volume</span><b id="volumeValue">—</b></div><div class="trade-actions"><button class="buy-action" onclick="quickTrade(&quot;BUY&quot;)">BUY / LONG</button><button class="sell-action" onclick="quickTrade(&quot;SELL&quot;)">SELL / SHORT</button></div>
   <div class="row" style="gap:8px;margin-top:10px"><label style="margin:0;flex:1">Timeframe / Χρονικό πλαίσιο<select id="timeframe" onchange="setTimeframe(this.value)"><option value="1min">1 λεπτό</option><option value="5min">5 λεπτά</option><option value="15min" selected>15 λεπτά</option><option value="30min">30 λεπτά</option><option value="1h">1 ώρα</option><option value="4h">4 ώρες</option><option value="1day">1 ημέρα</option></select></label><span class="pill" id="liveBadge">DEMO DATA</span></div><div class="row tiny muted" style="margin-top:8px"><span id="trend">Trend: —</span><span id="ema">EMA 9/21: —</span><span id="tf">15m</span></div>
  </div>
  <div class="card"><h2>Price alerts / Ειδοποιήσεις τιμών</h2><div class="row"><div style="flex:1"><label>Alert price for current pair</label><input id="alertPrice" type="number" step="any" placeholder="Target price"></div><div style="align-self:end"><button onclick="addAlert()">Add alert</button></div></div><button class="alt full" onclick="enableNotifications()">Enable phone notifications</button><div id="alertList" class="notice" style="margin-top:10px">No active alerts</div></div>
@@ -172,34 +191,47 @@ function ema(v,n){let k=2/(n+1),x=v[0];for(let i=1;i<v.length;i++)x=v[i]*k+x*(1-
 function rsi(v){let g=0,l=0;for(let i=v.length-14;i<v.length;i++){let d=v[i]-v[i-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/14/(l/14))}
 let fpChart=null,fpCandleSeries=null,fpResizeObserver=null,fpRsiChart=null,fpRsiSeries=null,fpLines={},fpVisible={ema9:true,ema21:true,ema50:false,ema200:false,bb:false};
 function emaArray(values,n){let k=2/(n+1),v=values[0],out=[v];for(let i=1;i<values.length;i++){v=values[i]*k+v*(1-k);out.push(v)}return out}
-function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";if(fpLines[key])fpLines[key].applyOptions({visible:fpVisible[key]});}
+function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";if(fpLines[key])Object.keys(fpLines).filter(k=>k===key||(key==="bb"&&k.startsWith("bb"))).forEach(k=>fpLines[k].applyOptions({visible:fpVisible[key]}));}
 function draw(b){
- const host=$("chart"),rh=$("rsiChart");
+ const host=$("chart"),rh=$("rsiChart"),mh=$("macdChart");
  if(!window.LightweightCharts){host.innerHTML='<div id="chartLoading">Chart library unavailable. Connect to internet and reload.</div>';return}
  const L=window.LightweightCharts;
- const base={layout:{background:{type:"solid",color:"#0a1421"},textColor:"#8fa4ba",fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:"#17283a"},horzLines:{color:"#1d3044"}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{borderColor:"#26394c",scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:"#26394c",timeVisible:true,secondsVisible:false,rightOffset:5,barSpacing:8},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}};
+ const bg=getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()||"#0a1421";
+ const fg=getComputedStyle(document.documentElement).getPropertyValue("--muted").trim()||"#8fa4ba";
+ const line=getComputedStyle(document.documentElement).getPropertyValue("--line").trim()||"#26394c";
+ const base={layout:{background:{type:"solid",color:bg},textColor:fg,fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:line},horzLines:{color:line}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{borderColor:line,scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:line,timeVisible:true,secondsVisible:false,rightOffset:5,barSpacing:8},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}};
  if(!fpChart){
   host.innerHTML="";fpChart=L.createChart(host,{...base,width:host.clientWidth,height:host.clientHeight});
-  fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{upColor:"#19d6a0",downColor:"#ff6075",borderUpColor:"#19d6a0",borderDownColor:"#ff6075",wickUpColor:"#19d6a0",wickDownColor:"#ff6075",priceLineVisible:true,lastValueVisible:true});
-  const defs=[["ema9",9,"#f2c66d"],["ema21",21,"#55b9ff"],["ema50",50,"#c18aff"],["ema200",200,"#ff8d63"],["bb",20,"#849bb5"]];
-  defs.forEach(([key,n,color])=>{fpLines[key]=fpChart.addSeries(L.LineSeries,{color,lineWidth:key==="bb"?1:2,visible:fpVisible[key],priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});});
-  fpRsiChart=L.createChart(rh,{...base,width:rh.clientWidth,height:rh.clientHeight,rightPriceScale:{borderColor:"#26394c",scaleMargins:{top:.12,bottom:.12}},timeScale:{visible:false,borderColor:"#26394c"},handleScroll:false,handleScale:false});
+  fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{upColor:"#16c99a",downColor:"#f05268",borderUpColor:"#16c99a",borderDownColor:"#f05268",wickUpColor:"#16c99a",wickDownColor:"#f05268",priceLineVisible:true,lastValueVisible:true});
+  const defs=[["ema9",9,"#f2c66d"],["ema21",21,"#55b9ff"],["ema50",50,"#c18aff"],["ema200",200,"#ff8d63"],["bbUpper",20,"#849bb5"],["bbMiddle",20,"#607d9b"],["bbLower",20,"#849bb5"]];
+  defs.forEach(([key,n,color])=>{fpLines[key]=fpChart.addSeries(L.LineSeries,{color,lineWidth:key.startsWith("bb")?1:2,visible:key.startsWith("bb")?fpVisible.bb:fpVisible[key],lineStyle:key==="bbMiddle"?L.LineStyle.Dotted:L.LineStyle.Solid,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});});
+  fpRsiChart=L.createChart(rh,{...base,width:rh.clientWidth,height:rh.clientHeight,rightPriceScale:{borderColor:line,scaleMargins:{top:.12,bottom:.12}},timeScale:{visible:false,borderColor:line},handleScroll:false,handleScale:false});
   fpRsiSeries=fpRsiChart.addSeries(L.LineSeries,{color:"#bd91ff",lineWidth:2,priceLineVisible:false,lastValueVisible:true});
-  fpRsiSeries.createPriceLine({price:70,color:"#ff6075",lineStyle:L.LineStyle.Dashed,lineWidth:1,axisLabelVisible:false,title:"70"});
-  fpRsiSeries.createPriceLine({price:30,color:"#19d6a0",lineStyle:L.LineStyle.Dashed,lineWidth:1,axisLabelVisible:false,title:"30"});
-  if(window.ResizeObserver){fpResizeObserver=new ResizeObserver(entries=>{for(const e of entries){const w=Math.max(280,Math.floor(e.contentRect.width));if(e.target===host)fpChart.applyOptions({width:w,height:Math.max(250,Math.floor(e.contentRect.height))});else fpRsiChart.applyOptions({width:w,height:Math.max(80,Math.floor(e.contentRect.height))})}});fpResizeObserver.observe(host);fpResizeObserver.observe(rh)}
+  fpRsiSeries.createPriceLine({price:70,color:"#f05268",lineStyle:L.LineStyle.Dashed,lineWidth:1,axisLabelVisible:false,title:"70"});
+  fpRsiSeries.createPriceLine({price:30,color:"#16c99a",lineStyle:L.LineStyle.Dashed,lineWidth:1,axisLabelVisible:false,title:"30"});
+  fpMacdChart=L.createChart(mh,{...base,width:mh.clientWidth,height:mh.clientHeight,rightPriceScale:{borderColor:line,scaleMargins:{top:.15,bottom:.15}},timeScale:{visible:false,borderColor:line},handleScroll:false,handleScale:false});
+  fpMacdHist=fpMacdChart.addSeries(L.HistogramSeries,{priceLineVisible:false,lastValueVisible:false});
+  fpMacdLine=fpMacdChart.addSeries(L.LineSeries,{color:"#55b9ff",lineWidth:2,priceLineVisible:false,lastValueVisible:true});
+  fpMacdSignal=fpMacdChart.addSeries(L.LineSeries,{color:"#f2c66d",lineWidth:1,priceLineVisible:false,lastValueVisible:false});
+  if(window.ResizeObserver){fpResizeObserver=new ResizeObserver(entries=>{for(const e of entries){const w=Math.max(280,Math.floor(e.contentRect.width));if(e.target===host)fpChart.applyOptions({width:w,height:Math.max(250,Math.floor(e.contentRect.height))});else if(e.target===rh)fpRsiChart.applyOptions({width:w,height:Math.max(80,Math.floor(e.contentRect.height))});else if(e.target===mh)fpMacdChart.applyOptions({width:w,height:Math.max(90,Math.floor(e.contentRect.height))})}});fpResizeObserver.observe(host);fpResizeObserver.observe(rh);fpResizeObserver.observe(mh)}
  }
  const step=({"1min":60,"5min":300,"15min":900,"30min":1800,"1h":3600,"4h":14400,"1day":86400})[timeframe]||900,now=Math.floor(Date.now()/1000);
  const rows=b.map((z,i)=>({time:z.datetime?Math.floor(new Date(z.datetime).getTime()/1000):now-(b.length-1-i)*step,open:z.o,high:z.h,low:z.l,close:z.c})).filter(z=>Number.isFinite(z.time)&&[z.open,z.high,z.low,z.close].every(Number.isFinite)).sort((a,c)=>a.time-c.time);
  const data=rows.filter((z,i)=>i===0||z.time!==rows[i-1].time),closes=data.map(z=>z.close);
  fpCandleSeries.setData(data);
  [["ema9",9],["ema21",21],["ema50",50],["ema200",200]].forEach(([key,n])=>fpLines[key].setData(emaArray(closes,n).map((v,i)=>({time:data[i].time,value:v}))));
- const n=20,mid=emaArray(closes,n),sd=closes.map((v,i)=>{const a=closes.slice(Math.max(0,i-n+1),i+1),m=a.reduce((x,y)=>x+y,0)/a.length;return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/a.length)});
- fpLines.bb.setData(mid.map((v,i)=>({time:data[i].time,value:v+2*sd[i]})));
+ const n=20,mid=closes.map((_,i)=>{const a=closes.slice(Math.max(0,i-n+1),i+1);return a.reduce((x,y)=>x+y,0)/a.length}),sd=closes.map((v,i)=>{const a=closes.slice(Math.max(0,i-n+1),i+1),m=mid[i];return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/a.length)});
+ fpLines.bbUpper.setData(mid.map((v,i)=>({time:data[i].time,value:v+2*sd[i]})));
+ fpLines.bbMiddle.setData(mid.map((v,i)=>({time:data[i].time,value:v})));
+ fpLines.bbLower.setData(mid.map((v,i)=>({time:data[i].time,value:v-2*sd[i]})));
  const rv=closes.map((v,i)=>{if(i<14)return 50;let g=0,l=0;for(let k=i-13;k<=i;k++){let d=closes[k]-closes[k-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/14/(l/14))});
  fpRsiSeries.setData(rv.map((v,i)=>({time:data[i].time,value:v})));
- fpChart.timeScale().fitContent();fpRsiChart.timeScale().fitContent();
- const fast=emaArray(closes,12),slow=emaArray(closes,26),macd=fast.at(-1)-slow.at(-1);$("macdValue").textContent=macd.toFixed(A[ix][2]);$("volumeValue").textContent="OHLC feed";
+ const fast=emaArray(closes,12),slow=emaArray(closes,26),ml=fast.map((v,i)=>v-slow[i]),sig=emaArray(ml,9),hist=ml.map((v,i)=>v-sig[i]);
+ fpMacdLine.setData(ml.map((v,i)=>({time:data[i].time,value:v})));
+ fpMacdSignal.setData(sig.map((v,i)=>({time:data[i].time,value:v})));
+ fpMacdHist.setData(hist.map((v,i)=>({time:data[i].time,value:v,color:v>=0?"#16c99a":"#f05268"})));
+ fpChart.timeScale().fitContent();fpRsiChart.timeScale().fitContent();fpMacdChart.timeScale().fitContent();
+ $("macdValue").textContent=ml.at(-1).toFixed(A[ix][2]);$("volumeValue").textContent=b.some(z=>z.volume!=null)?String(b.at(-1).volume??"—"):"Not provided by feed";
 }
 function analyze(){let [s,_,d]=A[ix],p=px(),b=makeBars(),v=b.map(z=>z.c),f=ema(v.slice(-25),9),sl=ema(v.slice(-40),21),rv=rsi(v),atr=b.slice(-14).reduce((a,z)=>a+z.h-z.l,0)/14,up=f>sl;let sig="WAIT",why="Δεν υπάρχει επιβεβαιωμένη συμφωνία των δεικτών.";if(up&&rv>=50&&rv<70){sig="BUY";why="EMA 9 πάνω από EMA 21 και RSI σε θετική ζώνη."}else if(!up&&rv>30&&rv<=50){sig="SELL";why="EMA 9 κάτω από EMA 21 και RSI σε αρνητική ζώνη."}
 let stop=sig==="BUY"?p-atr*1.5:sig==="SELL"?p+atr*1.5:null,tp=stop===null?null:(sig==="BUY"?p+(p-stop)*2:p-(stop-p)*2),fmt=n=>n===null?"—":n.toFixed(d);
