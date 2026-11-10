@@ -189,7 +189,7 @@ function px(){return custom[ix]??A[ix][1]}
 function makeBars(){if(liveBars&&liveBars.length>5)return liveBars;let p=px(),arr=[];for(let i=0;i<55;i++){let base=p+Math.sin(i*1.53+ix)*p*.0007+(i-27)*p*.000006;let close=base+Math.sin(i*2.17+ix*.8)*p*.00035;arr.push({o:base,c:close,h:Math.max(base,close)+p*.00018,l:Math.min(base,close)-p*.00017})}return arr}
 function ema(v,n){let k=2/(n+1),x=v[0];for(let i=1;i<v.length;i++)x=v[i]*k+x*(1-k);return x}
 function rsi(v){let g=0,l=0;for(let i=v.length-14;i<v.length;i++){let d=v[i]-v[i-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/14/(l/14))}
-let fpChart=null,fpCandleSeries=null,fpVolumeSeries=null,fpResizeObserver=null,fpRsiChart=null,fpRsiSeries=null,fpMacdChart=null,fpMacdLine=null,fpMacdSignal=null,fpMacdHist=null,fpLines={},fpVisible={ema9:true,ema21:true,ema50:false,ema200:false,bb:false},fpDrawingMode=null,fpDrawings=[];
+let fpChart=null,fpCandleSeries=null,fpVolumeSeries=null,fpResizeObserver=null,fpRsiChart=null,fpRsiSeries=null,fpMacdChart=null,fpMacdLine=null,fpMacdSignal=null,fpMacdHist=null,fpLines={},fpVisible={ema9:true,ema21:true,ema50:false,ema200:false,bb:false},fpDrawingMode=null,fpDrawings=[],fpAutoLines=[];
 function emaArray(values,n){let k=2/(n+1),v=values[0],out=[v];for(let i=1;i<values.length;i++){v=values[i]*k+v*(1-k);out.push(v)}return out}
 function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";Object.keys(fpLines).filter(k=>k===key||(key==="bb"&&k.startsWith("bb"))).forEach(k=>fpLines[k].applyOptions({visible:fpVisible[key]}));}
 function setDrawingMode(mode,btn){fpDrawingMode=mode;btn.style.opacity=".55";}
@@ -223,6 +223,8 @@ function draw(b){
  const rows=b.map((z,i)=>({time:z.datetime?Math.floor(new Date(z.datetime).getTime()/1000):now-(b.length-1-i)*step,open:z.o,high:z.h,low:z.l,close:z.c,volume:Number.isFinite(Number(z.volume))?Number(z.volume):null})).filter(z=>Number.isFinite(z.time)&&[z.open,z.high,z.low,z.close].every(Number.isFinite)).sort((a,c)=>a.time-c.time);
  const data=rows.filter((z,i)=>i===0||z.time!==rows[i-1].time),closes=data.map(z=>z.close);
  fpCandleSeries.setData(data);
+ fpAutoLines.forEach(line=>{try{fpCandleSeries.removePriceLine(line)}catch{}});fpAutoLines=[];
+ if(data.length>10){const recent=data.slice(-30),support=Math.min(...recent.map(z=>z.low)),resistance=Math.max(...recent.map(z=>z.high));fpAutoLines.push(fpCandleSeries.createPriceLine({price:support,color:"#19d6a0",lineWidth:1,lineStyle:L.LineStyle.Dotted,axisLabelVisible:true,title:"SUPPORT"}));fpAutoLines.push(fpCandleSeries.createPriceLine({price:resistance,color:"#ff6075",lineWidth:1,lineStyle:L.LineStyle.Dotted,axisLabelVisible:true,title:"RESISTANCE"}));}
  fpVolumeSeries.setData(data.filter(z=>z.volume!==null&&z.volume>0).map(z=>({time:z.time,value:z.volume,color:z.close>=z.open?"#16c99a66":"#f0526866"})));
  [["ema9",9],["ema21",21],["ema50",50],["ema200",200]].forEach(([key,n])=>fpLines[key].setData(emaArray(closes,n).map((v,i)=>({time:data[i].time,value:v}))));
  const n=20,mid=closes.map((_,i)=>{const a=closes.slice(Math.max(0,i-n+1),i+1);return a.reduce((x,y)=>x+y,0)/a.length}),sd=closes.map((v,i)=>{const a=closes.slice(Math.max(0,i-n+1),i+1),m=mid[i];return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/a.length)});
