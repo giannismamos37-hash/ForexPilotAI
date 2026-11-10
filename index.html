@@ -145,6 +145,51 @@ button:active{transform:scale(.97)}
 .trade-actions button{min-height:58px;border-radius:12px;font-size:15px}
 .card{border-radius:17px}
 @media(max-width:420px){#chart{height:45vh!important;min-height:300px!important}.card{padding:14px}}
+
+/* ForexPilot AI — final mobile terminal design pass */
+:root{--bg:#060b13;--panel:#0d1725;--panel2:#13243a;--line:#23364d;--txt:#edf4fb;--muted:#8296ad;--green:#18d6a0;--red:#ff6078;--gold:#f4c66b;--blue:#65b7ff}
+body{background:radial-gradient(ellipse at 50% -18%,#18314b 0%,#080f1a 46%,#060b13 100%);letter-spacing:.05px}
+header{padding:15px 16px 13px;background:rgba(8,15,25,.97);border-bottom:1px solid #243b53;box-shadow:0 8px 24px #0003}
+.brand{font-size:21px;letter-spacing:1.1px}.sub{font-size:9px;line-height:1.5;letter-spacing:1.55px}
+.mode{border:1px solid #147e68;background:#0d302b;color:#55e9bd;border-radius:9px;padding:8px 11px;font-size:10px;line-height:1.2}
+#assets{padding:13px 14px 12px;gap:9px;scrollbar-width:none}
+#assets .tab{min-width:112px;padding:12px 15px;border-radius:11px;background:#101d2d;border:1px solid #2a4058;color:#b6c7d8;font-size:13px;font-weight:850}
+#assets .tab.active{background:linear-gradient(145deg,#12443d,#102b32);border-color:#19c99a;color:#5aefc4;box-shadow:inset 0 0 0 1px #19c99a35,0 5px 18px #0003}
+#scan>.card:first-child{margin:0;padding:18px 15px 17px;background:linear-gradient(150deg,#111f30,#0b1421 72%);border-top:1px solid #2a4058;border-bottom:1px solid #263b52}
+#scan>.card:first-child .price{font-size:clamp(36px,9vw,46px);line-height:1.08;letter-spacing:-1.8px}
+#scan>.card:first-child hr{border-color:#263b51;margin:15px 0}
+#signal{font-size:31px;letter-spacing:1.3px}
+#explain{font-size:11px;line-height:1.55;margin:9px 0 14px}
+.chart-label{font-size:10px;letter-spacing:1.35px;font-weight:900;color:#91a7bd}
+#chart{height:min(53vh,490px)!important;min-height:330px!important;border:1px solid #2b425b!important;border-radius:13px!important;background:#0a1421!important;box-shadow:inset 0 1px #ffffff05}
+#rsiChart{height:125px!important;border:1px solid #253a52!important;border-radius:11px!important;background:#0a1421!important}
+#macdChart{height:140px!important;border:1px solid #253a52!important;border-radius:11px!important;background:#0a1421!important}
+#scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:12px 13px;background:linear-gradient(150deg,#111f30,#0b1421);border:1px solid #263b52;border-radius:16px;box-shadow:0 9px 26px #0002;padding:16px}
+.card h2{font-size:15px;letter-spacing:.2px;margin-bottom:15px}
+.metric{background:#091522;border:1px solid #23374d;border-radius:12px;padding:13px}
+.metric span,label{color:#8ea4ba;letter-spacing:.45px}
+.metric b{font-size:17px;line-height:1.35}
+input,select{background:#091421;border:1px solid #2a4058;border-radius:10px;min-height:47px}
+button{border-radius:10px;font-weight:850}
+button.alt{background:#192b40;border:1px solid #304760;color:#e0ebf5}
+.trade-actions{gap:10px;margin:16px 0 10px}
+.trade-actions button{min-height:60px;border-radius:12px;font-size:14px;letter-spacing:.7px}
+.trade-actions .buy-action{background:linear-gradient(135deg,#25e0ae,#11b98a);box-shadow:0 6px 18px #19d6a022}
+.trade-actions .sell-action{background:linear-gradient(135deg,#ff7a8c,#e84c67);box-shadow:0 6px 18px #ff607522}
+.opportunity-banner{border-radius:12px;padding:12px;background:linear-gradient(100deg,#10382f,#102638);border-color:#1b9f80}
+footer{padding:9px 5px calc(9px + env(safe-area-inset-bottom));background:rgba(6,11,19,.97);border-top:1px solid #263b52}
+footer button{min-width:68px;padding:8px 10px;border-radius:12px;font-size:11px;line-height:1.65;color:#8296ad}
+footer button.active{background:#13283b;color:#39e0b1;box-shadow:inset 0 0 0 1px #1c4052}
+.notice{font-size:10px;line-height:1.65}
+@media(max-width:420px){
+ header{padding:13px 14px 11px}
+ #scan>.card:first-child{padding:16px 13px}
+ #chart{height:47vh!important;min-height:315px!important}
+ #rsiChart{height:112px!important}#macdChart{height:125px!important}
+ #scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:10px 11px;padding:14px}
+ .metric{padding:11px 10px}.metric b{font-size:16px}
+}
+
 </style></head><body>
 <header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
