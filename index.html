@@ -347,6 +347,52 @@ footer button{border-radius:4px!important;color:#787b86!important}
 footer button.active{background:#1e222d!important;color:#d1d4dc!important;box-shadow:inset 0 -2px #2962ff!important}
 @media(max-width:420px){.quote-panel{padding:8px 10px!important}.quote-panel .price{font-size:24px!important}#chart{height:54vh!important;min-height:320px!important}#rsiChart{height:70px!important}#macdChart{height:78px!important}}
 
+
+/* Single-screen mobile terminal v3 */
+html,body{width:100%;height:100%;height:100dvh;overflow:hidden!important}
+body{display:flex!important;flex-direction:column!important;min-height:0!important}
+.app-header{flex:0 0 46px!important;height:46px!important;padding:5px 12px!important;display:flex!important;align-items:center!important}
+.brand-mark{display:none!important}.brand-copy .brand{font-size:17px!important;line-height:20px!important}.brand-copy .sub{font-size:8px!important}
+main{flex:1 1 auto!important;min-height:0!important;height:auto!important;max-width:none!important;margin:0!important;padding:0 0 4px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+#assets{flex:0 0 39px!important;height:39px!important;min-height:39px!important;padding:0 7px!important;gap:0!important;overflow-x:auto!important;overflow-y:hidden!important;border-bottom:1px solid #363c4e!important}
+#assets .tab{height:38px!important;min-width:86px!important;padding:0 10px!important;font-size:13px!important;font-weight:700!important}
+#scan{display:flex!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;flex-direction:column!important}
+#scan>.terminal-card{display:flex!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;flex-direction:column!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#131722!important}
+.quote-panel{flex:0 0 70px!important;padding:5px 12px!important;border:0!important;border-bottom:1px solid #363c4e!important}
+.quote-main{height:100%!important;align-items:center!important}
+.market-symbol{font-size:14px!important;font-weight:800!important}
+.quote-panel .price{font-size:29px!important;line-height:31px!important;font-weight:800!important}
+.feed-line{font-size:10px!important;line-height:12px!important}
+.quote-side{display:flex!important;align-items:center!important;gap:7px!important}
+.quote-mini{padding:4px 8px!important}.quote-mini span{font-size:9px!important}.quote-mini b{font-size:18px!important}
+.quote-side .pill{font-size:11px!important;padding:7px 9px!important}
+.chart-module{order:2!important;display:flex!important;flex:1 1 auto!important;flex-direction:column!important;min-height:0!important;overflow:hidden!important;padding:0!important}
+.chart-topline{flex:0 0 29px!important;padding:3px 12px!important}
+.chart-title{font-size:13px!important}.chart-title small{font-size:12px!important}
+.chart-tools-hint{font-size:8px!important}
+.timeframe-strip{flex:0 0 38px!important;height:38px!important;padding:3px 9px!important;gap:8px!important}
+.timeframe-strip select{height:31px!important;min-height:31px!important;font-size:13px!important;padding:0 10px!important}
+.timeframe-strip .pill{font-size:10px!important;padding:6px 9px!important}
+.indicator-toolbar{flex:0 0 40px!important;min-height:40px!important;padding:4px 7px!important;gap:5px!important;overflow-x:auto!important;overflow-y:hidden!important;flex-wrap:nowrap!important}
+.indicator-toolbar button{flex:0 0 auto!important;height:31px!important;padding:0 10px!important;font-size:11px!important;font-weight:700!important;white-space:nowrap!important}
+#opportunityBanner{flex:0 0 auto!important;margin:3px 8px!important}
+#chart{flex:1 1 auto!important;width:100%!important;height:auto!important;min-height:190px!important;max-height:none!important;border:0!important;border-radius:0!important;background:#131722!important}
+.chart-subpanel{position:absolute!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important}
+#rsiChart,#macdChart{width:1px!important;height:1px!important}
+.chart-readout{flex:0 0 25px!important;height:25px!important;padding:2px 10px!important;margin:0!important;font-size:11px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border-top:1px solid #363c4e!important}
+.signal-panel{order:3!important;flex:0 0 52px!important;min-height:52px!important;padding:4px 11px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border-top:1px solid #363c4e!important;border-bottom:1px solid #363c4e!important}
+.signal-panel .eyebrow{font-size:8px!important}.signal-panel .signal{font-size:21px!important;line-height:22px!important}.signal-panel p{font-size:10px!important;margin:0!important;max-width:245px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.signal-state{font-size:9px!important}
+.execution-panel{order:4!important;flex:0 0 54px!important;min-height:54px!important;padding:4px 9px!important;display:flex!important;align-items:center!important;gap:9px!important;border:0!important;border-top:1px solid #363c4e!important}
+.trade-actions{flex:1 1 60%!important;display:flex!important;gap:6px!important;margin:0!important}
+.trade-actions button{flex:1 1 50%!important;min-height:42px!important;height:42px!important;font-size:13px!important;font-weight:800!important;border-radius:5px!important}
+.market-context{flex:1 1 40%!important;display:flex!important;flex-direction:column!important;gap:2px!important;font-size:9px!important;line-height:12px!important}
+#scan>.card:not(:first-child){display:none!important}
+#riskTab,#paperTab,#settingsTab{display:none!important}
+footer{display:none!important}
+@media(max-width:420px){.app-header{flex-basis:44px!important;height:44px!important}.quote-panel{flex-basis:70px!important}.quote-panel .price{font-size:27px!important}#chart{min-height:170px!important}.indicator-toolbar button{padding:0 9px!important;font-size:10px!important}}
+@supports(padding:max(0px)){.app-header{padding-top:max(5px,env(safe-area-inset-top))!important}main{padding-bottom:env(safe-area-inset-bottom)!important}}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
