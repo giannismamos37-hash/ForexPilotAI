@@ -1,172 +1,53 @@
-<!doctype html>
-<html lang="el">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#0b1420">
-<title>ForexPilot AI</title>
+<!doctype html><html lang="el"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111d"><title>ForexPilot AI</title>
 <style>
-:root{--bg:#09131f;--panel:#142235;--line:#2b4055;--txt:#eff6fc;--muted:#9db0c2;--green:#4cdbad;--red:#ff727e;--gold:#f4cb68;--input:#0d1926}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,Arial,sans-serif}body.light{--bg:#eef3f8;--panel:#fff;--line:#cbd6e2;--txt:#142235;--muted:#607286;--input:#f2f6fa}
-header{padding:15px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}.row{display:flex;align-items:center;justify-content:space-between;gap:9px}.brand{font-size:21px;font-weight:900}.brand span{color:var(--green)}.muted{color:var(--muted)}.tiny{font-size:11px}.tag,.pill{font-size:10px;border-radius:20px;padding:6px 9px;font-weight:800;background:#254036;color:var(--green)}
-main{max-width:760px;margin:auto;padding:13px 13px 100px}.tabs{display:flex;gap:7px;overflow-x:auto;padding:3px 0 12px;scrollbar-width:thin}.tab{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:10px 14px;border-radius:20px;font-weight:750}.tab.active{background:var(--green);color:#08251d}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:12px}h2{font-size:17px;margin:0 0 13px}.price{font-size:31px;font-weight:900}.signal{font-size:29px;font-weight:950}.buy,.positive{color:var(--green)}.sell,.negative{color:var(--red)}.wait{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metric{background:var(--input);border-radius:12px;padding:12px;min-width:0}.metric b{display:block;margin-top:5px;font-size:17px;overflow-wrap:anywhere}
-canvas{display:block;width:100%;height:175px;background:var(--input);border-radius:11px;margin:12px 0}
-label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,select{width:100%;min-width:0;padding:12px;border-radius:11px;border:1px solid var(--line);background:var(--input);color:var(--txt);font-size:15px}button{border:0;border-radius:11px;padding:12px 14px;background:var(--green);color:#09251d;font-weight:850;font-size:14px}button.alt{background:#253a50;color:#eff6fc;border:1px solid var(--line)}body.light button.alt{background:#e3ebf3;color:#142235}.full{width:100%;margin-top:12px}.hidden{display:none!important}.notice{font-size:11px;line-height:1.55;color:var(--muted)}hr{border:0;border-top:1px solid var(--line);margin:13px 0}
-.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:390px}td,th{text-align:left;padding:9px 5px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted)}
-footer{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 4px calc(7px + env(safe-area-inset-bottom));z-index:5}footer button{background:none;color:var(--muted);font-size:11px;padding:7px 8px;line-height:1.35}footer button.active{color:var(--green)}.status{font-size:11px;color:var(--gold)}.smallbtn{padding:8px 11px}.fieldhint{font-size:10px;color:var(--muted);margin-top:4px}
-@media(min-width:600px){main{padding:18px 18px 100px}.card{padding:18px}.price{font-size:36px}}
-</style>
-
-<style id="forexpilot-visual-redesign">
-:root{
- --bg:#07111d;--panel:#101f31;--line:#29445c;--txt:#f4f8fc;--muted:#9eb2c7;
- --green:#35e0b0;--red:#ff647c;--gold:#ffd166;--input:#0a1726;
-}
-body{background:radial-gradient(ellipse at 50% -15%,#183b50 0%,#091725 43%,#050d17 100%);background-attachment:fixed}
-header{
- background:linear-gradient(115deg,#102a3d 0%,#102437 48%,#0d1b2b 100%);
- border-bottom:1px solid #35627a;box-shadow:0 8px 28px #0005;padding:19px 17px
-}
-.brand{font-size:24px;letter-spacing:.5px}
-.brand span{color:#35e0b0;text-shadow:0 0 18px #35e0b055}
-header .tag{background:#123d3a;border:1px solid #2d8b76;color:#55efc2;padding:8px 12px;letter-spacing:.4px}
-main{max-width:790px;padding:16px 14px 112px}
-.tabs{padding:7px 0 16px;gap:9px}
-.tab{background:linear-gradient(145deg,#14283b,#0e1c2c);border:1px solid #2d465e;color:#afc2d5;padding:12px 17px;border-radius:14px;box-shadow:inset 0 1px #ffffff08;transition:.2s}
-.tab.active{background:linear-gradient(135deg,#48edbd,#21b994);border-color:#70f5d0;color:#05251e;box-shadow:0 5px 18px #35e0b044,inset 0 1px #ffffff80}
-.card{
- background:linear-gradient(145deg,rgba(22,43,63,.98),rgba(12,27,43,.99));
- border:1px solid #34516b;border-radius:22px;padding:18px;margin-bottom:15px;
- box-shadow:0 12px 30px #0003,inset 0 1px #ffffff0c;position:relative;overflow:hidden
-}
-.card:before{content:"";position:absolute;left:18px;right:18px;top:0;height:2px;background:linear-gradient(90deg,transparent,#39dcb0aa,transparent)}
-h2{font-size:19px;letter-spacing:.1px;margin-bottom:16px}
-.price{font-size:36px;letter-spacing:-1px}
-.signal{font-size:34px;letter-spacing:1px}
-.metric{
- background:linear-gradient(145deg,#0b1b2b,#102237);border:1px solid #263f56;
- border-radius:16px;padding:14px;box-shadow:inset 0 1px #ffffff08
-}
-.metric span{letter-spacing:.2px}
-.metric b{font-size:19px}
-canvas{height:190px;border:1px solid #263f56;background:linear-gradient(180deg,#0b1b2b,#0a1725);border-radius:15px;box-shadow:inset 0 1px #ffffff08}
-input,select{
- background:linear-gradient(145deg,#0a1928,#0d2032);border:1px solid #304a62;border-radius:13px;
- color:#f4f8fc;padding:14px;box-shadow:inset 0 2px 7px #0003
-}
-input:focus,select:focus{outline:2px solid #35e0b077;border-color:#35e0b0}
-button{border-radius:13px;background:linear-gradient(135deg,#4aefc1,#20bd98);box-shadow:0 5px 16px #20bd9830,inset 0 1px #ffffff80}
-button:active{transform:translateY(1px)}
-button.alt{background:linear-gradient(135deg,#29445e,#1b3045);border:1px solid #3b5a75;color:#e8f1fa;box-shadow:none}
-footer{
- background:linear-gradient(180deg,#112438,#0b1928);border-top:1px solid #34516b;
- box-shadow:0 -8px 25px #0004;padding-top:10px
-}
-footer button{background:transparent;box-shadow:none;color:#9db2c7;border-radius:10px}
-footer button.active{color:#4ce8bb;background:#163a3a}
-.pill{border:1px solid #39536d;background:#20384f;color:#b6cbe0;padding:8px 11px}
-.status{font-weight:700}
-hr{border-color:#29445c}
-body.light{
- --bg:#eaf1f7;--panel:#fff;--line:#cad8e5;--txt:#14283b;--muted:#63798d;--input:#f3f7fb;
- background:linear-gradient(145deg,#e6eef6,#f7f9fc 60%,#e8f1f7)
-}
-body.light header{background:linear-gradient(115deg,#e2f4f1,#f5f9fc);border-color:#c3d9df}
-body.light .card{background:linear-gradient(145deg,#fff,#f7fbff);border-color:#c8d8e5;box-shadow:0 10px 24px #25445a12}
-body.light .card:before{background:linear-gradient(90deg,transparent,#1bb98f99,transparent)}
-body.light .metric{background:linear-gradient(145deg,#f1f6fa,#eaf1f7);border-color:#d3e0ea}
-body.light canvas{background:#f5f9fc;border-color:#d4e0e9}
-body.light input,body.light select{background:#f7fafd;color:#14283b;border-color:#cbd9e5}
-body.light footer{background:linear-gradient(180deg,#fff,#edf3f8);border-color:#cbd9e5}
-body.light footer button{color:#62788c}
-body.light footer button.active{color:#087e65;background:#e0f6ef}
-@media(min-width:600px){.card{padding:21px}.metric{padding:16px}}
-</style>
-
-</head>
-<body>
-<header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="tiny muted">LIVE MARKET DATA · PAPER TRADING</div></div><span class="tag">NO LIVE ORDERS</span></div></header>
-<main>
+:root{--bg:#07111d;--panel:#101f31;--line:#29445c;--txt:#f4f8fc;--muted:#9eb2c7;--green:#35e0b0;--red:#ff647c;--gold:#ffd166;--input:#0a1726}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px system-ui}body[data-theme=black]{--bg:#030406;--panel:#101114;--line:#303238;--green:#50f59a}body[data-theme=purple]{--bg:#10091e;--panel:#211432;--line:#49335f;--green:#d39bff}body[data-theme=graphite]{--bg:#17191d;--panel:#252a31;--line:#444c56;--green:#8de0c0}body[data-theme=light]{--bg:#edf2f7;--panel:#fff;--line:#cbd6e2;--txt:#142235;--muted:#607286;--input:#f2f6fa}
+header{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--line);padding:14px;z-index:4}main{max-width:900px;margin:auto;padding:12px 12px 95px}.brand{font-size:22px;font-weight:900}.brand span{color:var(--green)}.muted,.tiny{color:var(--muted)}.tiny{font-size:11px}.row{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}.tag{border-radius:25px;padding:7px 10px;background:#123d3a;color:var(--green);font-size:10px;font-weight:800}.tabs{display:flex;gap:7px;overflow:auto;padding:10px 0}.tab,button,select,input{font:inherit}.tab,button{border:1px solid var(--line);background:var(--panel);color:var(--txt);padding:10px 13px;border-radius:10px;cursor:pointer}.tab.active,button.primary{background:var(--green);color:#04251d;border-color:var(--green);font-weight:800}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0}.price{font-size:30px;font-weight:850}.signal{font-size:24px;font-weight:900}.buy{color:var(--green)}.sell{color:var(--red)}.wait{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metric{background:var(--bg);border:1px solid var(--line);padding:11px;border-radius:10px;display:flex;flex-direction:column;gap:5px}.metric b{font-size:17px}label{display:block;color:var(--muted);font-size:12px;margin:8px 0 5px}input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--input);color:var(--txt)}canvas{width:100%;height:240px;background:var(--bg);border-radius:10px;margin-top:10px}.hidden{display:none!important}.full{width:100%;margin-top:9px}.notice{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--muted);font-size:12px;line-height:1.5}.trade{padding:10px 0;border-bottom:1px solid var(--line)}footer{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);display:flex;gap:4px;padding:7px;z-index:5}footer button{flex:1;padding:9px 2px;font-size:11px}footer button.active{color:var(--green);border-color:var(--green)}@media(min-width:650px){main{padding:20px 18px 100px}.card{padding:19px}}
+</style></head><body data-theme="midnight">
+<header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="tiny">MULTI-MARKET SCANNER · PAPER TRADING</div></div><span class="tag">DEMO MODE · NO LIVE ORDERS</span></div></header><main>
 <div class="tabs" id="symbols"></div>
-<section id="scanner">
- <div class="card">
-  <div class="row"><div><div class="tiny muted" id="sym">EUR/USD</div><div class="price" id="price">—</div><div class="tiny muted" id="feed">Connecting to market data…</div></div><span class="pill" id="connection">CONNECTING</span></div>
-  <hr><div class="row"><div><div class="tiny muted">FOREXPILOT SIGNAL</div><div class="signal wait" id="signal">WAIT</div></div><div style="text-align:right"><div class="tiny muted">RSI 14</div><div class="price" id="rsi">—</div></div></div>
-  <p class="tiny muted" id="reason">Loading completed candles…</p><canvas id="chart" width="720" height="260"></canvas>
-  <div class="row tiny muted"><span id="trend">Trend —</span><span id="emas">EMA —</span><span id="stamp">—</span></div>
- </div>
- <div class="card"><h2>Signal plan / Πλάνο σήματος</h2><div class="grid">
-  <div class="metric"><span class="tiny muted">Entry</span><b id="entry">—</b></div><div class="metric"><span class="tiny muted">Stop Loss</span><b id="sl">—</b></div>
-  <div class="metric"><span class="tiny muted">Take Profit</span><b id="tp">—</b></div><div class="metric"><span class="tiny muted">Risk / Reward</span><b id="rr">—</b></div>
- </div><p class="notice">Τα επίπεδα είναι ενδεικτικά, βασισμένα στο ATR. Το σήμα είναι εκπαιδευτικό και δεν αποτελεί επενδυτική συμβουλή.</p></div>
- <div class="card"><h2>Market analysis</h2><div class="grid">
-  <div class="metric"><span class="tiny muted">Trend</span><b id="trend2">—</b></div><div class="metric"><span class="tiny muted">RSI condition</span><b id="rsiState">—</b></div>
-  <div class="metric"><span class="tiny muted">Last candle</span><b id="candle">—</b></div><div class="metric"><span class="tiny muted">ATR</span><b id="atr">—</b></div>
- </div></div>
-</section>
-<section id="riskTab" class="hidden">
- <div class="card"><h2>Risk Manager</h2><div class="grid">
-  <div><label>Balance (€)</label><input id="balance" type="number" value="100" min="1" step="any"></div><div><label>Risk (%)</label><input id="riskPct" type="number" value="1" min=".1" max="5" step=".1"></div>
-  <div><label>Entry</label><input id="rEntry" type="number" step="any"></div><div><label>Stop Loss</label><input id="rStop" type="number" step="any"></div>
-  <div><label>Take Profit</label><input id="rTarget" type="number" step="any"></div><div><label>Risk : Reward</label><input id="rRatio" readonly></div>
- </div><button class="full" onclick="calcRisk()">Calculate position size</button>
- <div class="grid" style="margin-top:10px"><div class="metric"><span class="tiny muted">Planned risk</span><b id="riskCash">—</b></div><div class="metric"><span class="tiny muted">Potential reward</span><b id="rewardCash">—</b></div><div class="metric"><span class="tiny muted">Position units</span><b id="positionSize">—</b></div><div class="metric"><span class="tiny muted">Standard lots / shares</span><b id="lotSize">—</b></div></div>
- <p class="notice" id="riskNote">Ο υπολογισμός είναι εκτίμηση. Για Forex θεωρεί standard lot 100.000 μονάδων. Για XAU/USD το αποτέλεσμα είναι ουγγιές, όχι lots. Έλεγξε πάντα τις προδιαγραφές του broker.</p>
- </div>
-</section>
-<section id="paperTab">
- <div class="card"><h2>Paper Trading</h2><div class="grid">
-  <div><label>Symbol</label><input id="pSymbol" readonly></div><div><label>Side</label><select id="side"><option>BUY</option><option>SELL</option></select></div>
-  <div><label>Entry price</label><input id="pEntry" type="number" step="any"></div><div><label>Exit price</label><input id="pExit" type="number" step="any"></div>
-  <div><label>Units / oz / shares</label><input id="units" type="number" value="1000" min=".01" step="any"></div><div><label>Note</label><input id="note" maxlength="100"></div>
- </div><button class="full" onclick="saveTrade()">Save demo trade</button><p class="notice">Καταχωρείς εικονική συναλλαγή με τιμές εισόδου και εξόδου. Δεν στέλνεται εντολή σε broker.</p></div>
- <div class="card"><h2>Paper account · EUR</h2><div class="grid">
-  <div class="metric"><span class="tiny muted">Closed trades</span><b id="paperCount">0</b></div><div class="metric"><span class="tiny muted">Win rate</span><b id="paperWinRate">—</b></div>
-  <div class="metric"><span class="tiny muted">Net P/L</span><b id="paperNet">0.00 €</b></div><div class="metric"><span class="tiny muted">Wins / losses</span><b id="paperWins">0 / 0</b></div>
- </div><p class="notice" id="paperConversionNote">Estimated P/L in EUR. No real orders are sent.</p></div>
- <div class="card"><div class="row"><h2>History</h2><button class="alt smallbtn" onclick="clearTrades()">Clear</button></div><div id="history"></div></div>
-</section>
-<section id="settingsTab" class="hidden">
- <div class="card"><h2>Connection status</h2><p id="health" class="notice">Checking backend…</p><button class="full" onclick="loadHealth()">Check connection</button><button class="full alt" onclick="refresh()">Refresh market data</button><hr>
- <h2>Enabled instruments</h2><p class="notice">EUR/USD · GBP/USD · USD/JPY · XAU/USD · QQQ · SPY. QQQ και SPY είναι ETF proxies, όχι οι ίδιες οι τιμές των δεικτών Nasdaq-100 και S&P 500.</p>
- </div>
- <div class="card"><h2>Appearance</h2><p class="notice">Επίλεξε φωτεινή ή σκοτεινή εμφάνιση.</p><button class="full alt" onclick="toggleAppearance()">Switch light / dark appearance</button></div>
- <div class="card"><h2>Safety</h2><p class="notice">Paper mode only. Δεν υπάρχει εκτέλεση εντολών σε broker. Τα σήματα είναι κανόνες EMA/RSI και δεν εγγυώνται κέρδος. Κάνε δοκιμές πριν από οποιαδήποτε πραγματική χρήση.</p></div>
-</section>
-</main>
-<footer>
- <button class="active" onclick="showTab('scanner',this)">⌂<br>Scanner</button><button onclick="showTab('riskTab',this)">◈<br>Risk</button><button onclick="showTab('paperTab',this)">▤<br>Paper</button><button onclick="showTab('settingsTab',this)">⚙<br>Settings</button>
-</footer>
+<section id="scanner"><div class="card"><div class="row"><div><div class="tiny" id="sym">EUR/USD</div><div class="price" id="price">—</div><div class="tiny" id="feed">Σύνδεση δεδομένων…</div></div><span class="tag" id="connection">CONNECTING</span></div>
+<div class="row"><div><div class="tiny">SIGNAL</div><div id="signal" class="signal wait">WAIT</div></div><div><div class="tiny">RSI 14</div><b id="rsi">—</b></div><div><label>Timeframe</label><select id="interval" onchange="refresh()"><option>5min</option><option selected>15min</option><option>30min</option><option>1h</option><option>4h</option><option>1day</option></select></div></div><p class="tiny" id="reason">Αναμονή…</p><canvas id="chart" width="900" height="300"></canvas><div class="tiny" id="stamp"></div></div>
+<div class="card"><h3>Πλάνο συναλλαγής</h3><div class="grid"><div class="metric">Entry<b id="entry">—</b></div><div class="metric">Stop Loss<b id="sl">—</b></div><div class="metric">Take Profit<b id="tp">—</b></div><div class="metric">Risk / Reward<b>1 : 2</b></div></div><button class="primary full" onclick="signalToPaper()">Προσθήκη στο Paper Trading</button></div>
+<div class="card"><h3>Scanner ευκαιριών</h3><div id="opportunities" class="notice">Πάτησε σάρωση για έλεγχο όλων των συμβόλων.</div><button class="full" onclick="scanAll()">Σάρωση τώρα</button></div></section>
+<section id="riskTab" class="hidden"><div class="card"><h3>Risk Manager</h3><div class="grid"><div><label>Εικονικό κεφάλαιο (€)</label><input id="capital" type="number" value="10000"></div><div><label>Ρίσκο ανά θέση (%)</label><select id="riskPct"><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></div><div><label>Μέγιστες ανοιχτές θέσεις</label><select id="maxPositions"><option>1</option><option selected>3</option><option>5</option><option>10</option></select></div><div><label>Μέγιστη ημερήσια ζημιά (€)</label><input id="dailyLoss" type="number" value="200"></div></div><button class="primary full" onclick="saveRisk()">Αποθήκευση ορίων</button></div>
+<div class="card"><h3>Autopilot — μόνο εικονικά</h3><p class="notice">Ανοίγει demo θέσεις με βάση τα σήματα και τα όρια. Δεν στέλνει εντολές σε broker.</p><div class="row"><b id="autoState">Ανενεργό</b><button id="autoBtn" class="primary" onclick="toggleAuto()">Ενεργοποίηση</button></div><button class="full" onclick="stopAll()" style="color:var(--red)">STOP ALL — κλείσιμο demo θέσεων</button></div></section>
+<section id="paperTab" class="hidden"><div class="card"><h3>Άνοιγμα εικονικής συναλλαγής</h3><div class="grid"><div><label>Σύμβολο</label><select id="pSymbol"></select></div><div><label>Κατεύθυνση</label><select id="side"><option>BUY</option><option>SELL</option></select></div><div><label>Entry</label><input id="pEntry" type="number" step="any"></div><div><label>Stop Loss</label><input id="pSL" type="number" step="any"></div><div><label>Take Profit</label><input id="pTP" type="number" step="any"></div><div><label>Μονάδες</label><input id="units" type="number" value="1" min=".01" step="any"></div></div><button class="primary full" onclick="openTrade()">Άνοιγμα demo θέσης</button></div>
+<div class="card"><h3>Εικονικός λογαριασμός</h3><div class="grid"><div class="metric">Κεφάλαιο<b id="balance">€10,000</b></div><div class="metric">Ανοιχτές θέσεις<b id="openCount">0</b></div><div class="metric">Κλεισμένο P/L<b id="closedPL">€0</b></div><div class="metric">Συναλλαγές<b id="tradeCount">0</b></div></div></div><div class="card"><h3>Ανοιχτές θέσεις</h3><div id="openTrades"></div></div><div class="card"><h3>Ιστορικό</h3><div id="history"></div></div></section>
+<section id="alertsTab" class="hidden"><div class="card"><h3>Price Alerts</h3><div class="grid"><div><label>Σύμβολο</label><select id="alertSymbol"></select></div><div><label>Τιμή στόχος</label><input id="alertPrice" type="number" step="any"></div><div><label>Συνθήκη</label><select id="alertDirection"><option value="above">Πάνω από</option><option value="below">Κάτω από</option></select></div></div><button class="primary full" onclick="addAlert()">Προσθήκη ειδοποίησης</button><div id="alertsList"></div><p class="notice">Οι ειδοποιήσεις ελέγχονται όσο η εφαρμογή είναι ανοιχτή. Δεν παρέχονται push ειδοποιήσεις όταν είναι κλειστή.</p></div></section>
+<section id="settingsTab" class="hidden"><div class="card"><h3>Εμφάνιση</h3><label>Θέμα</label><select id="theme" onchange="setTheme(this.value)"><option value="midnight">Midnight Blue</option><option value="black">Black Neon</option><option value="purple">Purple Night</option><option value="graphite">Graphite</option><option value="light">Light</option></select></div><div class="card"><h3>Κατάσταση σύνδεσης</h3><div id="health" class="notice">Έλεγχος…</div><button class="full" onclick="loadHealth();refresh()">Έλεγχος σύνδεσης</button></div><div class="card notice">Τα σήματα είναι κανόνες EMA/RSI, όχι εκπαιδευμένο AI και δεν εγγυώνται κέρδη. Η διαθεσιμότητα συμβόλων εξαρτάται από το πακέτο Twelve Data. Paper trading μόνο — καμία πραγματική εντολή.</div></section>
+</main><footer><button class="active" onclick="showTab('scanner',this)">Scanner</button><button onclick="showTab('riskTab',this)">Risk</button><button onclick="showTab('paperTab',this)">Paper</button><button onclick="showTab('alertsTab',this)">Alerts</button><button onclick="showTab('settingsTab',this)">Ρυθμίσεις</button></footer>
 <script>
 "use strict";
-const assets=[["EUR/USD",5],["GBP/USD",5],["USD/JPY",3],["XAU/USD",2],["QQQ",2],["SPY",2]];
-let ix=0,bars=[],latestPrices=JSON.parse(localStorage.getItem("fp_prices")||"{}"),trades=[];
-try{trades=JSON.parse(localStorage.getItem("fp_live_paper")||"[]");if(!Array.isArray(trades))trades=[]}catch{trades=[]}
-const $=id=>document.getElementById(id);
-function showTab(id,btn){["scanner","riskTab","paperTab","settingsTab"].forEach(k=>$(k).classList.toggle("hidden",k!==id));document.querySelectorAll("footer button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");if(id==="riskTab")calcRisk();if(id==="paperTab")renderTrades()}
-function renderSymbols(){$("symbols").innerHTML=assets.map((a,i)=>`<button class="tab ${i===ix?"active":""}" onclick="selectAsset(${i})">${a[0]}</button>`).join("")}
-function fmt(n){return Number(n).toFixed(assets[ix][1])}
-function ema(a,n){let k=2/(n+1),v=a[0];for(let i=1;i<a.length;i++)v=a[i]*k+v*(1-k);return v}
-function rsi(a,n=14){let g=0,l=0;for(let i=a.length-n;i<a.length;i++){let d=a[i]-a[i-1];if(d>0)g+=d;else l-=d}if(l===0)return 100;return 100-100/(1+g/l)}
-function atr(a,n=14){let sum=0;for(let i=a.length-n;i<a.length;i++){let p=a[i-1].close;sum+=Math.max(a[i].high-a[i].low,Math.abs(a[i].high-p),Math.abs(a[i].low-p))}return sum/n}
-function chart(a){let c=$("chart"),ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue("--line");for(let y=35;y<h;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}if(!a.length)return;let hi=Math.max(...a.map(x=>x.high)),lo=Math.min(...a.map(x=>x.low)),step=w/a.length,scale=(h-30)/(hi-lo||1);a.forEach((z,i)=>{let x=i*step+step/2,yo=h-12-(z.open-lo)*scale,yc=h-12-(z.close-lo)*scale;ctx.strokeStyle=ctx.fillStyle=z.close>=z.open?"#4cdbad":"#ff727e";ctx.beginPath();ctx.moveTo(x,h-12-(z.high-lo)*scale);ctx.lineTo(x,h-12-(z.low-lo)*scale);ctx.stroke();ctx.fillRect(x-3,Math.min(yo,yc),6,Math.max(2,Math.abs(yc-yo)))})}
-function setUnavailable(msg){$("connection").textContent="OFFLINE";$("feed").textContent="Live data unavailable";$("signal").textContent="WAIT";$("signal").className="signal wait";$("reason").textContent=msg;$("price").textContent="—";$("stamp").textContent="—"}
-async function fetchSeries(symbol){let r=await fetch("/api/series?symbol="+encodeURIComponent(symbol)+"&interval=15min");let d=await r.json();if(!r.ok)throw new Error(d.details||d.error||"API error");if(!Array.isArray(d.values)||d.values.length<30)throw new Error("Not enough candles returned");return d}
-async function refresh(){let symbol=assets[ix][0];$("connection").textContent="LOADING";$("feed").textContent="Requesting Twelve Data…";try{let d=await fetchSeries(symbol);bars=d.values;let lastClosed=bars[bars.length-2]||bars[bars.length-1];latestPrices[symbol]={price:lastClosed.close,at:Date.now()};if(symbol!=="EUR/USD"&&(!latestPrices["EUR/USD"]||Date.now()-latestPrices["EUR/USD"].at>300000)){try{let fx=await fetchSeries("EUR/USD");latestPrices["EUR/USD"]={price:fx.values[fx.values.length-2].close,at:Date.now()}}catch{}}localStorage.setItem("fp_prices",JSON.stringify(latestPrices));analyze();$("connection").textContent="LIVE API";$("feed").textContent="Twelve Data · 15m · "+(d.cached?"cached":"provider response");$("stamp").textContent=new Date(d.fetchedAt||Date.now()).toLocaleTimeString("el-GR")}catch(e){setUnavailable(e.message)}}
-function analyze(){if(bars.length<30)return;let closed=bars.slice(0,-1),cl=closed.map(x=>x.close),last=closed.at(-1),fast=ema(cl.slice(-30),9),slow=ema(cl.slice(-50),21),rv=rsi(cl),av=atr(closed),up=fast>slow,signal="WAIT",why="No clear EMA/RSI alignment on the last completed candle.";if(up&&rv>=50&&rv<70){signal="BUY";why="EMA 9 above EMA 21; RSI confirms positive momentum."}else if(!up&&rv>30&&rv<=50){signal="SELL";why="EMA 9 below EMA 21; RSI confirms negative momentum."}let entry=last.close,stop=signal==="BUY"?entry-1.5*av:signal==="SELL"?entry+1.5*av:null,target=stop===null?null:(signal==="BUY"?entry+2*(entry-stop):entry-2*(stop-entry));$("sym").textContent=assets[ix][0];$("price").textContent=fmt(entry);$("signal").textContent=signal;$("signal").className="signal "+(signal==="BUY"?"buy":signal==="SELL"?"sell":"wait");$("reason").textContent=why;$("trend").textContent="Trend: "+(up?"Bullish":"Bearish");$("emas").textContent="EMA 9/21: "+(up?"Bullish":"Bearish");$("rsi").textContent=rv.toFixed(1);$("entry").textContent=fmt(entry);$("sl").textContent=stop===null?"—":fmt(stop);$("tp").textContent=target===null?"—":fmt(target);$("rr").textContent=stop===null?"—":"1 : 2";$("trend2").textContent=up?"Bullish":"Bearish";$("rsiState").textContent=rv.toFixed(1);$("candle").textContent=last.close>=last.open?"Bullish":"Bearish";$("atr").textContent=fmt(av);chart(closed.slice(-55));$("pSymbol").value=assets[ix][0];$("pEntry").value=entry;$("pExit").value=entry;$("rEntry").value=entry;$("rStop").value=stop===null?"":stop;$("rTarget").value=target===null?"":target;calcRisk()}
-function selectAsset(i){ix=i;renderSymbols();refresh()}
-function quoteToEur(symbol,price){let eu=latestPrices["EUR/USD"]?.price,uj=latestPrices["USD/JPY"]?.price;if(symbol==="USD/JPY")return eu>0&&uj>0?1/(eu*uj):null;if(["EUR/USD","GBP/USD","XAU/USD","QQQ","SPY"].includes(symbol))return eu>0?1/eu:null;return null}
-function calcRisk(){let b=+$("balance").value,r=+$("riskPct").value/100,e=+$("rEntry").value,s=+$("rStop").value,t=+$("rTarget").value,symbol=$("pSymbol").value||assets[ix][0];if(!(b>0&&r>0&&e>0&&s>0&&t>0)||e===s){["riskCash","rewardCash","positionSize","lotSize"].forEach(id=>$(id).textContent="—");$("rRatio").value="";return}let budget=b*r,ratio=Math.abs(t-e)/Math.abs(e-s),conv=quoteToEur(symbol,e);$("riskCash").textContent=budget.toFixed(2)+" €";$("rewardCash").textContent=(budget*ratio).toFixed(2)+" €";$("rRatio").value="1 : "+ratio.toFixed(2);if(!conv){$("positionSize").textContent="Need FX quote";$("lotSize").textContent="—";return}let units=budget/(Math.abs(e-s)*conv);$("positionSize").textContent=units.toLocaleString("en-US",{maximumFractionDigits:2});$("lotSize").textContent=symbol==="QQQ"||symbol==="SPY"?"Shares":symbol==="XAU/USD"?"Ounces":(units/100000).toFixed(4)+" lots"}
-function saveTrade(){let e=+$("pEntry").value,x=+$("pExit").value,u=+$("units").value;if(!(e>0&&x>0&&u>0))return alert("Check entry, exit and units");let symbol=$("pSymbol").value,side=$("side").value,points=side==="BUY"?x-e:e-x,conv=quoteToEur(symbol,x),plEUR=conv===null?null:points*u*conv;trades.unshift({date:new Date().toLocaleString("el-GR"),symbol,side,e,x,u,points,plEUR,note:$("note").value});localStorage.setItem("fp_live_paper",JSON.stringify(trades));$("note").value="";renderTrades()}
-function renderTrades(){let closed=trades.filter(t=>Number.isFinite(t.plEUR)),wins=closed.filter(t=>t.plEUR>0).length,losses=closed.filter(t=>t.plEUR<0).length,net=closed.reduce((a,t)=>a+t.plEUR,0);$("paperCount").textContent=trades.length;$("paperWinRate").textContent=closed.length?(wins/closed.length*100).toFixed(1)+"%":"—";$("paperNet").textContent=net.toFixed(2)+" €";$("paperNet").className=net>=0?"positive":"negative";$("paperWins").textContent=wins+" / "+losses;$("paperConversionNote").textContent=closed.length===trades.length?"Estimated EUR P/L from saved prices and available FX conversion.":"Some old trades have no stored EUR conversion quote and are excluded from totals.";if(!trades.length){$("history").innerHTML='<p class="notice">No demo trades saved yet.</p>';return}let rows=trades.map(t=>'<tr><td>'+escapeHtml(t.symbol)+'</td><td>'+escapeHtml(t.side)+'</td><td class="'+(Number.isFinite(t.plEUR)?(t.plEUR>=0?"positive":"negative"):"")+'">'+(Number.isFinite(t.plEUR)?t.plEUR.toFixed(2)+" €":"—")+'</td><td>'+escapeHtml(t.date)+'</td></tr>').join("");$("history").innerHTML='<div class="table-wrap"><table><tr><th>Symbol</th><th>Side</th><th>P/L (€)</th><th>Date</th></tr>'+rows+'</table></div><p class="notice">Estimated P/L excludes spread, commission, swap, slippage and contract differences. Paper mode only.</p>'}
-function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function clearTrades(){if(confirm("Delete all paper trading history?")){trades=[];localStorage.setItem("fp_live_paper","[]");renderTrades()}}
-async function loadHealth(){try{let r=await fetch("/api/health"),d=await r.json();$("health").textContent=d.ok?(d.apiKeyConfigured?"Backend online. Twelve Data API key configured.":"Backend online, but API key is missing on the server."):"Backend unavailable"}catch{$("health").textContent="Backend not reachable. Check that the Render service is running."}}
-function toggleAppearance(){document.body.classList.toggle("light");localStorage.setItem("fp_appearance",document.body.classList.contains("light")?"light":"dark");if(bars.length)chart(bars.slice(0,-1).slice(-55))}
-if(localStorage.getItem("fp_appearance")==="light")document.body.classList.add("light");
-renderSymbols();renderTrades();loadHealth();refresh();
-setInterval(()=>{if(!document.hidden)refresh()},60000);
-</script>
-</body>
-</html>
+const assets=[["EUR/USD",5],["GBP/USD",5],["USD/JPY",3],["XAU/USD",2],["BTC/USD",2],["ETH/USD",2],["QQQ",2],["SPY",2],["AAPL",2],["MSFT",2],["NVDA",2]];
+const $=id=>document.getElementById(id),load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+let ix=0,bars=[],plan=null,auto=false,trades=load("fp3_trades",[]),alerts=load("fp3_alerts",[]),risk=load("fp3_risk",{capital:10000,riskPct:1,maxPositions:3,dailyLoss:200});
+function save(){localStorage.setItem("fp3_trades",JSON.stringify(trades));localStorage.setItem("fp3_alerts",JSON.stringify(alerts))}
+function showTab(id,b){["scanner","riskTab","paperTab","alertsTab","settingsTab"].forEach(x=>$(x).classList.toggle("hidden",x!==id));document.querySelectorAll("footer button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(id==="paperTab")renderTrades();if(id==="alertsTab")renderAlerts()}
+function ema(a,n){let k=2/(n+1),v=a[0];for(let x of a.slice(1))v=x*k+v*(1-k);return v}
+function rsi(a){let g=0,l=0;for(let i=a.length-14;i<a.length;i++){let d=a[i]-a[i-1];if(d>0)g+=d;else l-=d}return l?100-100/(1+g/l):100}
+function atr(a){let z=0;for(let i=a.length-14;i<a.length;i++){let p=a[i-1].close;z+=Math.max(a[i].high-a[i].low,Math.abs(a[i].high-p),Math.abs(a[i].low-p))}return z/14}
+function draw(a){let c=$("chart"),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);let hi=Math.max(...a.map(v=>v.high)),lo=Math.min(...a.map(v=>v.low)),step=w/a.length,sc=(h-25)/(hi-lo||1);a.forEach((v,i)=>{let xx=i*step+step/2,op=h-12-(v.open-lo)*sc,cl=h-12-(v.close-lo)*sc;x.strokeStyle=v.close>=v.open?"#35e0b0":"#ff647c";x.beginPath();x.moveTo(xx,h-12-(v.high-lo)*sc);x.lineTo(xx,h-12-(v.low-lo)*sc);x.stroke();x.fillStyle=x.strokeStyle;x.fillRect(xx-step*.3,Math.min(op,cl),Math.max(2,step*.6),Math.max(2,Math.abs(cl-op)))})}
+async function getSeries(s,tf){let r=await fetch(`/api/series?symbol=${encodeURIComponent(s)}&interval=${tf}`),d=await r.json();if(!r.ok)throw Error(d.details||d.error||"API error");if(!Array.isArray(d.values)||d.values.length<30)throw Error("Λίγα διαθέσιμα κεριά");return d}
+async function refresh(){let s=assets[ix][0];$("connection").textContent="LOADING";try{let d=await getSeries(s,$("interval").value);bars=d.values;analyze();$("connection").textContent="LIVE DATA";$("feed").textContent=`Twelve Data · ${d.interval}`;$("stamp").textContent=new Date(d.fetchedAt||Date.now()).toLocaleTimeString("el-GR");checkAlerts(s,bars.at(-2).close)}catch(e){$("connection").textContent="ERROR";$("feed").textContent=e.message}}
+function analyze(){let a=bars.slice(0,-1),c=a.map(v=>v.close),last=a.at(-1);if(c.length<30)return;let f=ema(c.slice(-30),9),s=ema(c.slice(-50),21),rv=rsi(c),vol=atr(a),side=f>s&&rv>=50&&rv<70?"BUY":f<s&&rv>30&&rv<=50?"SELL":"WAIT",sl=side==="BUY"?last.close-1.5*vol:side==="SELL"?last.close+1.5*vol:null,tp=sl===null?null:(side==="BUY"?last.close+3*vol:last.close-3*vol);plan={symbol:assets[ix][0],side,entry:last.close,sl,tp};$("sym").textContent=plan.symbol;$("price").textContent=last.close.toFixed(assets[ix][1]);$("signal").textContent=side;$("signal").className="signal "+side.toLowerCase();$("rsi").textContent=rv.toFixed(1);$("reason").textContent=side==="WAIT"?"Δεν υπάρχει καθαρό σήμα.":`EMA 9/21 και RSI επιβεβαιώνουν ${side}.`;$("entry").textContent=last.close.toFixed(assets[ix][1]);$("sl").textContent=sl?sl.toFixed(assets[ix][1]):"—";$("tp").textContent=tp?tp.toFixed(assets[ix][1]):"—";draw(a.slice(-65));if(auto&&side!=="WAIT")autoOpen(plan)}
+function renderSymbols(){$("symbols").innerHTML=assets.map((a,i)=>`<button class="tab ${i===ix?"active":""}" onclick="selectAsset(${i})">${a[0]}</button>`).join("");["pSymbol","alertSymbol"].forEach(id=>$(id).innerHTML=assets.map(a=>`<option>${a[0]}</option>`).join(""))}
+function selectAsset(i){ix=i;document.querySelectorAll(".tab").forEach((b,j)=>b.classList.toggle("active",j===i));refresh()}
+function signalToPaper(){if(!plan||plan.side==="WAIT")return alert("Δεν υπάρχει ενεργό σήμα.");$("pSymbol").value=plan.symbol;$("side").value=plan.side;$("pEntry").value=plan.entry;$("pSL").value=plan.sl;$("pTP").value=plan.tp;showTab("paperTab",document.querySelectorAll("footer button")[2])}
+function openTrade(p){let s=$("pSymbol").value,side=$("side").value,e=Number($("pEntry").value),sl=Number($("pSL").value),tp=Number($("pTP").value),u=Number($("units").value);if(p){s=p.symbol;side=p.side;e=p.entry;sl=p.sl;tp=p.tp}if(!(e>0&&sl>0&&tp>0&&u>0)||side==="BUY"&&(sl>=e||tp<=e)||side==="SELL"&&(sl<=e||tp>=e))return alert("Έλεγξε Entry, Stop Loss, Take Profit και μονάδες.");if(trades.filter(t=>!t.closed).length>=Number(risk.maxPositions))return alert("Έφτασες το όριο ανοιχτών θέσεων.");if(Math.abs(e-sl)*u>risk.capital*risk.riskPct/100)return alert("Το ρίσκο ξεπερνά το επιτρεπόμενο ποσό.");trades.push({id:Date.now(),symbol:s,side,entry:e,sl,tp,units:u,closed:false});save();renderTrades();alert("Άνοιξε εικονική θέση — δεν στάλθηκε πραγματική εντολή.")}
+function autoOpen(p){if(trades.some(t=>!t.closed&&t.symbol===p.symbol))return;$("pSymbol").value=p.symbol;$("side").value=p.side;$("pEntry").value=p.entry;$("pSL").value=p.sl;$("pTP").value=p.tp;openTrade(p)}
+function renderTrades(){let o=trades.filter(t=>!t.closed),c=trades.filter(t=>t.closed),pl=c.reduce((n,t)=>n+(t.pl||0),0);$("balance").textContent="€"+(risk.capital+pl).toFixed(2);$("openCount").textContent=o.length;$("closedPL").textContent="€"+pl.toFixed(2);$("tradeCount").textContent=trades.length;$("openTrades").innerHTML=o.map(t=>`<div class="trade"><b>${t.symbol} ${t.side}</b><div class="tiny">Entry ${t.entry} · SL ${t.sl} · TP ${t.tp} · Units ${t.units}</div><button onclick="closeTrade(${t.id})">Κλείσιμο θέσης</button></div>`).join("")||"Καμία ανοιχτή θέση";$("history").innerHTML=c.slice().reverse().map(t=>`<div class="trade">${t.symbol} ${t.side} · P/L €${t.pl.toFixed(2)}</div>`).join("")||"Κανένα κλεισμένο trade"}
+function closeTrade(id){let t=trades.find(x=>x.id===id),p=Number(prompt("Τιμή εξόδου:",t.entry));if(!(p>0))return;t.pl=(t.side==="BUY"?p-t.entry:t.entry-p)*t.units;t.exit=p;t.closed=true;save();renderTrades()}
+function stopAll(){if(!confirm("Κλείσιμο όλων των demo θέσεων στην τιμή εισόδου (P/L μηδέν);"))return;trades.filter(t=>!t.closed).forEach(t=>{t.closed=true;t.exit=t.entry;t.pl=0});auto=false;updateAuto();save();renderTrades()}
+function saveRisk(){risk={capital:Number($("capital").value),riskPct:Number($("riskPct").value),maxPositions:Number($("maxPositions").value),dailyLoss:Number($("dailyLoss").value)};localStorage.setItem("fp3_risk",JSON.stringify(risk));alert("Αποθηκεύτηκαν τα όρια ρίσκου.")}
+function toggleAuto(){auto=!auto;updateAuto()}function updateAuto(){$("autoState").textContent=auto?"Ενεργό — DEMO":"Ανενεργό";$("autoBtn").textContent=auto?"Απενεργοποίηση":"Ενεργοποίηση"}
+function addAlert(){let p=Number($("alertPrice").value);if(!(p>0))return alert("Βάλε έγκυρη τιμή.");alerts.push({id:Date.now(),symbol:$("alertSymbol").value,price:p,direction:$("alertDirection").value,hit:false});save();renderAlerts()}
+function renderAlerts(){$("alertsList").innerHTML=alerts.map(a=>`<div class="trade">${a.symbol} ${a.direction==="above"?"πάνω από":"κάτω από"} ${a.price} · ${a.hit?"Ενεργοποιήθηκε":"Ενεργή"} <button onclick="removeAlert(${a.id})">Διαγραφή</button></div>`).join("")||"Καμία ειδοποίηση"}
+function removeAlert(id){alerts=alerts.filter(a=>a.id!==id);save();renderAlerts()}
+function checkAlerts(s,p){alerts.forEach(a=>{if(!a.hit&&a.symbol===s&&((a.direction==="above"&&p>=a.price)||(a.direction==="below"&&p<=a.price))){a.hit=true;alert(`Price alert: ${s} έφτασε ${p}`)}});save();renderAlerts()}
+async function scanAll(){let out=[];for(let a of assets){try{let d=await getSeries(a[0],"15min"),c=d.values.slice(0,-1).map(x=>x.close),f=ema(c.slice(-30),9),s=ema(c.slice(-50),21),r=rsi(c),sig=f>s&&r>=50&&r<70?"BUY":f<s&&r>30&&r<=50?"SELL":"WAIT";if(sig!=="WAIT")out.push(`${a[0]}: <b class="${sig.toLowerCase()}">${sig}</b> RSI ${r.toFixed(1)}`)}catch(e){out.push(`${a[0]}: μη διαθέσιμο`)}}$("opportunities").innerHTML=out.join("<br>")||"Δεν βρέθηκαν σήματα."}
+async function loadHealth(){try{let d=await(await fetch("/api/health")).json();$("health").textContent=`Server ${d.ok?"online":"offline"} · Twelve Data API ${d.apiKeyConfigured?"ρυθμισμένο":"λείπει"}`}catch{$("health").textContent="Δεν υπάρχει σύνδεση με server."}}
+function setTheme(t){document.body.dataset.theme=t;localStorage.setItem("fp3_theme",t)}
+$("theme").value=localStorage.getItem("fp3_theme")||"midnight";setTheme($("theme").value);$("capital").value=risk.capital;$("riskPct").value=String(risk.riskPct);$("maxPositions").value=String(risk.maxPositions);$("dailyLoss").value=risk.dailyLoss;
+renderSymbols();renderTrades();loadHealth();refresh();setInterval(()=>{if(!document.hidden)refresh()},60000);
+</script></body></html>
