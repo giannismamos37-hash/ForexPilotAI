@@ -167,6 +167,28 @@ button:active{transform:scale(.97)}
   <div><label>Entry</label><input id="pEntry" type="number" step="any"></div><div><label>Exit</label><input id="pExit" type="number" step="any"></div>
   <div><label>Units (illustrative)</label><input id="pUnits" type="number" value="1000" min="1"></div><div><label>Notes</label><input id="pNote" placeholder="Setup"></div>
  </div><button class="full" onclick="addPaper()">Save demo trade</button></div>
+ <div class="card" id="paperEngineCard">
+ <div class="row"><h2>Paper Trading Engine · Αυτόματη δοκιμή</h2><span class="pill demo" id="paperEngineStatus">AUTO ON</span></div>
+ <div class="grid">
+  <div class="metric"><span>Αρχικό κεφάλαιο</span><b id="peInitial">10.000 €</b></div>
+  <div class="metric"><span>Υπόλοιπο</span><b id="peBalance">10.000 €</b></div>
+  <div class="metric"><span>Ανοιχτό P/L</span><b id="peFloating">0,00</b></div>
+  <div class="metric"><span>Συνολικό αποτέλεσμα</span><b id="peTotal">0,00</b></div>
+  <div class="metric"><span>Κλεισμένες θέσεις</span><b id="peClosed">0</b></div>
+  <div class="metric"><span>Επιτυχία</span><b id="peWinRate">—</b></div>
+ </div>
+ <div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap">
+  <label style="margin:0;flex:1;min-width:120px">Αρχικό κεφάλαιο (€)<input id="peCapitalInput" type="number" min="100" step="100" value="10000"></label>
+  <label style="margin:0;flex:1;min-width:100px">Ρίσκο ανά θέση (%)<input id="peRiskInput" type="number" min="0.1" max="2" step="0.1" value="1"></label>
+ </div>
+ <div class="row" style="margin-top:12px;gap:8px;flex-wrap:wrap">
+  <button id="peToggle" onclick="paperToggleAuto()">⏸ Παύση αυτόματου</button>
+  <button class="alt" onclick="paperReset()">Επαναφορά λογαριασμού</button>
+ </div>
+ <p class="notice" id="peNotice" style="margin-top:10px">Το αυτόματο paper trading ανοίγει εικονικές θέσεις μόνο όταν υπάρχουν πραγματικά δεδομένα LIVE και νέο σήμα. Δεν στέλνει εντολές σε broker.</p>
+ <h3 style="margin:14px 0 8px">Ανοιχτές θέσεις</h3><div id="peOpenPositions" class="notice">Δεν υπάρχουν ανοιχτές θέσεις.</div>
+ <h3 style="margin:14px 0 8px">Τελευταίες κλεισμένες θέσεις</h3><div id="peClosedPositions" class="notice">Δεν υπάρχουν ακόμη κλεισμένες θέσεις.</div>
+ </div>
  <div class="card"><div class="row"><h2>Trade history</h2><button class="alt" onclick="clearPaper()">Clear</button></div><div id="history"></div></div>
 </section>
 <section id="settingsTab" class="hidden">
@@ -259,6 +281,70 @@ function addPaper(){let e=+$("pEntry").value,x=+$("pExit").value,u=+$("pUnits").
 function renderPaper(){if(!paper.length){$("history").innerHTML='<p class="notice">Δεν υπάρχουν ακόμη demo trades.</p>';return}$("history").innerHTML='<table><tr><th>Symbol</th><th>Side</th><th>Illustrative P/L</th><th>Date</th></tr>'+paper.map(t=>`<tr><td>${t.symbol}</td><td>${t.side}</td><td style="color:${t.pnl>=0?'#4cdbad':'#ff727e'}">${t.pnl.toFixed(2)}</td><td>${t.date}</td></tr>`).join("")+'</table><p class="notice">P/L = μεταβολή τιμής × μονάδες. Δεν περιλαμβάνει pip value, contract size, spread, swaps ή προμήθειες.</p>'}
 function clearPaper(){if(confirm("Delete demo history?")){paper=[];localStorage.setItem("fp_app_paper","[]");renderPaper()}}
 function setTimeframe(v){timeframe=v;liveBars=null;$("tf").textContent=v==="1day"?"1D":v.replace("min","m");analyze();loadLive()}
-async function loadLive(){const symbol=A[ix][0];$("feed").textContent="Connecting to market data…";try{const r=await fetch(`${API_BASE}/api/series?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(timeframe)}`,{cache:"no-store"});const raw=await r.text();let data;try{data=JSON.parse(raw)}catch{throw new Error(`Backend returned non-JSON (HTTP ${r.status}). Check Render API service.`)}if(!r.ok)throw new Error(data.error||"Live feed unavailable");if(!Array.isArray(data.values)||data.values.length<10)throw new Error("Not enough market candles");liveBars=data.values.map(v=>({o:Number(v.open),c:Number(v.close),h:Number(v.high),l:Number(v.low),volume:v.volume==null?null:Number(v.volume),datetime:v.datetime}));custom[ix]=liveBars.at(-1).c;checkAlerts(custom[ix]);$("feed").textContent=`LIVE · ${data.source} · ${new Date(data.fetchedAt).toLocaleTimeString("el-GR")}`;$("liveBadge").textContent="LIVE DATA";$("liveBadge").style.color="var(--green)";$("modeBadge").textContent="LIVE FEED";$("modeBadge").style.borderColor="#168d70";$("modeBadge").style.background="#10382f";$("modeBadge").style.color="var(--green)";$("quoteBadge").textContent="LIVE";$("quoteBadge").style.borderColor="#168d70";$("quoteBadge").style.color="var(--green)";$("feed").previousElementSibling.style.background="var(--green)";analyze()}catch(e){liveBars=null;$("feed").textContent="DEMO FALLBACK · "+e.message;$("liveBadge").textContent="DEMO DATA";$("liveBadge").style.color="var(--gold)";$("modeBadge").textContent="DEMO FEED";$("modeBadge").style.borderColor="#71572a";$("modeBadge").style.background="#2c2518";$("modeBadge").style.color="var(--gold)";$("quoteBadge").textContent="DEMO";$("quoteBadge").style.borderColor="#71572a";$("quoteBadge").style.color="var(--gold)";$("feed").previousElementSibling.style.background="var(--gold)";analyze()}}
+async function loadLive(){const symbol=A[ix][0];$("feed").textContent="Connecting to market data…";try{const r=await fetch(`${API_BASE}/api/series?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(timeframe)}`,{cache:"no-store"});const raw=await r.text();let data;try{data=JSON.parse(raw)}catch{throw new Error(`Backend returned non-JSON (HTTP ${r.status}). Check Render API service.`)}if(!r.ok)throw new Error(data.error||"Live feed unavailable");if(!Array.isArray(data.values)||data.values.length<10)throw new Error("Not enough market candles");liveBars=data.values.map(v=>({o:Number(v.open),c:Number(v.close),h:Number(v.high),l:Number(v.low),volume:v.volume==null?null:Number(v.volume),datetime:v.datetime}));custom[ix]=liveBars.at(-1).c;checkAlerts(custom[ix]);$("feed").textContent=`LIVE · ${data.source} · ${new Date(data.fetchedAt).toLocaleTimeString("el-GR")}`;$("liveBadge").textContent="LIVE DATA";$("liveBadge").style.color="var(--green)";$("modeBadge").textContent="LIVE FEED";$("modeBadge").style.borderColor="#168d70";$("modeBadge").style.background="#10382f";$("modeBadge").style.color="var(--green)";$("quoteBadge").textContent="LIVE";$("quoteBadge").style.borderColor="#168d70";$("quoteBadge").style.color="var(--green)";$("feed").previousElementSibling.style.background="var(--green)";analyze();if(typeof paperEngineTick==="function")paperEngineTick()}catch(e){liveBars=null;$("feed").textContent="DEMO FALLBACK · "+e.message;$("liveBadge").textContent="DEMO DATA";$("liveBadge").style.color="var(--gold)";$("modeBadge").textContent="DEMO FEED";$("modeBadge").style.borderColor="#71572a";$("modeBadge").style.background="#2c2518";$("modeBadge").style.color="var(--gold)";$("quoteBadge").textContent="DEMO";$("quoteBadge").style.borderColor="#71572a";$("quoteBadge").style.color="var(--gold)";$("feed").previousElementSibling.style.background="var(--gold)";analyze()}}
 initTheme();renderAssets();analyze();renderPaper();renderAlerts();loadLive();setInterval(loadLive,60000);if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+<script>
+/* Paper Trading Engine v1 — local, virtual-only account */
+const PE_KEY="forexpilot_paper_engine_v1";
+function peLoad(){try{const x=JSON.parse(localStorage.getItem(PE_KEY)||"null");if(x&&Number.isFinite(x.initial))return x}catch{}return {initial:10000,riskPct:1,auto:true,open:[],closed:[],lastSignal:{}}}
+let pe=peLoad();
+const peMoney=n=>Number(n||0).toLocaleString("el-GR",{minimumFractionDigits:2,maximumFractionDigits:2});
+function peSave(){localStorage.setItem(PE_KEY,JSON.stringify(pe))}
+function peBalance(){return pe.initial+pe.closed.reduce((s,t)=>s+t.pnl,0)}
+function peFloating(){return pe.open.reduce((s,t)=>s+t.pnl,0)}
+function peRender(){
+ const closed=pe.closed, wins=closed.filter(t=>t.pnl>0).length, total=closed.reduce((s,t)=>s+t.pnl,0);
+ const set=(id,v)=>{const e=$(id);if(e)e.textContent=v};
+ set("peInitial",peMoney(pe.initial)+" €");set("peBalance",peMoney(peBalance())+" €");
+ set("peFloating",peMoney(peFloating()));set("peTotal",(total>=0?"+":"")+peMoney(total));
+ set("peClosed",String(closed.length));set("peWinRate",closed.length?(wins/closed.length*100).toFixed(1)+"%":"—");
+ set("paperEngineStatus",pe.auto?"AUTO ON":"PAUSED");
+ const status=$("paperEngineStatus");if(status){status.style.color=pe.auto?"var(--green)":"var(--gold)";status.style.borderColor=pe.auto?"#168d70":"#71572a"}
+ const toggle=$("peToggle");if(toggle)toggle.textContent=pe.auto?"⏸ Παύση αυτόματου":"▶ Συνέχιση αυτόματου";
+ const op=$("peOpenPositions"),cp=$("peClosedPositions");
+ if(op)op.innerHTML=pe.open.length?'<table><tr><th>Σύμβολο</th><th>Πλευρά</th><th>Είσοδος</th><th>Τρέχουσα</th><th>SL / TP</th><th>Ανοιχτό P/L</th></tr>'+pe.open.map(t=>{const p=Number(custom[A.findIndex(a=>a[0]===t.symbol)]??t.entry);return '<tr><td>'+t.symbol+'</td><td>'+t.side+'</td><td>'+t.entry.toFixed(t.digits)+'</td><td>'+p.toFixed(t.digits)+'</td><td>'+t.sl.toFixed(t.digits)+' / '+t.tp.toFixed(t.digits)+'</td><td style="color:'+(t.pnl>=0?'var(--green)':'var(--red)')+'">'+peMoney(t.pnl)+'</td></tr>'}).join("")+'</table>':"Δεν υπάρχουν ανοιχτές θέσεις.";
+ if(cp)cp.innerHTML=closed.length?'<table><tr><th>Σύμβολο</th><th>Πλευρά</th><th>Έξοδος</th><th>Αποτέλεσμα</th><th>Λόγος</th></tr>'+closed.slice(0,8).map(t=>'<tr><td>'+t.symbol+'</td><td>'+t.side+'</td><td>'+t.exit.toFixed(t.digits)+'</td><td style="color:'+(t.pnl>=0?'var(--green)':'var(--red)')+'">'+(t.pnl>=0?"+":"")+peMoney(t.pnl)+'</td><td>'+t.reason+'</td></tr>').join("")+'</table>':"Δεν υπάρχουν ακόμη κλεισμένες θέσεις.";
+}
+function paperToggleAuto(){pe.auto=!pe.auto;peSave();peRender()}
+function paperReset(){
+ if(!confirm("Να μηδενιστεί ο εικονικός λογαριασμός και όλο το ιστορικό paper trading;"))return;
+ const cap=Math.max(100,Number($("peCapitalInput").value)||10000),risk=Math.min(2,Math.max(.1,Number($("peRiskInput").value)||1));
+ pe={initial:cap,riskPct:risk,auto:true,open:[],closed:[],lastSignal:{}};peSave();peRender();
+}
+function paperEngineTick(){
+ if(!Array.isArray(liveBars)||!liveBars.length||$("liveBadge").textContent!=="LIVE DATA")return;
+ const symbol=A[ix][0],idx=ix,bar=liveBars.at(-1),price=Number(bar.c),sig=$("signal").textContent.trim();
+ if(!(price>0))return;
+ // Update open trades and close at SL/TP. If both are touched in one candle, assume SL first (conservative).
+ for(let i=pe.open.length-1;i>=0;i--){
+  const t=pe.open[i];if(t.symbol!==symbol)continue;
+  const slHit=t.side==="BUY"?Number(bar.l)<=t.sl:Number(bar.h)>=t.sl;
+  const tpHit=t.side==="BUY"?Number(bar.h)>=t.tp:Number(bar.l)<=t.tp;
+  t.pnl=(t.side==="BUY"?price-t.entry:t.entry-price)*t.units;
+  if(slHit||tpHit){
+   const exit=slHit?t.sl:t.tp;
+   t.pnl=(t.side==="BUY"?exit-t.entry:t.entry-exit)*t.units;
+   pe.closed.unshift({...t,exit,pnl:t.pnl,closedAt:new Date().toISOString(),reason:slHit?"STOP LOSS":"TAKE PROFIT"});
+   pe.open.splice(i,1);
+  }
+ }
+ if(pe.auto&&["BUY","SELL"].includes(sig)&&pe.lastSignal[symbol]!==sig&&!pe.open.some(t=>t.symbol===symbol)&&pe.open.length<3){
+  const entry=price,sl=Number($("sl").textContent.replace(",", ".")),tp=Number($("tp").textContent.replace(",", "."));
+  const distance=Math.abs(entry-sl),riskCash=peBalance()*pe.riskPct/100;
+  if(Number.isFinite(sl)&&Number.isFinite(tp)&&sl>0&&tp>0&&distance>0&&riskCash>0){
+   const units=riskCash/distance;
+   pe.open.push({symbol,side:sig,entry,sl,tp,units,digits:A[idx][2],pnl:0,openedAt:new Date().toISOString(),riskCash});
+  }
+ }
+ pe.lastSignal[symbol]=sig;
+ peSave();peRender();
+}
+function paperInit(){
+ const cap=$("peCapitalInput"),risk=$("peRiskInput");
+ if(cap){cap.value=String(pe.initial);cap.addEventListener("change",()=>{if(pe.open.length){alert("Κλείσε πρώτα τις ανοιχτές θέσεις πριν αλλάξεις το αρχικό κεφάλαιο.");cap.value=String(pe.initial);return}pe.initial=Math.max(100,Number(cap.value)||10000);peSave();peRender()})}
+ if(risk){risk.value=String(pe.riskPct);risk.addEventListener("change",()=>{pe.riskPct=Math.min(2,Math.max(.1,Number(risk.value)||1));risk.value=String(pe.riskPct);peSave();peRender()})}
+ peRender();
+}
+paperInit();
 </script></body></html>
