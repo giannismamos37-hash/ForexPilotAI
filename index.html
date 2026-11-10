@@ -480,6 +480,51 @@ footer{display:none!important}
 .market-context{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;text-align:right!important}
 @media(max-width:420px){.trade-actions{gap:14px!important}.trade-actions button{font-size:12px!important;padding:0 5px!important}}
 
+
+/* Full-viewport TradingView canvas with floating controls v7 */
+html,body{width:100%!important;height:100%!important;height:100dvh!important;overflow:hidden!important;background:#fff!important}
+body{display:flex!important;flex-direction:column!important}
+.app-header{display:none!important}
+main{position:relative!important;display:flex!important;flex:1 1 auto!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;background:#fff!important}
+#scan{position:relative!important;display:block!important;flex:1 1 auto!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important}
+#scan>.terminal-card{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;border:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important}
+.chart-module{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;background:#fff!important}
+#chart{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#fff!important;z-index:1!important}
+#assets{position:absolute!important;z-index:5!important;top:0!important;left:0!important;right:0!important;height:31px!important;min-height:31px!important;padding:0 4px!important;display:flex!important;gap:0!important;background:rgba(255,255,255,.93)!important;border:0!important;border-bottom:1px solid #e8eaed!important;backdrop-filter:blur(5px)!important}
+#assets .tab{height:30px!important;min-width:70px!important;padding:0 8px!important;background:transparent!important;border:0!important;border-bottom:2px solid transparent!important;border-radius:0!important;color:#777!important;font-size:11px!important}
+#assets .tab.active{background:transparent!important;border:0!important;border-bottom:2px solid #2962ff!important;color:#202124!important;box-shadow:none!important}
+.quote-panel{position:absolute!important;z-index:5!important;top:31px!important;left:0!important;right:0!important;height:54px!important;min-height:54px!important;padding:3px 10px!important;background:rgba(255,255,255,.92)!important;border:0!important;pointer-events:none!important;backdrop-filter:blur(4px)!important}
+.quote-main{height:100%!important;align-items:center!important}
+.market-symbol{font-size:11px!important;color:#202124!important}
+.quote-panel .price{font-size:23px!important;line-height:24px!important;color:#202124!important}
+.feed-line{font-size:8px!important;color:#6f7780!important}
+.quote-side{gap:4px!important}
+.quote-side .pill{font-size:8px!important;padding:3px 6px!important}
+.quote-mini{padding:2px 5px!important;background:transparent!important;border:0!important}
+.quote-mini span{font-size:7px!important;color:#777!important}.quote-mini b{font-size:13px!important;color:#202124!important}
+.timeframe-strip{position:absolute!important;z-index:6!important;top:86px!important;left:6px!important;right:6px!important;height:29px!important;min-height:29px!important;display:flex!important;justify-content:flex-start!important;padding:1px 3px!important;gap:6px!important;background:transparent!important;border:0!important;pointer-events:none!important}
+.timeframe-strip select,.timeframe-strip .pill{pointer-events:auto!important}
+.timeframe-strip select{width:58px!important;height:25px!important;min-height:25px!important;padding:0 5px!important;background:rgba(255,255,255,.92)!important;border:0!important;border-radius:3px!important;color:#202124!important;font-size:11px!important}
+.timeframe-strip .pill{margin-left:auto!important;background:rgba(255,255,255,.88)!important;border:0!important;color:#089981!important;font-size:8px!important;padding:4px 6px!important}
+.indicator-toolbar{position:absolute!important;z-index:6!important;top:116px!important;left:0!important;right:0!important;height:29px!important;min-height:29px!important;display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;padding:1px 4px!important;gap:3px!important;background:rgba(255,255,255,.9)!important;border:0!important;pointer-events:none!important}
+.indicator-toolbar button{pointer-events:auto!important;flex:0 0 auto!important;height:25px!important;min-height:25px!important;padding:0 6px!important;background:rgba(255,255,255,.9)!important;border:0!important;border-radius:3px!important;color:#59616a!important;font-size:8px!important}
+.chart-topline,.chart-subpanel,.chart-readout{display:none!important}
+#opportunityBanner{position:absolute!important;z-index:7!important;top:148px!important;left:8px!important;right:8px!important;margin:0!important;padding:4px 8px!important;background:rgba(255,255,255,.9)!important;border:0!important;box-shadow:none!important}
+.signal-panel{position:absolute!important;z-index:7!important;left:0!important;right:0!important;bottom:45px!important;height:31px!important;min-height:31px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;padding:1px 8px!important;background:rgba(255,255,255,.9)!important;border:0!important;pointer-events:none!important}
+.signal-copy{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important}
+.signal-panel .eyebrow{font-size:7px!important;color:#777!important}
+.signal-panel .signal{font-size:14px!important;line-height:16px!important}
+.signal-panel p{display:none!important}
+.signal-state{font-size:8px!important;background:transparent!important;border:0!important;color:#777!important;margin-left:auto!important}
+.execution-panel{position:absolute!important;z-index:8!important;left:0!important;right:0!important;bottom:0!important;height:44px!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;padding:0 6px!important;background:rgba(255,255,255,.94)!important;border:0!important;border-top:1px solid #eceff1!important;backdrop-filter:blur(5px)!important}
+.trade-actions{display:flex!important;flex:1 1 auto!important;align-items:center!important;justify-content:space-evenly!important;gap:12px!important;margin:0!important}
+.trade-actions button{height:36px!important;min-height:36px!important;padding:0 12px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:12px!important;font-weight:900!important}
+.trade-actions .buy-action{color:#089981!important}.trade-actions .sell-action{color:#f23645!important}
+.market-context{font-size:8px!important;color:#6f7780!important;text-align:right!important}
+#scan>.card:not(.terminal-card){display:none!important}
+#riskTab,#paperTab,#settingsTab,footer{display:none!important}
+@media(max-width:420px){.quote-panel .price{font-size:22px!important}.indicator-toolbar button{font-size:8px!important;padding:0 5px!important}.execution-panel{height:42px!important;min-height:42px!important}.signal-panel{bottom:42px!important}}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
