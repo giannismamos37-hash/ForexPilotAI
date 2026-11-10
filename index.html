@@ -1,49 +1,172 @@
-<!doctype html><html lang="el"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#0b1420"><link rel="manifest" href="manifest.json"><title>ForexPilot AI Live</title>
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0b1420">
+<title>ForexPilot AI</title>
 <style>
-:root{--bg:#09131f;--panel:#142235;--line:#2b4055;--txt:#eff6fc;--muted:#9db0c2;--green:#4cdbad;--red:#ff727e;--gold:#f4cb68}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,Arial,sans-serif}header{padding:16px;background:#101d2c;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}.row{display:flex;align-items:center;justify-content:space-between;gap:9px}.brand{font-size:20px;font-weight:900}.brand span{color:var(--green)}.muted{color:var(--muted)}.tiny{font-size:11px}.tag{font-size:10px;background:#254036;color:var(--green);padding:6px 9px;border-radius:20px;font-weight:800}
-main{max-width:720px;margin:auto;padding:13px 13px 95px}.tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}.tab{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 12px;border-radius:20px;font-weight:750}.tab.active{background:var(--green);color:#08251d}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}h2{font-size:16px;margin:0 0 12px}.price{font-size:28px;font-weight:900}.signal{font-size:26px;font-weight:950}.buy{color:var(--green)}.sell{color:var(--red)}.wait{color:var(--gold)}.pill{font-size:10px;border-radius:20px;padding:5px 8px;background:#253a50;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metric{background:#0d1926;border-radius:11px;padding:10px}.metric b{display:block;margin-top:4px;font-size:16px}canvas{width:100%;height:145px;background:#0d1926;border-radius:10px;margin-top:10px}
-label{display:block;font-size:11px;color:var(--muted);margin:9px 0 5px}input,select{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0d1926;color:var(--txt);font-size:14px}button{border:0;border-radius:10px;padding:11px 13px;background:var(--green);color:#09251d;font-weight:850}button.alt{background:#253a50;color:var(--txt);border:1px solid var(--line)}button.full{width:100%;margin-top:11px}.hidden{display:none!important}.notice{font-size:10px;line-height:1.5;color:var(--muted)}hr{border:0;border-top:1px solid var(--line);margin:12px 0}table{width:100%;border-collapse:collapse;font-size:11px}td,th{text-align:left;padding:8px 4px;border-bottom:1px solid var(--line)}th{color:var(--muted)}footer{position:fixed;bottom:0;left:0;right:0;background:#101d2c;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 4px calc(7px + env(safe-area-inset-bottom));z-index:5}footer button{background:none;color:var(--muted);font-size:10px;padding:7px 9px}footer button.active{color:var(--green)}.status{font-size:10px;color:var(--gold)}
-</style></head><body>
-<header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="tiny muted">LIVE DATA CONNECTOR · PAPER MODE</div></div><span class="tag">NO LIVE ORDERS</span></div></header>
+:root{--bg:#09131f;--panel:#142235;--line:#2b4055;--txt:#eff6fc;--muted:#9db0c2;--green:#4cdbad;--red:#ff727e;--gold:#f4cb68;--input:#0d1926}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,Arial,sans-serif}body.light{--bg:#eef3f8;--panel:#fff;--line:#cbd6e2;--txt:#142235;--muted:#607286;--input:#f2f6fa}
+header{padding:15px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}.row{display:flex;align-items:center;justify-content:space-between;gap:9px}.brand{font-size:21px;font-weight:900}.brand span{color:var(--green)}.muted{color:var(--muted)}.tiny{font-size:11px}.tag,.pill{font-size:10px;border-radius:20px;padding:6px 9px;font-weight:800;background:#254036;color:var(--green)}
+main{max-width:760px;margin:auto;padding:13px 13px 100px}.tabs{display:flex;gap:7px;overflow-x:auto;padding:3px 0 12px;scrollbar-width:thin}.tab{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:10px 14px;border-radius:20px;font-weight:750}.tab.active{background:var(--green);color:#08251d}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:12px}h2{font-size:17px;margin:0 0 13px}.price{font-size:31px;font-weight:900}.signal{font-size:29px;font-weight:950}.buy,.positive{color:var(--green)}.sell,.negative{color:var(--red)}.wait{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metric{background:var(--input);border-radius:12px;padding:12px;min-width:0}.metric b{display:block;margin-top:5px;font-size:17px;overflow-wrap:anywhere}
+canvas{display:block;width:100%;height:175px;background:var(--input);border-radius:11px;margin:12px 0}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,select{width:100%;min-width:0;padding:12px;border-radius:11px;border:1px solid var(--line);background:var(--input);color:var(--txt);font-size:15px}button{border:0;border-radius:11px;padding:12px 14px;background:var(--green);color:#09251d;font-weight:850;font-size:14px}button.alt{background:#253a50;color:#eff6fc;border:1px solid var(--line)}body.light button.alt{background:#e3ebf3;color:#142235}.full{width:100%;margin-top:12px}.hidden{display:none!important}.notice{font-size:11px;line-height:1.55;color:var(--muted)}hr{border:0;border-top:1px solid var(--line);margin:13px 0}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:390px}td,th{text-align:left;padding:9px 5px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted)}
+footer{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 4px calc(7px + env(safe-area-inset-bottom));z-index:5}footer button{background:none;color:var(--muted);font-size:11px;padding:7px 8px;line-height:1.35}footer button.active{color:var(--green)}.status{font-size:11px;color:var(--gold)}.smallbtn{padding:8px 11px}.fieldhint{font-size:10px;color:var(--muted);margin-top:4px}
+@media(min-width:600px){main{padding:18px 18px 100px}.card{padding:18px}.price{font-size:36px}}
+</style>
+
+<style id="forexpilot-visual-redesign">
+:root{
+ --bg:#07111d;--panel:#101f31;--line:#29445c;--txt:#f4f8fc;--muted:#9eb2c7;
+ --green:#35e0b0;--red:#ff647c;--gold:#ffd166;--input:#0a1726;
+}
+body{background:radial-gradient(ellipse at 50% -15%,#183b50 0%,#091725 43%,#050d17 100%);background-attachment:fixed}
+header{
+ background:linear-gradient(115deg,#102a3d 0%,#102437 48%,#0d1b2b 100%);
+ border-bottom:1px solid #35627a;box-shadow:0 8px 28px #0005;padding:19px 17px
+}
+.brand{font-size:24px;letter-spacing:.5px}
+.brand span{color:#35e0b0;text-shadow:0 0 18px #35e0b055}
+header .tag{background:#123d3a;border:1px solid #2d8b76;color:#55efc2;padding:8px 12px;letter-spacing:.4px}
+main{max-width:790px;padding:16px 14px 112px}
+.tabs{padding:7px 0 16px;gap:9px}
+.tab{background:linear-gradient(145deg,#14283b,#0e1c2c);border:1px solid #2d465e;color:#afc2d5;padding:12px 17px;border-radius:14px;box-shadow:inset 0 1px #ffffff08;transition:.2s}
+.tab.active{background:linear-gradient(135deg,#48edbd,#21b994);border-color:#70f5d0;color:#05251e;box-shadow:0 5px 18px #35e0b044,inset 0 1px #ffffff80}
+.card{
+ background:linear-gradient(145deg,rgba(22,43,63,.98),rgba(12,27,43,.99));
+ border:1px solid #34516b;border-radius:22px;padding:18px;margin-bottom:15px;
+ box-shadow:0 12px 30px #0003,inset 0 1px #ffffff0c;position:relative;overflow:hidden
+}
+.card:before{content:"";position:absolute;left:18px;right:18px;top:0;height:2px;background:linear-gradient(90deg,transparent,#39dcb0aa,transparent)}
+h2{font-size:19px;letter-spacing:.1px;margin-bottom:16px}
+.price{font-size:36px;letter-spacing:-1px}
+.signal{font-size:34px;letter-spacing:1px}
+.metric{
+ background:linear-gradient(145deg,#0b1b2b,#102237);border:1px solid #263f56;
+ border-radius:16px;padding:14px;box-shadow:inset 0 1px #ffffff08
+}
+.metric span{letter-spacing:.2px}
+.metric b{font-size:19px}
+canvas{height:190px;border:1px solid #263f56;background:linear-gradient(180deg,#0b1b2b,#0a1725);border-radius:15px;box-shadow:inset 0 1px #ffffff08}
+input,select{
+ background:linear-gradient(145deg,#0a1928,#0d2032);border:1px solid #304a62;border-radius:13px;
+ color:#f4f8fc;padding:14px;box-shadow:inset 0 2px 7px #0003
+}
+input:focus,select:focus{outline:2px solid #35e0b077;border-color:#35e0b0}
+button{border-radius:13px;background:linear-gradient(135deg,#4aefc1,#20bd98);box-shadow:0 5px 16px #20bd9830,inset 0 1px #ffffff80}
+button:active{transform:translateY(1px)}
+button.alt{background:linear-gradient(135deg,#29445e,#1b3045);border:1px solid #3b5a75;color:#e8f1fa;box-shadow:none}
+footer{
+ background:linear-gradient(180deg,#112438,#0b1928);border-top:1px solid #34516b;
+ box-shadow:0 -8px 25px #0004;padding-top:10px
+}
+footer button{background:transparent;box-shadow:none;color:#9db2c7;border-radius:10px}
+footer button.active{color:#4ce8bb;background:#163a3a}
+.pill{border:1px solid #39536d;background:#20384f;color:#b6cbe0;padding:8px 11px}
+.status{font-weight:700}
+hr{border-color:#29445c}
+body.light{
+ --bg:#eaf1f7;--panel:#fff;--line:#cad8e5;--txt:#14283b;--muted:#63798d;--input:#f3f7fb;
+ background:linear-gradient(145deg,#e6eef6,#f7f9fc 60%,#e8f1f7)
+}
+body.light header{background:linear-gradient(115deg,#e2f4f1,#f5f9fc);border-color:#c3d9df}
+body.light .card{background:linear-gradient(145deg,#fff,#f7fbff);border-color:#c8d8e5;box-shadow:0 10px 24px #25445a12}
+body.light .card:before{background:linear-gradient(90deg,transparent,#1bb98f99,transparent)}
+body.light .metric{background:linear-gradient(145deg,#f1f6fa,#eaf1f7);border-color:#d3e0ea}
+body.light canvas{background:#f5f9fc;border-color:#d4e0e9}
+body.light input,body.light select{background:#f7fafd;color:#14283b;border-color:#cbd9e5}
+body.light footer{background:linear-gradient(180deg,#fff,#edf3f8);border-color:#cbd9e5}
+body.light footer button{color:#62788c}
+body.light footer button.active{color:#087e65;background:#e0f6ef}
+@media(min-width:600px){.card{padding:21px}.metric{padding:16px}}
+</style>
+
+</head>
+<body>
+<header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="tiny muted">LIVE MARKET DATA · PAPER TRADING</div></div><span class="tag">NO LIVE ORDERS</span></div></header>
 <main>
 <div class="tabs" id="symbols"></div>
 <section id="scanner">
-<div class="card"><div class="row"><div><div class="tiny muted" id="sym">EUR/USD</div><div class="price" id="price">—</div><div class="tiny muted" id="feed">Waiting for live provider…</div></div><span class="pill" id="connection">CONNECTING</span></div><hr>
-<div class="row"><div><div class="tiny muted">SIGNAL</div><div class="signal wait" id="signal">WAIT</div></div><div style="text-align:right"><div class="tiny muted">RSI 14</div><div class="price" id="rsi">—</div></div></div><p class="tiny muted" id="reason">Loading market data…</p><canvas id="chart" width="680" height="250"></canvas><div class="row tiny muted"><span id="trend">Trend —</span><span id="emas">EMA —</span><span id="stamp">—</span></div></div>
-<div class="card"><h2>Signal plan / Πλάνο σήματος</h2><div class="grid"><div class="metric"><span class="tiny muted">Entry</span><b id="entry">—</b></div><div class="metric"><span class="tiny muted">Stop Loss</span><b id="sl">—</b></div><div class="metric"><span class="tiny muted">Take Profit</span><b id="tp">—</b></div><div class="metric"><span class="tiny muted">Risk / Reward</span><b id="rr">—</b></div></div><p class="notice">ATR-based indicative levels. Signals are rule-based educational alerts, not investment advice.</p></div>
-<div class="card"><h2>Market analysis</h2><div class="grid"><div class="metric"><span class="tiny muted">Trend</span><b id="trend2">—</b></div><div class="metric"><span class="tiny muted">RSI condition</span><b id="rsiState">—</b></div><div class="metric"><span class="tiny muted">Last candle</span><b id="candle">—</b></div><div class="metric"><span class="tiny muted">ATR</span><b id="atr">—</b></div></div></div>
+ <div class="card">
+  <div class="row"><div><div class="tiny muted" id="sym">EUR/USD</div><div class="price" id="price">—</div><div class="tiny muted" id="feed">Connecting to market data…</div></div><span class="pill" id="connection">CONNECTING</span></div>
+  <hr><div class="row"><div><div class="tiny muted">FOREXPILOT SIGNAL</div><div class="signal wait" id="signal">WAIT</div></div><div style="text-align:right"><div class="tiny muted">RSI 14</div><div class="price" id="rsi">—</div></div></div>
+  <p class="tiny muted" id="reason">Loading completed candles…</p><canvas id="chart" width="720" height="260"></canvas>
+  <div class="row tiny muted"><span id="trend">Trend —</span><span id="emas">EMA —</span><span id="stamp">—</span></div>
+ </div>
+ <div class="card"><h2>Signal plan / Πλάνο σήματος</h2><div class="grid">
+  <div class="metric"><span class="tiny muted">Entry</span><b id="entry">—</b></div><div class="metric"><span class="tiny muted">Stop Loss</span><b id="sl">—</b></div>
+  <div class="metric"><span class="tiny muted">Take Profit</span><b id="tp">—</b></div><div class="metric"><span class="tiny muted">Risk / Reward</span><b id="rr">—</b></div>
+ </div><p class="notice">Τα επίπεδα είναι ενδεικτικά, βασισμένα στο ATR. Το σήμα είναι εκπαιδευτικό και δεν αποτελεί επενδυτική συμβουλή.</p></div>
+ <div class="card"><h2>Market analysis</h2><div class="grid">
+  <div class="metric"><span class="tiny muted">Trend</span><b id="trend2">—</b></div><div class="metric"><span class="tiny muted">RSI condition</span><b id="rsiState">—</b></div>
+  <div class="metric"><span class="tiny muted">Last candle</span><b id="candle">—</b></div><div class="metric"><span class="tiny muted">ATR</span><b id="atr">—</b></div>
+ </div></div>
 </section>
-<section id="riskTab" class="hidden"><div class="card"><h2>Risk Manager</h2><div class="grid"><div><label>Balance (€)</label><input id="balance" type="number" value="100" min="1"></div><div><label>Risk (%)</label><input id="riskPct" type="number" value="1" min=".1" max="5" step=".1"></div><div><label>Entry</label><input id="rEntry" type="number" step="any"></div><div><label>Stop</label><input id="rStop" type="number" step="any"></div><div><label>Target</label><input id="rTarget" type="number" step="any"></div><div><label>R:R</label><input id="rRatio" readonly></div></div><button class="full" onclick="calcRisk()">Calculate</button><div class="grid" style="margin-top:10px"><div class="metric"><span class="tiny muted">Planned risk budget</span><b id="riskCash">—</b></div><div class="metric"><span class="tiny muted">Potential reward</span><b id="rewardCash">—</b></div></div><p class="notice">Does not calculate lot size/pip value or guarantee maximum loss. Costs, spread, slippage, contract size and account currency matter.</p></div></section>
-<section id="paperTab" class="hidden"><div class="card"><h2>Paper Trading</h2><div class="grid"><div><label>Symbol</label><input id="pSymbol" readonly></div><div><label>Side</label><select id="side"><option>BUY</option><option>SELL</option></select></div><div><label>Entry</label><input id="pEntry" type="number" step="any"></div><div><label>Exit</label><input id="pExit" type="number" step="any"></div><div><label>Units (illustrative)</label><input id="units" type="number" value="1000"></div><div><label>Note</label><input id="note"></div></div><button class="full" onclick="saveTrade()">Save demo trade</button></div><div class="card"><div class="row"><h2>History</h2><button class="alt" onclick="clearTrades()">Clear</button></div><div id="history"></div></div></section>
-<section id="settingsTab" class="hidden"><div class="card"><h2>Connection status</h2><p id="health" class="notice">Checking backend…</p><button class="full" onclick="loadHealth()">Check connection</button><button class="full alt" onclick="refresh()">Refresh market data</button><hr><h2>Enabled instruments</h2><p class="notice">EUR/USD, GBP/USD, USD/JPY and XAU/USD use Twelve Data FX/metal coverage. QQQ and SPY are US ETF proxies for Nasdaq-100 and S&P 500, not the index values themselves. DAX is not enabled in this zero-cost starter setup. Exact index coverage requires an eligible data plan/license.</p><p class="notice">The API key stays on the server in .env; never put it in the app/browser code. Backend must be hosted over HTTPS before Android installation.</p></div><div class="card"><h2>Safety</h2><p class="notice">Paper mode only. No broker execution. Never share broker passwords or API secrets in chat. Backtest and forward-test before considering any live use.</p></div></section>
+<section id="riskTab" class="hidden">
+ <div class="card"><h2>Risk Manager</h2><div class="grid">
+  <div><label>Balance (€)</label><input id="balance" type="number" value="100" min="1" step="any"></div><div><label>Risk (%)</label><input id="riskPct" type="number" value="1" min=".1" max="5" step=".1"></div>
+  <div><label>Entry</label><input id="rEntry" type="number" step="any"></div><div><label>Stop Loss</label><input id="rStop" type="number" step="any"></div>
+  <div><label>Take Profit</label><input id="rTarget" type="number" step="any"></div><div><label>Risk : Reward</label><input id="rRatio" readonly></div>
+ </div><button class="full" onclick="calcRisk()">Calculate position size</button>
+ <div class="grid" style="margin-top:10px"><div class="metric"><span class="tiny muted">Planned risk</span><b id="riskCash">—</b></div><div class="metric"><span class="tiny muted">Potential reward</span><b id="rewardCash">—</b></div><div class="metric"><span class="tiny muted">Position units</span><b id="positionSize">—</b></div><div class="metric"><span class="tiny muted">Standard lots / shares</span><b id="lotSize">—</b></div></div>
+ <p class="notice" id="riskNote">Ο υπολογισμός είναι εκτίμηση. Για Forex θεωρεί standard lot 100.000 μονάδων. Για XAU/USD το αποτέλεσμα είναι ουγγιές, όχι lots. Έλεγξε πάντα τις προδιαγραφές του broker.</p>
+ </div>
+</section>
+<section id="paperTab">
+ <div class="card"><h2>Paper Trading</h2><div class="grid">
+  <div><label>Symbol</label><input id="pSymbol" readonly></div><div><label>Side</label><select id="side"><option>BUY</option><option>SELL</option></select></div>
+  <div><label>Entry price</label><input id="pEntry" type="number" step="any"></div><div><label>Exit price</label><input id="pExit" type="number" step="any"></div>
+  <div><label>Units / oz / shares</label><input id="units" type="number" value="1000" min=".01" step="any"></div><div><label>Note</label><input id="note" maxlength="100"></div>
+ </div><button class="full" onclick="saveTrade()">Save demo trade</button><p class="notice">Καταχωρείς εικονική συναλλαγή με τιμές εισόδου και εξόδου. Δεν στέλνεται εντολή σε broker.</p></div>
+ <div class="card"><h2>Paper account · EUR</h2><div class="grid">
+  <div class="metric"><span class="tiny muted">Closed trades</span><b id="paperCount">0</b></div><div class="metric"><span class="tiny muted">Win rate</span><b id="paperWinRate">—</b></div>
+  <div class="metric"><span class="tiny muted">Net P/L</span><b id="paperNet">0.00 €</b></div><div class="metric"><span class="tiny muted">Wins / losses</span><b id="paperWins">0 / 0</b></div>
+ </div><p class="notice" id="paperConversionNote">Estimated P/L in EUR. No real orders are sent.</p></div>
+ <div class="card"><div class="row"><h2>History</h2><button class="alt smallbtn" onclick="clearTrades()">Clear</button></div><div id="history"></div></div>
+</section>
+<section id="settingsTab" class="hidden">
+ <div class="card"><h2>Connection status</h2><p id="health" class="notice">Checking backend…</p><button class="full" onclick="loadHealth()">Check connection</button><button class="full alt" onclick="refresh()">Refresh market data</button><hr>
+ <h2>Enabled instruments</h2><p class="notice">EUR/USD · GBP/USD · USD/JPY · XAU/USD · QQQ · SPY. QQQ και SPY είναι ETF proxies, όχι οι ίδιες οι τιμές των δεικτών Nasdaq-100 και S&P 500.</p>
+ </div>
+ <div class="card"><h2>Appearance</h2><p class="notice">Επίλεξε φωτεινή ή σκοτεινή εμφάνιση.</p><button class="full alt" onclick="toggleAppearance()">Switch light / dark appearance</button></div>
+ <div class="card"><h2>Safety</h2><p class="notice">Paper mode only. Δεν υπάρχει εκτέλεση εντολών σε broker. Τα σήματα είναι κανόνες EMA/RSI και δεν εγγυώνται κέρδος. Κάνε δοκιμές πριν από οποιαδήποτε πραγματική χρήση.</p></div>
+</section>
 </main>
-<footer><button class="active" onclick="showTab('scanner',this)">⌂<br>Scanner</button><button onclick="showTab('riskTab',this)">◈<br>Risk</button><button onclick="showTab('paperTab',this)">▤<br>Paper</button><button onclick="showTab('settingsTab',this)">⚙<br>Settings</button></footer>
+<footer>
+ <button class="active" onclick="showTab('scanner',this)">⌂<br>Scanner</button><button onclick="showTab('riskTab',this)">◈<br>Risk</button><button onclick="showTab('paperTab',this)">▤<br>Paper</button><button onclick="showTab('settingsTab',this)">⚙<br>Settings</button>
+</footer>
 <script>
+"use strict";
 const assets=[["EUR/USD",5],["GBP/USD",5],["USD/JPY",3],["XAU/USD",2],["QQQ",2],["SPY",2]];
-let ix=0,bars=[],trades=JSON.parse(localStorage.getItem("fp_live_paper")||"[]"),latest=null;
+let ix=0,bars=[],latestPrices=JSON.parse(localStorage.getItem("fp_prices")||"{}"),trades=[];
+try{trades=JSON.parse(localStorage.getItem("fp_live_paper")||"[]");if(!Array.isArray(trades))trades=[]}catch{trades=[]}
 const $=id=>document.getElementById(id);
-function showTab(id,b){["scanner","riskTab","paperTab","settingsTab"].forEach(x=>$(x).classList.toggle("hidden",x!==id));document.querySelectorAll("footer button").forEach(x=>x.classList.remove("active"));b.classList.add("active")}
-function renderSymbols(){$("symbols").innerHTML=assets.map((a,i)=>`<button class="tab ${i===ix?'active':''}" onclick="selectAsset(${i})">${a[0]}</button>`).join("")}
+function showTab(id,btn){["scanner","riskTab","paperTab","settingsTab"].forEach(k=>$(k).classList.toggle("hidden",k!==id));document.querySelectorAll("footer button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");if(id==="riskTab")calcRisk();if(id==="paperTab")renderTrades()}
+function renderSymbols(){$("symbols").innerHTML=assets.map((a,i)=>`<button class="tab ${i===ix?"active":""}" onclick="selectAsset(${i})">${a[0]}</button>`).join("")}
 function fmt(n){return Number(n).toFixed(assets[ix][1])}
 function ema(a,n){let k=2/(n+1),v=a[0];for(let i=1;i<a.length;i++)v=a[i]*k+v*(1-k);return v}
-function rsi(a,n=14){let g=0,l=0;for(let i=a.length-n;i<a.length;i++){let d=a[i]-a[i-1];if(d>0)g+=d;else l-=d}if(l===0)return 100;return 100-100/(1+(g/n)/(l/n))}
-function atr(a,n=14){let s=0;for(let i=a.length-n;i<a.length;i++){let p=a[i-1].close;s+=Math.max(a[i].high-a[i].low,Math.abs(a[i].high-p),Math.abs(a[i].low-p))}return s/n}
-function chart(a){let c=$("chart"),ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle="#263b50";for(let y=35;y<h;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}let hi=Math.max(...a.map(x=>x.high)),lo=Math.min(...a.map(x=>x.low)),step=w/a.length,scale=(h-30)/(hi-lo||1);a.forEach((z,i)=>{let x=i*step+step/2,yo=h-12-(z.open-lo)*scale,yc=h-12-(z.close-lo)*scale;ctx.strokeStyle=ctx.fillStyle=z.close>=z.open?"#4cdbad":"#ff727e";ctx.beginPath();ctx.moveTo(x,h-12-(z.high-lo)*scale);ctx.lineTo(x,h-12-(z.low-lo)*scale);ctx.stroke();ctx.fillRect(x-3,Math.min(yo,yc),6,Math.max(2,Math.abs(yc-yo)))})}
-function setUnavailable(msg){$("connection").textContent="OFFLINE";$("feed").textContent="Live data unavailable";$("signal").textContent="WAIT";$("signal").className="signal wait";$("reason").textContent=msg;$("price").textContent="—"}
-async function refresh(){let symbol=assets[ix][0];$("connection").textContent="LOADING";$("feed").textContent="Requesting Twelve Data…";try{let res=await fetch("/api/series?symbol="+encodeURIComponent(symbol)+"&interval=15min");let data=await res.json();if(!res.ok)throw new Error(data.details||data.error||"API error");if(!data.values||data.values.length<30)throw new Error("Not enough candles returned");bars=data.values;latest=data;analyze();$("connection").textContent="LIVE API";$("feed").textContent="Twelve Data · 15m · "+(data.cached?"cached":"provider response");$("stamp").textContent=new Date(data.fetchedAt).toLocaleTimeString("el-GR");}catch(e){setUnavailable(e.message);}}
-function analyze(){let a=bars;if(a.length<30)return; // Exclude the newest potentially unfinished candle.
-let closed=a.slice(0,-1),cl=closed.map(x=>x.close),last=closed.at(-1),f=ema(cl.slice(-30),9),s=ema(cl.slice(-50),21),rv=rsi(cl),av=atr(closed),up=f>s;let signal="WAIT",why="No clear EMA/RSI alignment on the last completed candle.";if(up&&rv>=50&&rv<70){signal="BUY";why="EMA 9 above EMA 21; RSI confirms positive momentum."}else if(!up&&rv>30&&rv<=50){signal="SELL";why="EMA 9 below EMA 21; RSI confirms negative momentum."}
-let entry=last.close,stop=signal==="BUY"?entry-1.5*av:signal==="SELL"?entry+1.5*av:null,target=stop===null?null:(signal==="BUY"?entry+2*(entry-stop):entry-2*(stop-entry));
-$("sym").textContent=assets[ix][0];$("price").textContent=fmt(entry);$("signal").textContent=signal;$("signal").className="signal "+(signal==="BUY"?"buy":signal==="SELL"?"sell":"wait");$("reason").textContent=why;$("trend").textContent="Trend: "+(up?"Bullish":"Bearish");$("emas").textContent="EMA 9/21: "+(up?"Bullish":"Bearish");$("rsi").textContent=rv.toFixed(1);$("entry").textContent=fmt(entry);$("sl").textContent=stop===null?"—":fmt(stop);$("tp").textContent=target===null?"—":fmt(target);$("rr").textContent=stop===null?"—":"1 : 2";$("trend2").textContent=up?"Bullish":"Bearish";$("rsiState").textContent=rv.toFixed(1);$("candle").textContent=last.close>=last.open?"Bullish":"Bearish";$("atr").textContent=fmt(av);chart(closed.slice(-55));$("pSymbol").value=assets[ix][0];$("pEntry").value=entry;$("pExit").value=entry;$("rEntry").value=entry;$("rStop").value=stop??entry-1.5*av;$("rTarget").value=target??entry+3*av;calcRisk()}
+function rsi(a,n=14){let g=0,l=0;for(let i=a.length-n;i<a.length;i++){let d=a[i]-a[i-1];if(d>0)g+=d;else l-=d}if(l===0)return 100;return 100-100/(1+g/l)}
+function atr(a,n=14){let sum=0;for(let i=a.length-n;i<a.length;i++){let p=a[i-1].close;sum+=Math.max(a[i].high-a[i].low,Math.abs(a[i].high-p),Math.abs(a[i].low-p))}return sum/n}
+function chart(a){let c=$("chart"),ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue("--line");for(let y=35;y<h;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}if(!a.length)return;let hi=Math.max(...a.map(x=>x.high)),lo=Math.min(...a.map(x=>x.low)),step=w/a.length,scale=(h-30)/(hi-lo||1);a.forEach((z,i)=>{let x=i*step+step/2,yo=h-12-(z.open-lo)*scale,yc=h-12-(z.close-lo)*scale;ctx.strokeStyle=ctx.fillStyle=z.close>=z.open?"#4cdbad":"#ff727e";ctx.beginPath();ctx.moveTo(x,h-12-(z.high-lo)*scale);ctx.lineTo(x,h-12-(z.low-lo)*scale);ctx.stroke();ctx.fillRect(x-3,Math.min(yo,yc),6,Math.max(2,Math.abs(yc-yo)))})}
+function setUnavailable(msg){$("connection").textContent="OFFLINE";$("feed").textContent="Live data unavailable";$("signal").textContent="WAIT";$("signal").className="signal wait";$("reason").textContent=msg;$("price").textContent="—";$("stamp").textContent="—"}
+async function fetchSeries(symbol){let r=await fetch("/api/series?symbol="+encodeURIComponent(symbol)+"&interval=15min");let d=await r.json();if(!r.ok)throw new Error(d.details||d.error||"API error");if(!Array.isArray(d.values)||d.values.length<30)throw new Error("Not enough candles returned");return d}
+async function refresh(){let symbol=assets[ix][0];$("connection").textContent="LOADING";$("feed").textContent="Requesting Twelve Data…";try{let d=await fetchSeries(symbol);bars=d.values;let lastClosed=bars[bars.length-2]||bars[bars.length-1];latestPrices[symbol]={price:lastClosed.close,at:Date.now()};if(symbol!=="EUR/USD"&&(!latestPrices["EUR/USD"]||Date.now()-latestPrices["EUR/USD"].at>300000)){try{let fx=await fetchSeries("EUR/USD");latestPrices["EUR/USD"]={price:fx.values[fx.values.length-2].close,at:Date.now()}}catch{}}localStorage.setItem("fp_prices",JSON.stringify(latestPrices));analyze();$("connection").textContent="LIVE API";$("feed").textContent="Twelve Data · 15m · "+(d.cached?"cached":"provider response");$("stamp").textContent=new Date(d.fetchedAt||Date.now()).toLocaleTimeString("el-GR")}catch(e){setUnavailable(e.message)}}
+function analyze(){if(bars.length<30)return;let closed=bars.slice(0,-1),cl=closed.map(x=>x.close),last=closed.at(-1),fast=ema(cl.slice(-30),9),slow=ema(cl.slice(-50),21),rv=rsi(cl),av=atr(closed),up=fast>slow,signal="WAIT",why="No clear EMA/RSI alignment on the last completed candle.";if(up&&rv>=50&&rv<70){signal="BUY";why="EMA 9 above EMA 21; RSI confirms positive momentum."}else if(!up&&rv>30&&rv<=50){signal="SELL";why="EMA 9 below EMA 21; RSI confirms negative momentum."}let entry=last.close,stop=signal==="BUY"?entry-1.5*av:signal==="SELL"?entry+1.5*av:null,target=stop===null?null:(signal==="BUY"?entry+2*(entry-stop):entry-2*(stop-entry));$("sym").textContent=assets[ix][0];$("price").textContent=fmt(entry);$("signal").textContent=signal;$("signal").className="signal "+(signal==="BUY"?"buy":signal==="SELL"?"sell":"wait");$("reason").textContent=why;$("trend").textContent="Trend: "+(up?"Bullish":"Bearish");$("emas").textContent="EMA 9/21: "+(up?"Bullish":"Bearish");$("rsi").textContent=rv.toFixed(1);$("entry").textContent=fmt(entry);$("sl").textContent=stop===null?"—":fmt(stop);$("tp").textContent=target===null?"—":fmt(target);$("rr").textContent=stop===null?"—":"1 : 2";$("trend2").textContent=up?"Bullish":"Bearish";$("rsiState").textContent=rv.toFixed(1);$("candle").textContent=last.close>=last.open?"Bullish":"Bearish";$("atr").textContent=fmt(av);chart(closed.slice(-55));$("pSymbol").value=assets[ix][0];$("pEntry").value=entry;$("pExit").value=entry;$("rEntry").value=entry;$("rStop").value=stop===null?"":stop;$("rTarget").value=target===null?"":target;calcRisk()}
 function selectAsset(i){ix=i;renderSymbols();refresh()}
-async function loadHealth(){try{let r=await fetch("/api/health"),d=await r.json();$("health").textContent=d.ok?(d.apiKeyConfigured?"Backend online. Twelve Data API key configured.":"Backend online, but API key is missing on the server."):"Backend unavailable"}catch(e){$("health").textContent="Backend not reachable. Host the Node app and open it over HTTPS."}}
-function calcRisk(){let b=+$("balance").value,r=+$("riskPct").value/100,e=+$("rEntry").value,s=+$("rStop").value,t=+$("rTarget").value;if(!(b>0&&r>0&&e>0&&s>0&&t>0)||e===s)return;let budget=b*r,ratio=Math.abs(t-e)/Math.abs(e-s);$("riskCash").textContent=budget.toFixed(2)+" €";$("rewardCash").textContent=(budget*ratio).toFixed(2)+" €";$("rRatio").value="1 : "+ratio.toFixed(2)}
-function saveTrade(){let e=+$("pEntry").value,x=+$("pExit").value,u=+$("units").value;if(!(e>0&&x>0&&u>0))return alert("Check entry, exit and units");let side=$("side").value,points=(side==="BUY"?x-e:e-x);trades.unshift({date:new Date().toLocaleString("el-GR"),symbol:assets[ix][0],side,e,x,u,points,note:$("note").value});localStorage.setItem("fp_live_paper",JSON.stringify(trades));renderTrades()}
-function renderTrades(){if(!trades.length){$("history").innerHTML='<p class="notice">No demo trades saved yet.</p>';return}$("history").innerHTML='<table><tr><th>Symbol</th><th>Side</th><th>Price move</th><th>Date</th></tr>'+trades.map(t=>`<tr><td>${t.symbol}</td><td>${t.side}</td><td style="color:${t.points>=0?'#4cdbad':'#ff727e'}">${t.points.toFixed(assets.find(a=>a[0]===t.symbol)?.[1]||4)}</td><td>${t.date}</td></tr>`).join("")+'</table><p class="notice">Price movement only; not account-currency P/L. Contract size, pip value, spread and fees are excluded.</p>'}
-function clearTrades(){if(confirm("Delete paper trading history?")){trades=[];localStorage.setItem("fp_live_paper","[]");renderTrades()}}
-renderSymbols();renderTrades();loadHealth();refresh();if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
-</script></body></html>
+function quoteToEur(symbol,price){let eu=latestPrices["EUR/USD"]?.price,uj=latestPrices["USD/JPY"]?.price;if(symbol==="USD/JPY")return eu>0&&uj>0?1/(eu*uj):null;if(["EUR/USD","GBP/USD","XAU/USD","QQQ","SPY"].includes(symbol))return eu>0?1/eu:null;return null}
+function calcRisk(){let b=+$("balance").value,r=+$("riskPct").value/100,e=+$("rEntry").value,s=+$("rStop").value,t=+$("rTarget").value,symbol=$("pSymbol").value||assets[ix][0];if(!(b>0&&r>0&&e>0&&s>0&&t>0)||e===s){["riskCash","rewardCash","positionSize","lotSize"].forEach(id=>$(id).textContent="—");$("rRatio").value="";return}let budget=b*r,ratio=Math.abs(t-e)/Math.abs(e-s),conv=quoteToEur(symbol,e);$("riskCash").textContent=budget.toFixed(2)+" €";$("rewardCash").textContent=(budget*ratio).toFixed(2)+" €";$("rRatio").value="1 : "+ratio.toFixed(2);if(!conv){$("positionSize").textContent="Need FX quote";$("lotSize").textContent="—";return}let units=budget/(Math.abs(e-s)*conv);$("positionSize").textContent=units.toLocaleString("en-US",{maximumFractionDigits:2});$("lotSize").textContent=symbol==="QQQ"||symbol==="SPY"?"Shares":symbol==="XAU/USD"?"Ounces":(units/100000).toFixed(4)+" lots"}
+function saveTrade(){let e=+$("pEntry").value,x=+$("pExit").value,u=+$("units").value;if(!(e>0&&x>0&&u>0))return alert("Check entry, exit and units");let symbol=$("pSymbol").value,side=$("side").value,points=side==="BUY"?x-e:e-x,conv=quoteToEur(symbol,x),plEUR=conv===null?null:points*u*conv;trades.unshift({date:new Date().toLocaleString("el-GR"),symbol,side,e,x,u,points,plEUR,note:$("note").value});localStorage.setItem("fp_live_paper",JSON.stringify(trades));$("note").value="";renderTrades()}
+function renderTrades(){let closed=trades.filter(t=>Number.isFinite(t.plEUR)),wins=closed.filter(t=>t.plEUR>0).length,losses=closed.filter(t=>t.plEUR<0).length,net=closed.reduce((a,t)=>a+t.plEUR,0);$("paperCount").textContent=trades.length;$("paperWinRate").textContent=closed.length?(wins/closed.length*100).toFixed(1)+"%":"—";$("paperNet").textContent=net.toFixed(2)+" €";$("paperNet").className=net>=0?"positive":"negative";$("paperWins").textContent=wins+" / "+losses;$("paperConversionNote").textContent=closed.length===trades.length?"Estimated EUR P/L from saved prices and available FX conversion.":"Some old trades have no stored EUR conversion quote and are excluded from totals.";if(!trades.length){$("history").innerHTML='<p class="notice">No demo trades saved yet.</p>';return}let rows=trades.map(t=>'<tr><td>'+escapeHtml(t.symbol)+'</td><td>'+escapeHtml(t.side)+'</td><td class="'+(Number.isFinite(t.plEUR)?(t.plEUR>=0?"positive":"negative"):"")+'">'+(Number.isFinite(t.plEUR)?t.plEUR.toFixed(2)+" €":"—")+'</td><td>'+escapeHtml(t.date)+'</td></tr>').join("");$("history").innerHTML='<div class="table-wrap"><table><tr><th>Symbol</th><th>Side</th><th>P/L (€)</th><th>Date</th></tr>'+rows+'</table></div><p class="notice">Estimated P/L excludes spread, commission, swap, slippage and contract differences. Paper mode only.</p>'}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function clearTrades(){if(confirm("Delete all paper trading history?")){trades=[];localStorage.setItem("fp_live_paper","[]");renderTrades()}}
+async function loadHealth(){try{let r=await fetch("/api/health"),d=await r.json();$("health").textContent=d.ok?(d.apiKeyConfigured?"Backend online. Twelve Data API key configured.":"Backend online, but API key is missing on the server."):"Backend unavailable"}catch{$("health").textContent="Backend not reachable. Check that the Render service is running."}}
+function toggleAppearance(){document.body.classList.toggle("light");localStorage.setItem("fp_appearance",document.body.classList.contains("light")?"light":"dark");if(bars.length)chart(bars.slice(0,-1).slice(-55))}
+if(localStorage.getItem("fp_appearance")==="light")document.body.classList.add("light");
+renderSymbols();renderTrades();loadHealth();refresh();
+setInterval(()=>{if(!document.hidden)refresh()},60000);
+</script>
+</body>
+</html>
