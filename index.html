@@ -125,7 +125,13 @@ button:active{transform:scale(.97)}
 :root[data-theme="light"] .metric,:root[data-theme="light"] input,:root[data-theme="light"] select{background:#f7f9fc;color:#172638}
 :root[data-theme="light"] #chart,:root[data-theme="light"] #rsiChart,:root[data-theme="light"] #macdChart{background:#fff!important}
 @media(max-width:420px){#chart{height:330px!important}.card{padding:12px;margin:9px 10px}header{padding:14px 14px 12px}}
-</style></head><body>
+/* Compact signal banner + mobile chart-first layout */
+.opportunity-banner{display:flex;align-items:center;gap:10px;margin:8px 0 10px;padding:10px 12px;border:1px solid #238b72;border-radius:11px;background:linear-gradient(100deg,#10382f,#102638);cursor:pointer;box-shadow:0 5px 18px #0003}
+.opportunity-banner.hidden{display:none!important}.opp-dot{width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:#19d6a0;box-shadow:0 0 12px #19d6a0}
+.opp-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}.opp-copy b{font-size:11px;letter-spacing:.5px;color:#63efc4}
+.opp-copy span{font-size:10px;color:#d5e7f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opp-arrow{font-size:22px;color:#70d9bd}
+#chart{height:min(48vh,430px)!important;min-height:300px!important}
+@media(max-width:420px){#chart{height:min(46vh,390px)!important;min-height:290px!important}.opportunity-banner{margin-top:6px;padding:9px 10px}}</style></head><body>
 <header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
 <div class="tabs" id="assets"></div>
@@ -135,6 +141,7 @@ button:active{transform:scale(.97)}
   <hr><div class="row"><div><div class="tiny muted">FOREXPILOT SIGNAL</div><div id="signal" class="signal wait">WAIT</div></div><div style="text-align:right"><div class="tiny muted">RSI 14</div><div class="price" id="rsi">—</div></div></div>
   <p class="tiny muted" id="explain">Waiting for analysis…</p><div class="row" style="margin:12px 0 7px"><div class="chart-label">TRADINGVIEW-STYLE CHART</div><span class="pill">CROSSHAIR · ZOOM · PAN</span></div>
   <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">Bollinger Bands</button><button class="pill" id="drawHLine" onclick="setDrawingMode('hline',this)">＋ H-LINE</button><button class="pill" onclick="clearDrawings()">CLEAR</button></div>
+  <div id="opportunityBanner" class="opportunity-banner hidden" role="button" tabindex="0" onclick="showOpportunityDetails()"><div class="opp-dot"></div><div class="opp-copy"><b id="oppTitle">Νέα ευκαιρία</b><span id="oppSummary">Περιμένουμε επιβεβαιωμένο σήμα</span></div><span class="opp-arrow">›</span></div>
   <div id="chart" aria-label="Interactive candlestick chart"><div id="chartLoading">Loading interactive chart…</div></div>
   <div class="chart-label" style="margin-top:12px">RSI · 14</div><div id="rsiChart" style="height:105px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div>
   <div class="chart-label" style="margin-top:12px">MACD · 12 / 26 / 9</div><div id="macdChart" style="height:125px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div>
@@ -312,6 +319,9 @@ function paperReset(){
  const cap=Math.max(100,Number($("peCapitalInput").value)||10000),risk=Math.min(2,Math.max(.1,Number($("peRiskInput").value)||1));
  pe={initial:cap,riskPct:risk,auto:true,open:[],closed:[],lastSignal:{}};peSave();peRender();
 }
+let peLastBannerSignal="";
+function showOpportunityDetails(){const b=$("opportunityBanner");if(!b||b.classList.contains("hidden"))return;alert($("oppSummary").textContent+"\n\nΕίσοδος: "+$("entry").textContent+"\nStop Loss: "+$("sl").textContent+"\nTake Profit: "+$("tp").textContent+"\n\nΕκπαιδευτική ένδειξη — όχι επενδυτική σύσταση.");}
+function updateOpportunityBanner(){const sig=$("signal")?.textContent?.trim(),symbol=A[ix]?.[0],b=$("opportunityBanner");if(!b)return;if(!["BUY","SELL"].includes(sig)){b.classList.add("hidden");return;}const key=symbol+"|"+sig;$("oppTitle").textContent="ΝΕΑ ΕΥΚΑΙΡΙΑ · "+(sig==="BUY"?"ΑΓΟΡΑ":"ΠΩΛΗΣΗ")+" ("+sig+")";$("oppSummary").textContent=symbol+" · Είσοδος "+$("entry").textContent+" · TP "+$("tp").textContent+" · SL "+$("sl").textContent;b.classList.remove("hidden");if(key!==peLastBannerSignal){peLastBannerSignal=key;if(b.animate)b.animate([{transform:"translateY(-5px)",opacity:.5},{transform:"translateY(0)",opacity:1}],{duration:260});}}
 function paperEngineTick(){
  if(!Array.isArray(liveBars)||!liveBars.length||$("liveBadge").textContent!=="LIVE DATA")return;
  const symbol=A[ix][0],idx=ix,bar=liveBars.at(-1),price=Number(bar.c),sig=$("signal").textContent.trim();
@@ -338,7 +348,7 @@ function paperEngineTick(){
   }
  }
  pe.lastSignal[symbol]=sig;
- peSave();peRender();
+ peSave();peRender();updateOpportunityBanner();
 }
 function paperInit(){
  const cap=$("peCapitalInput"),risk=$("peRiskInput");
