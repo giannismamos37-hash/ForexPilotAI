@@ -525,6 +525,31 @@ main{position:relative!important;display:flex!important;flex:1 1 auto!important;
 #riskTab,#paperTab,#settingsTab,footer{display:none!important}
 @media(max-width:420px){.quote-panel .price{font-size:22px!important}.indicator-toolbar button{font-size:8px!important;padding:0 5px!important}.execution-panel{height:42px!important;min-height:42px!important}.signal-panel{bottom:42px!important}}
 
+
+/* True TradingView overlay treatment v8 */
+html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!important}
+#assets{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
+.quote-panel{background:transparent!important;backdrop-filter:none!important;border:0!important}
+.timeframe-strip{background:transparent!important;border:0!important}
+.timeframe-strip select,.timeframe-strip .pill{background:transparent!important;border:0!important;box-shadow:none!important}
+.indicator-toolbar{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
+.indicator-toolbar button{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;color:#202124!important;font-size:10px!important;font-weight:700!important}
+#opportunityBanner{background:transparent!important;border:0!important;box-shadow:none!important}
+.signal-panel{background:transparent!important;border:0!important;box-shadow:none!important}
+.execution-panel{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
+.trade-actions button{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+.trade-actions .buy-action{color:#089981!important}.trade-actions .sell-action{color:#f23645!important}
+.signal-state{background:transparent!important;border:0!important}
+@media(max-width:420px){
+ #assets{top:0!important;height:28px!important;min-height:28px!important}
+ .quote-panel{top:28px!important;height:48px!important;min-height:48px!important}
+ .timeframe-strip{top:76px!important}
+ .indicator-toolbar{top:104px!important;height:25px!important;min-height:25px!important}
+ .indicator-toolbar button{height:23px!important;min-height:23px!important;padding:0 5px!important;font-size:9px!important}
+ .signal-panel{bottom:38px!important;height:28px!important;min-height:28px!important}
+ .execution-panel{height:38px!important;min-height:38px!important}
+}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
@@ -633,13 +658,13 @@ function draw(b){
  const host=$("chart"),rh=$("rsiChart"),mh=$("macdChart");
  if(!window.LightweightCharts){host.innerHTML='<div id="chartLoading">Chart library unavailable. Connect to internet and reload.</div>';return}
  const L=window.LightweightCharts;
- const bg=getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()||"#0a1421";
- const fg=getComputedStyle(document.documentElement).getPropertyValue("--muted").trim()||"#8fa4ba";
- const line=getComputedStyle(document.documentElement).getPropertyValue("--line").trim()||"#26394c";
+ const bg="#ffffff";
+ const fg="#131722";
+ const line="#e6e8eb";
  const base={layout:{background:{type:"solid",color:bg},textColor:fg,fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:line},horzLines:{color:line}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{borderColor:line,scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:line,timeVisible:true,secondsVisible:false,rightOffset:5,barSpacing:8},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}};
  if(!fpChart){
   host.innerHTML="";fpChart=L.createChart(host,{...base,width:host.clientWidth,height:host.clientHeight});
-  fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{upColor:"#16c99a",downColor:"#f05268",borderUpColor:"#16c99a",borderDownColor:"#f05268",wickUpColor:"#16c99a",wickDownColor:"#f05268",priceLineVisible:true,lastValueVisible:true});
+  fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{upColor:"#089981",downColor:"#f23645",borderUpColor:"#089981",borderDownColor:"#f23645",wickUpColor:"#089981",wickDownColor:"#f23645",priceLineVisible:true,lastValueVisible:true});
   if(typeof L.createSeriesMarkers==="function")fpSignalMarkers=L.createSeriesMarkers(fpCandleSeries,[]);
   fpVolumeSeries=fpChart.addSeries(L.HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:"volume",lastValueVisible:false,priceLineVisible:false});fpChart.priceScale("volume").applyOptions({scaleMargins:{top:.82,bottom:0},visible:false});
   fpChart.subscribeClick(param=>{if(!fpDrawingMode||!param.point)return;const price=fpCandleSeries.coordinateToPrice(param.point.y);if(price==null)return;const line=fpCandleSeries.createPriceLine({price,color:"#f4c66b",lineWidth:1,lineStyle:L.LineStyle.Dashed,axisLabelVisible:true,title:"H-LINE"});fpDrawings.push(line);fpDrawingMode=null;const b=$("drawHLine");if(b)b.style.opacity="1";});
@@ -651,8 +676,8 @@ function draw(b){
   fpRsiSeries.createPriceLine({price:30,color:"#16c99a",lineStyle:L.LineStyle.Dashed,lineWidth:1,axisLabelVisible:false,title:"30"});
   fpMacdChart=L.createChart(mh,{...base,width:mh.clientWidth,height:mh.clientHeight,rightPriceScale:{borderColor:line,scaleMargins:{top:.15,bottom:.15}},timeScale:{visible:false,borderColor:line},handleScroll:false,handleScale:false});
   fpMacdHist=fpMacdChart.addSeries(L.HistogramSeries,{priceLineVisible:false,lastValueVisible:false});
-  fpMacdLine=fpMacdChart.addSeries(L.LineSeries,{color:"#55b9ff",lineWidth:2,priceLineVisible:false,lastValueVisible:true});
-  fpMacdSignal=fpMacdChart.addSeries(L.LineSeries,{color:"#f2c66d",lineWidth:1,priceLineVisible:false,lastValueVisible:false});
+  fpMacdLine=fpMacdChart.addSeries(L.LineSeries,{color:"#2962ff",lineWidth:2,priceLineVisible:false,lastValueVisible:true});
+  fpMacdSignal=fpMacdChart.addSeries(L.LineSeries,{color:"#f0b90b",lineWidth:1,priceLineVisible:false,lastValueVisible:false});
   if(window.ResizeObserver){fpResizeObserver=new ResizeObserver(entries=>{for(const e of entries){const w=Math.max(280,Math.floor(e.contentRect.width));if(e.target===host)fpChart.applyOptions({width:w,height:Math.max(250,Math.floor(e.contentRect.height))});else if(e.target===rh)fpRsiChart.applyOptions({width:w,height:Math.max(80,Math.floor(e.contentRect.height))});else if(e.target===mh)fpMacdChart.applyOptions({width:w,height:Math.max(90,Math.floor(e.contentRect.height))})}});fpResizeObserver.observe(host);fpResizeObserver.observe(rh);fpResizeObserver.observe(mh)}
  }
  const step=({"1min":60,"5min":300,"15min":900,"30min":1800,"1h":3600,"4h":14400,"1day":86400})[timeframe]||900,now=Math.floor(Date.now()/1000);
