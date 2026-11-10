@@ -233,6 +233,7 @@ function makeBars(){if(liveBars&&liveBars.length>5)return liveBars;let p=px(),ar
 function ema(v,n){let k=2/(n+1),x=v[0];for(let i=1;i<v.length;i++)x=v[i]*k+x*(1-k);return x}
 function rsi(v){let g=0,l=0;for(let i=v.length-14;i<v.length;i++){let d=v[i]-v[i-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/14/(l/14))}
 let fpChart=null,fpCandleSeries=null,fpVolumeSeries=null,fpResizeObserver=null,fpRsiChart=null,fpRsiSeries=null,fpMacdChart=null,fpMacdLine=null,fpMacdSignal=null,fpMacdHist=null,fpLines={},fpVisible={ema9:true,ema21:true,ema50:false,ema200:false,bb:false},fpDrawingMode=null,fpDrawings=[],fpAutoLines=[];
+let fpSignalMarkers=null,fpCurrentSignal={side:'WAIT',time:null,symbol:null,reason:''},fpLastNotifiedSignal='';
 function emaArray(values,n){let k=2/(n+1),v=values[0],out=[v];for(let i=1;i<values.length;i++){v=values[i]*k+v*(1-k);out.push(v)}return out}
 function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";Object.keys(fpLines).filter(k=>k===key||(key==="bb"&&k.startsWith("bb"))).forEach(k=>fpLines[k].applyOptions({visible:fpVisible[key]}));}
 function setDrawingMode(mode,btn){fpDrawingMode=mode;btn.style.opacity=".55";}
@@ -248,6 +249,7 @@ function draw(b){
  if(!fpChart){
   host.innerHTML="";fpChart=L.createChart(host,{...base,width:host.clientWidth,height:host.clientHeight});
   fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{upColor:"#16c99a",downColor:"#f05268",borderUpColor:"#16c99a",borderDownColor:"#f05268",wickUpColor:"#16c99a",wickDownColor:"#f05268",priceLineVisible:true,lastValueVisible:true});
+  if(typeof L.createSeriesMarkers==="function")fpSignalMarkers=L.createSeriesMarkers(fpCandleSeries,[]);
   fpVolumeSeries=fpChart.addSeries(L.HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:"volume",lastValueVisible:false,priceLineVisible:false});fpChart.priceScale("volume").applyOptions({scaleMargins:{top:.82,bottom:0},visible:false});
   fpChart.subscribeClick(param=>{if(!fpDrawingMode||!param.point)return;const price=fpCandleSeries.coordinateToPrice(param.point.y);if(price==null)return;const line=fpCandleSeries.createPriceLine({price,color:"#f4c66b",lineWidth:1,lineStyle:L.LineStyle.Dashed,axisLabelVisible:true,title:"H-LINE"});fpDrawings.push(line);fpDrawingMode=null;const b=$("drawHLine");if(b)b.style.opacity="1";});
   const defs=[["ema9",9,"#f2c66d"],["ema21",21,"#55b9ff"],["ema50",50,"#c18aff"],["ema200",200,"#ff8d63"],["bbUpper",20,"#849bb5"],["bbMiddle",20,"#607d9b"],["bbLower",20,"#849bb5"]];
@@ -266,6 +268,7 @@ function draw(b){
  const rows=b.map((z,i)=>({time:z.datetime?Math.floor(new Date(z.datetime).getTime()/1000):now-(b.length-1-i)*step,open:z.o,high:z.h,low:z.l,close:z.c,volume:Number.isFinite(Number(z.volume))?Number(z.volume):null})).filter(z=>Number.isFinite(z.time)&&[z.open,z.high,z.low,z.close].every(Number.isFinite)).sort((a,c)=>a.time-c.time);
  const data=rows.filter((z,i)=>i===0||z.time!==rows[i-1].time),closes=data.map(z=>z.close);
  fpCandleSeries.setData(data);
+ if(fpSignalMarkers){const marker=fpCurrentSignal.symbol===A[ix][0]&&fpCurrentSignal.time? [{time:fpCurrentSignal.time,position:fpCurrentSignal.side==="BUY"?"belowBar":"aboveBar",color:fpCurrentSignal.side==="BUY"?"#19d6a0":"#ff6075",shape:"circle",text:fpCurrentSignal.side}]:[];fpSignalMarkers.setMarkers(marker);}
  fpAutoLines.forEach(line=>{try{fpCandleSeries.removePriceLine(line)}catch{}});fpAutoLines=[];
  if(data.length>10){const recent=data.slice(-30),support=Math.min(...recent.map(z=>z.low)),resistance=Math.max(...recent.map(z=>z.high));fpAutoLines.push(fpCandleSeries.createPriceLine({price:support,color:"#19d6a0",lineWidth:1,lineStyle:L.LineStyle.Dotted,axisLabelVisible:true,title:"SUPPORT"}));fpAutoLines.push(fpCandleSeries.createPriceLine({price:resistance,color:"#ff6075",lineWidth:1,lineStyle:L.LineStyle.Dotted,axisLabelVisible:true,title:"RESISTANCE"}));}
  fpVolumeSeries.setData(data.filter(z=>z.volume!==null&&z.volume>0).map(z=>({time:z.time,value:z.volume,color:z.close>=z.open?"#16c99a66":"#f0526866"})));
@@ -287,10 +290,52 @@ function draw(b){
  if(typeof requestAnimationFrame==="function")requestAnimationFrame(repaint);else setTimeout(repaint,80);
  $("macdValue").textContent=ml.at(-1).toFixed(A[ix][2]);$("volumeValue").textContent=b.some(z=>z.volume!=null&&Number(z.volume)>0)?String(b.filter(z=>z.volume!=null).at(-1).volume):"Δεν παρέχεται από την πηγή για αυτό το σύμβολο";
 }
-function analyze(){let [s,_,d]=A[ix],p=px(),b=makeBars(),v=b.map(z=>z.c),f=ema(v.slice(-25),9),sl=ema(v.slice(-40),21),rv=rsi(v),atr=b.slice(-14).reduce((a,z)=>a+z.h-z.l,0)/14,up=f>sl;let sig="WAIT",why="Δεν υπάρχει επιβεβαιωμένη συμφωνία των δεικτών.";if(up&&rv>=50&&rv<70){sig="BUY";why="EMA 9 πάνω από EMA 21 και RSI σε θετική ζώνη."}else if(!up&&rv>30&&rv<=50){sig="SELL";why="EMA 9 κάτω από EMA 21 και RSI σε αρνητική ζώνη."}
-let stop=sig==="BUY"?p-atr*1.5:sig==="SELL"?p+atr*1.5:null,tp=stop===null?null:(sig==="BUY"?p+(p-stop)*2:p-(stop-p)*2),fmt=n=>n===null?"—":n.toFixed(d);
-$("symbol").textContent=s;$("price").textContent=fmt(p);$("signal").textContent=sig;$("signal").className="signal "+(sig==="BUY"?"buy":sig==="SELL"?"sell":"wait");$("rsi").textContent=rv.toFixed(1);$("explain").textContent=why;$("trend").textContent="Trend: "+(up?"Bullish":"Bearish");$("ema").textContent="EMA: "+(up?"9 > 21":"9 < 21");$("rsiState").textContent=rv.toFixed(1)+(rv>70?" Overbought":rv<30?" Oversold":" Neutral");$("emaState").textContent=up?"Bullish":"Bearish";$("candle").textContent=b.at(-1).c>=b.at(-1).o?"Bullish":"Bearish";$("atr").textContent=fmt(atr);$("entry").textContent=fmt(p);$("sl").textContent=fmt(stop);$("tp").textContent=fmt(tp);$("rr").textContent=stop===null?"—":"1 : 2.0";$("pSymbol").value=s;$("pEntry").value=p;$("pExit").value=p;$("manualSymbol").textContent=s;$("manualPrice").value=p;draw(b);
-$("rEntry").value=p;$("rStop").value=stop??(p-atr*1.5);$("rTarget").value=tp??(p+atr*3);riskCalc()}
+function analyze(){
+ const [symbol,,digits]=A[ix],hasLive=Array.isArray(liveBars)&&liveBars.length>=30;
+ const bars=hasLive?liveBars:makeBars(),closes=bars.map(x=>Number(x.c)).filter(Number.isFinite);
+ const price=hasLive?Number(bars.at(-1).c):px(),fmt=n=>Number.isFinite(n)?n.toFixed(digits):"—";
+ const avg=(arr,n)=>arr.slice(-n).reduce((x,y)=>x+y,0)/Math.min(n,arr.length);
+ const emaLast=(arr,n)=>{const k=2/(n+1);let v=arr[0];for(let i=1;i<arr.length;i++)v=arr[i]*k+v*(1-k);return v};
+ let gains=0,losses=0;for(let i=Math.max(1,closes.length-14);i<closes.length;i++){const d=closes[i]-closes[i-1];if(d>0)gains+=d;else losses-=d;}
+ const rsiValue=losses===0?100:100-100/(1+(gains/14)/(losses/14));
+ const atrValues=bars.slice(-14).map((x,i)=>{const prev=bars[Math.max(0,bars.length-15+i)]?.c??x.o;return Math.max(x.h-x.l,Math.abs(x.h-prev),Math.abs(x.l-prev))});
+ const atr=atrValues.reduce((x,y)=>x+y,0)/Math.max(1,atrValues.length);
+ const fast=emaLast(closes,9),slow=emaLast(closes,21),last=bars.at(-1);
+ let sig="WAIT",why=hasLive?"Δεν υπάρχει ακόμη αρκετή συμφωνία των ενδείξεων.":"Αναμονή πραγματικών δεδομένων αγοράς — τα demo candles δεν παράγουν σήματα.";
+ if(hasLive&&closes.length>=30){
+  const bullish=fast>slow&&price>fast&&rsiValue>=52&&rsiValue<=68&&last.c>last.o;
+  const bearish=fast<slow&&price<fast&&rsiValue>=32&&rsiValue<=48&&last.c<last.o;
+  if(bullish){sig="BUY";why="Ανοδική τάση EMA 9/21, τιμή πάνω από EMA 9, RSI σε θετική ζώνη και ανοδικό κερί."}
+  else if(bearish){sig="SELL";why="Καθοδική τάση EMA 9/21, τιμή κάτω από EMA 9, RSI σε αρνητική ζώνη και καθοδικό κερί."}
+ }
+ const stop=sig==="BUY"?price-atr*1.5:sig==="SELL"?price+atr*1.5:null;
+ const target=stop===null?null:(sig==="BUY"?price+(price-stop)*2:price-(stop-price)*2);
+ $("symbol").textContent=symbol;$("price").textContent=fmt(price);
+ $("signal").textContent=sig;$("signal").className="signal "+(sig==="BUY"?"buy":sig==="SELL"?"sell":"wait");
+ $("rsi").textContent=Number.isFinite(rsiValue)?rsiValue.toFixed(1):"—";$("explain").textContent=why;
+ $("trend").textContent="Trend: "+(fast>=slow?"Bullish":"Bearish");$("ema").textContent=fast>=slow?"EMA: 9 > 21":"EMA: 9 < 21";
+ $("rsiState").textContent=Number.isFinite(rsiValue)?rsiValue.toFixed(1)+(rsiValue>70?" Overbought":rsiValue<30?" Oversold":" Neutral"):"—";
+ $("emaState").textContent=fast>=slow?"Bullish":"Bearish";$("candle").textContent=last.c>=last.o?"Bullish":"Bearish";
+ $("atr").textContent=fmt(atr);$("entry").textContent=sig==="WAIT"?"—":fmt(price);$("sl").textContent=fmt(stop);$("tp").textContent=fmt(target);
+ $("rr").textContent=stop===null?"—":"1 : 2.0";$("pSymbol").value=symbol;$("pEntry").value=price;$("pExit").value=price;
+ $("manualSymbol").textContent=symbol;$("manualPrice").value=price;
+ $("rEntry").value=price;$("rStop").value=stop??(price-atr*1.5);$("rTarget").value=target??(price+atr*3);
+ fpCurrentSignal={side:sig,time:hasLive&&last.datetime?Math.floor(new Date(last.datetime).getTime()/1000):null,symbol,reason:why};
+ draw(bars);
+ if(typeof updateOpportunityBanner==="function")updateOpportunityBanner();
+ if(hasLive&&["BUY","SELL"].includes(sig)){
+  const key=[symbol,timeframe,last.datetime,sig].join("|");
+  if(key!==fpLastNotifiedSignal){fpLastNotifiedSignal=key;notifyOpportunity(symbol,sig,price,stop,target,why);}
+ }
+ riskCalc();
+}
+function notifyOpportunity(symbol,side,entry,stop,target,reason){
+ const title="ForexPilot AI · "+(side==="BUY"?"Ευκαιρία αγοράς":"Ευκαιρία πώλησης");
+ const body=symbol+" · Είσοδος "+entry+" · SL "+stop+" · TP "+target+" — "+reason;
+ if("serviceWorker"in navigator&&Notification.permission==="granted"){
+  navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body,tag:"fp-"+symbol+"-"+timeframe,renotify:false,icon:"./icon-192.png"})).catch(()=>{});
+ }else if("Notification"in window&&Notification.permission==="granted"){new Notification(title,{body,tag:"fp-"+symbol+"-"+timeframe});}
+}
 function renderAssets(){$("assets").innerHTML=A.map((a,i)=>`<button class="tab ${i===ix?'active':''}" onclick="select(${i})">${a[0]}</button>`).join("")}
 function quickTrade(side){$("pSide").value=side;$("pSymbol").value=A[ix][0];$("pEntry").value=px();$("pExit").value=px();tab("paperTab",document.querySelectorAll("footer button")[2]);}
 function select(i){ix=i;liveBars=null;renderAssets();analyze();loadLive()}
@@ -338,7 +383,7 @@ function paperReset(){
  pe={initial:cap,riskPct:risk,auto:true,open:[],closed:[],lastSignal:{}};peSave();peRender();
 }
 let peLastBannerSignal="";
-function showOpportunityDetails(){const b=$("opportunityBanner");if(!b||b.classList.contains("hidden"))return;alert($("oppSummary").textContent+"\n\nΕίσοδος: "+$("entry").textContent+"\nStop Loss: "+$("sl").textContent+"\nTake Profit: "+$("tp").textContent+"\n\nΕκπαιδευτική ένδειξη — όχι επενδυτική σύσταση.");}
+function showOpportunityDetails(){const b=$("opportunityBanner");if(!b||b.classList.contains("hidden"))return;alert($("oppSummary").textContent+"\n\n"+$("explain").textContent+"\n\nΕίσοδος: "+$("entry").textContent+"\nStop Loss: "+$("sl").textContent+"\nTake Profit: "+$("tp").textContent+"\n\nΕκπαιδευτική ένδειξη — όχι επενδυτική σύσταση.");}
 function updateOpportunityBanner(){const sig=$("signal")?.textContent?.trim(),symbol=A[ix]?.[0],b=$("opportunityBanner");if(!b)return;if(!["BUY","SELL"].includes(sig)){b.classList.add("hidden");return;}const key=symbol+"|"+sig;$("oppTitle").textContent="ΝΕΑ ΕΥΚΑΙΡΙΑ · "+(sig==="BUY"?"ΑΓΟΡΑ":"ΠΩΛΗΣΗ")+" ("+sig+")";$("oppSummary").textContent=symbol+" · Είσοδος "+$("entry").textContent+" · TP "+$("tp").textContent+" · SL "+$("sl").textContent;b.classList.remove("hidden");if(key!==peLastBannerSignal){peLastBannerSignal=key;if(b.animate)b.animate([{transform:"translateY(-5px)",opacity:.5},{transform:"translateY(0)",opacity:1}],{duration:260});}}
 function paperEngineTick(){
  if(!Array.isArray(liveBars)||!liveBars.length||$("liveBadge").textContent!=="LIVE DATA")return;
