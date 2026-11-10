@@ -332,7 +332,7 @@ function analyze(){
 function notifyOpportunity(symbol,side,entry,stop,target,reason){
  const title="ForexPilot AI · "+(side==="BUY"?"Ευκαιρία αγοράς":"Ευκαιρία πώλησης");
  const body=symbol+" · Είσοδος "+entry+" · SL "+stop+" · TP "+target+" — "+reason;
- if("serviceWorker"in navigator&&Notification.permission==="granted"){
+ if("serviceWorker"in navigator&&"Notification"in window&&Notification.permission==="granted"){
   navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body,tag:"fp-"+symbol+"-"+timeframe,renotify:false,icon:"./icon-192.png"})).catch(()=>{});
  }else if("Notification"in window&&Notification.permission==="granted"){new Notification(title,{body,tag:"fp-"+symbol+"-"+timeframe});}
 }
