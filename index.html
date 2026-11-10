@@ -35,6 +35,61 @@ footer button{font-size:11px}
 .trade-actions .sell-action{background:#ff727e}
 .chart-label{font-size:10px;color:#8ea4b9;letter-spacing:.7px}
 @media(min-width:700px){main{max-width:980px;margin:auto}#chart{height:460px}}
+
+/* FOREXPILOT AI — refreshed mobile trading-terminal design */
+:root{--bg:#070b13;--panel:#0e1725;--panel2:#121f30;--line:#203149;--txt:#f1f6fc;--muted:#8194aa;--green:#19d6a0;--red:#ff6075;--gold:#f4c66b;--blue:#65aaff}
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(ellipse at 50% -20%,#142943 0%,#080e18 52%,#070b13 100%);color:var(--txt);font-family:Inter,system-ui,-apple-system,Arial,sans-serif;font-size:14px}
+header{position:sticky;top:0;z-index:20;padding:14px 16px 12px;background:rgba(8,14,24,.96);border-bottom:1px solid #1e3046;backdrop-filter:blur(18px)}
+.brand{font-size:19px;font-weight:950;letter-spacing:1px}.brand span{color:var(--green)}
+.sub{margin-top:3px;font-size:9px;letter-spacing:1.5px;color:#8194aa}
+.mode{border:1px solid #70572c;background:#2b2417;color:#f4c66b;padding:7px 10px;border-radius:8px;font-size:9px;letter-spacing:1px}
+main{width:100%;max-width:760px;margin:auto;padding:0 0 100px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:13px 14px 12px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1px solid #23374f;background:#101b2a;color:#a5b6c8;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:800}
+.tab.active{background:#123c38;border-color:#1b9f80;color:#55f0c1;box-shadow:inset 0 0 0 1px #1b9f8050}
+.card{margin:10px 13px 12px;padding:15px;background:linear-gradient(145deg,#111e2e,#0c1522);border:1px solid #20334a;border-radius:15px;box-shadow:0 8px 24px #0002}
+#scan>.card:first-child{margin:0;padding:16px 14px 14px;border:0;border-top:1px solid #1b2c40;border-bottom:1px solid #1b2c40;border-radius:0;background:linear-gradient(135deg,#101e30,#0b1421)}
+#scan>.card:first-child>hr{border-color:#23374c;margin:14px 0}
+h2{font-size:14px;font-weight:850;letter-spacing:.25px;margin:0 0 13px}
+h3{font-size:13px}
+.muted{color:var(--muted)}.tiny{font-size:10px;letter-spacing:.2px}
+.price{font-size:34px;font-weight:900;letter-spacing:-1.4px;font-variant-numeric:tabular-nums}
+.signal{font-size:27px;font-weight:950;letter-spacing:1px}
+.buy{color:var(--green)}.sell{color:var(--red)}.wait{color:var(--gold)}
+.pill{font-size:9px;letter-spacing:.8px;border:1px solid #2b4059;background:#17273a;color:#a9bfd4;border-radius:7px;padding:6px 9px;font-weight:900}
+.demo{border-color:#71572a;background:#2c2518;color:#f4c66b}
+.status{width:7px;height:7px;background:#e7b74e;box-shadow:0 0 8px currentColor}
+#feed{font-size:10px}
+.chart-label{font-size:9px;letter-spacing:1.2px;font-weight:850;color:#8fa4ba;margin:13px 0 5px}
+#chart{display:block;width:100%;height:285px;margin:0;border:1px solid #1e3148;border-radius:11px;background:linear-gradient(180deg,#0a1421,#0b1725)}
+.trade-actions{display:flex;gap:9px;margin:13px 0 4px}
+.trade-actions button{flex:1;padding:15px 10px;border-radius:10px;font-size:13px;font-weight:950;letter-spacing:.6px}
+.trade-actions .buy-action{background:linear-gradient(135deg,#24e1aa,#13b98a);color:#04251d;box-shadow:0 5px 15px #19d6a026}
+.trade-actions .sell-action{background:linear-gradient(135deg,#ff7788,#e84e67);color:#2b0710;box-shadow:0 5px 15px #ff607526}
+label{display:block;font-size:10px;font-weight:750;letter-spacing:.3px;color:#91a5ba;margin:11px 0 6px}
+input,select{width:100%;padding:12px 11px;border-radius:9px;background:#091321;color:#f1f6fc;border:1px solid #263b53;font-size:14px;outline:none}
+input:focus,select:focus{border-color:#20c99b;box-shadow:0 0 0 2px #20c99b20}
+button{cursor:pointer;transition:filter .15s,transform .15s}button:active{transform:scale(.98)}
+button.alt{background:#1a2b40;color:#dce8f4;border:1px solid #2c425c}
+button.red{background:#4a202c;color:#ffb4bf;border:1px solid #713342}
+.full{width:100%;margin-top:11px}
+.grid{gap:8px}
+.metric{padding:12px 11px;background:#091522;border:1px solid #1c3046;border-radius:10px;min-width:0}
+.metric span{font-size:9px;letter-spacing:.7px;text-transform:uppercase;color:#8298af}
+.metric b{display:block;font-size:16px;margin-top:6px;font-variant-numeric:tabular-nums}
+.notice{font-size:10px;line-height:1.65;color:#8297ac}
+table{font-size:10px}td,th{padding:10px 5px;border-color:#1d3045}th{font-size:9px;text-transform:uppercase;letter-spacing:.6px}
+#timeframe{min-width:112px}
+#scan>.card:not(:first-child){background:linear-gradient(145deg,#111e2e,#0c1522)}
+#scan>.card:not(:first-child) h2{font-size:14px}
+footer{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:rgba(8,14,24,.97);border-top:1px solid #203149;backdrop-filter:blur(18px)}
+footer button{min-width:62px;background:transparent;color:#8295aa;border:0;border-radius:9px;font-size:10px;font-weight:750;line-height:1.6;padding:6px 8px}
+footer button.active{color:#40e4b5;background:#12342f}
+.hidden{display:none!important}
+@media(min-width:700px){main{max-width:900px}.card{margin-left:16px;margin-right:16px}#chart{height:390px}}
+
 </style></head><body>
 <header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode">DEMO MODE</span></div></header>
 <main>
