@@ -1,0 +1,9 @@
+{
+  "appId": "gr.forexpilot.ai",
+  "appName": "ForexPilot AI",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  }
+}
