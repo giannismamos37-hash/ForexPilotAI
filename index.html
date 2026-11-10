@@ -438,7 +438,7 @@ footer button.active{background:#1e222d!important;color:#d1d4dc!important;box-sh
 <script src="https://unpkg.com/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 const A=[["EUR/USD",1.08500,5],["GBP/USD",1.27100,5],["USD/JPY",149.500,3],["XAU/USD",2350,2],["BTC/USD",65000,2]];
-let ix=0,custom={},liveBars=null,timeframe="15min",paper=JSON.parse(localStorage.getItem("fp_app_paper")||"[]");const $=x=>document.getElementById(x),API_BASE=window.FOREXPILOT_API_BASE||(location.protocol==="capacitor:"||location.hostname==="localhost"||location.hostname==="127.0.0.1"?"https://forexpilotai.onrender.com":"");
+let ix=0,custom={},liveBars=null,timeframe="15min",paper=JSON.parse(localStorage.getItem("fp_app_paper")||"[]");const $=x=>document.getElementById(x),API_BASE=window.FOREXPILOT_API_BASE||"https://forexpilotai.onrender.com";
 function setTheme(name){if(!["blue","purple","light"].includes(name))return;document.documentElement.dataset.theme=name;localStorage.setItem("fp_theme",name)}function initTheme(){const t=localStorage.getItem("fp_theme")||"blue";setTheme(t);const el=$("themeChoice");if(el)el.value=t}
 function tab(id,b){["scan","riskTab","paperTab","settingsTab"].forEach(x=>$(x).classList.toggle("hidden",x!==id));document.querySelectorAll("footer button").forEach(x=>x.classList.remove("active"));b.classList.add("active")}
 function px(){return custom[ix]??A[ix][1]}
