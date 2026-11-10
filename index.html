@@ -63,7 +63,7 @@ h3{font-size:13px}
 .status{width:7px;height:7px;background:#e7b74e;box-shadow:0 0 8px currentColor}
 #feed{font-size:10px}
 .chart-label{font-size:9px;letter-spacing:1.2px;font-weight:850;color:#8fa4ba;margin:13px 0 5px}
-#chart{display:block;width:100%;height:285px;margin:0;border:1px solid #1e3148;border-radius:11px;background:linear-gradient(180deg,#0a1421,#0b1725)}
+#chart{display:block;position:relative;width:100%;height:340px;margin:0;border:1px solid #1e3148;border-radius:11px;overflow:hidden;background:#0a1421}#chartLoading{padding:24px;color:#8194aa;font-size:12px}
 .trade-actions{display:flex;gap:9px;margin:13px 0 4px}
 .trade-actions button{flex:1;padding:15px 10px;border-radius:10px;font-size:13px;font-weight:950;letter-spacing:.6px}
 .trade-actions .buy-action{background:linear-gradient(135deg,#24e1aa,#13b98a);color:#04251d;box-shadow:0 5px 15px #19d6a026}
@@ -88,7 +88,7 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-co
 footer button{min-width:62px;background:transparent;color:#8295aa;border:0;border-radius:9px;font-size:10px;font-weight:750;line-height:1.6;padding:6px 8px}
 footer button.active{color:#40e4b5;background:#12342f}
 .hidden{display:none!important}
-@media(min-width:700px){main{max-width:900px}.card{margin-left:16px;margin-right:16px}#chart{height:390px}}
+@media(min-width:700px){main{max-width:900px}.card{margin-left:16px;margin-right:16px}#chart{height:430px}}
 
 </style></head><body>
 <header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode" id="modeBadge">CONNECTING</span></div></header>
@@ -98,7 +98,7 @@ footer button.active{color:#40e4b5;background:#12342f}
  <div class="card">
   <div class="row"><div><div class="muted tiny" id="symbol">EUR/USD</div><div class="price" id="price">1.08500</div><div class="tiny muted"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><span class="pill demo" id="quoteBadge">WAITING</span></div>
   <hr><div class="row"><div><div class="tiny muted">FOREXPILOT SIGNAL</div><div id="signal" class="signal wait">WAIT</div></div><div style="text-align:right"><div class="tiny muted">RSI 14</div><div class="price" id="rsi">—</div></div></div>
-  <p class="tiny muted" id="explain">Waiting for analysis…</p><div class="chart-label">PRICE CHART · CANDLESTICKS</div><canvas id="chart" width="900" height="420"></canvas><div class="trade-actions"><button class="buy-action" onclick="quickTrade(&quot;BUY&quot;)">BUY / LONG</button><button class="sell-action" onclick="quickTrade(&quot;SELL&quot;)">SELL / SHORT</button></div>
+  <p class="tiny muted" id="explain">Waiting for analysis…</p><div class="chart-label">PRICE CHART · CANDLESTICKS</div><div id="chart" aria-label="Interactive candlestick chart"><div id="chartLoading">Loading interactive chart…</div></div><div class="trade-actions"><button class="buy-action" onclick="quickTrade(&quot;BUY&quot;)">BUY / LONG</button><button class="sell-action" onclick="quickTrade(&quot;SELL&quot;)">SELL / SHORT</button></div>
   <div class="row" style="gap:8px;margin-top:10px"><label style="margin:0;flex:1">Timeframe / Χρονικό πλαίσιο<select id="timeframe" onchange="setTimeframe(this.value)"><option value="1min">1 λεπτό</option><option value="5min">5 λεπτά</option><option value="15min" selected>15 λεπτά</option><option value="30min">30 λεπτά</option><option value="1h">1 ώρα</option><option value="4h">4 ώρες</option><option value="1day">1 ημέρα</option></select></label><span class="pill" id="liveBadge">DEMO DATA</span></div><div class="row tiny muted" style="margin-top:8px"><span id="trend">Trend: —</span><span id="ema">EMA 9/21: —</span><span id="tf">15m</span></div>
  </div>
  <div class="card"><h2>Price alerts / Ειδοποιήσεις τιμών</h2><div class="row"><div style="flex:1"><label>Alert price for current pair</label><input id="alertPrice" type="number" step="any" placeholder="Target price"></div><div style="align-self:end"><button onclick="addAlert()">Add alert</button></div></div><button class="alt full" onclick="enableNotifications()">Enable phone notifications</button><div id="alertList" class="notice" style="margin-top:10px">No active alerts</div></div>
@@ -139,6 +139,7 @@ footer button.active{color:#40e4b5;background:#12342f}
 <footer>
 <button class="active" onclick="tab('scan',this)">⌂<br>Scanner</button><button onclick="tab('riskTab',this)">◈<br>Risk</button><button onclick="tab('paperTab',this)">▤<br>Paper</button><button onclick="tab('settingsTab',this)">⚙<br>Settings</button>
 </footer>
+<script src="https://unpkg.com/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 const A=[["EUR/USD",1.08500,5],["GBP/USD",1.27100,5],["USD/JPY",149.500,3],["XAU/USD",2350,2],["BTC/USD",65000,2]];
 let ix=0,custom={},liveBars=null,timeframe="15min",paper=JSON.parse(localStorage.getItem("fp_app_paper")||"[]");const $=x=>document.getElementById(x),API_BASE=window.FOREXPILOT_API_BASE||"";
@@ -147,7 +148,24 @@ function px(){return custom[ix]??A[ix][1]}
 function makeBars(){if(liveBars&&liveBars.length>5)return liveBars;let p=px(),arr=[];for(let i=0;i<55;i++){let base=p+Math.sin(i*1.53+ix)*p*.0007+(i-27)*p*.000006;let close=base+Math.sin(i*2.17+ix*.8)*p*.00035;arr.push({o:base,c:close,h:Math.max(base,close)+p*.00018,l:Math.min(base,close)-p*.00017})}return arr}
 function ema(v,n){let k=2/(n+1),x=v[0];for(let i=1;i<v.length;i++)x=v[i]*k+x*(1-k);return x}
 function rsi(v){let g=0,l=0;for(let i=v.length-14;i<v.length;i++){let d=v[i]-v[i-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/14/(l/14))}
-function draw(b){let c=$("chart"),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);x.strokeStyle="#263b50";for(let y=30;y<h;y+=48){x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}let hi=Math.max(...b.map(z=>z.h)),lo=Math.min(...b.map(z=>z.l)),st=w/b.length,sc=(h-28)/(hi-lo);b.forEach((z,i)=>{let xx=i*st+st/2,yo=h-12-(z.o-lo)*sc,yc=h-12-(z.c-lo)*sc;x.strokeStyle=x.fillStyle=z.c>=z.o?"#4cdbad":"#ff727e";x.beginPath();x.moveTo(xx,h-12-(z.h-lo)*sc);x.lineTo(xx,h-12-(z.l-lo)*sc);x.stroke();x.fillRect(xx-3,Math.min(yo,yc),6,Math.max(2,Math.abs(yc-yo)))})}
+let fpChart=null,fpCandleSeries=null,fpResizeObserver=null;
+function draw(b){
+ const host=$("chart");
+ if(!window.LightweightCharts){host.innerHTML='<div id="chartLoading">Interactive chart library could not load. Check internet connection.</div>';return}
+ const L=window.LightweightCharts;
+ if(!fpChart){
+  host.innerHTML="";
+  fpChart=L.createChart(host,{width:host.clientWidth,height:host.clientHeight,layout:{background:{type:"solid",color:"#0a1421"},textColor:"#8fa4ba",fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:"#17283a"},horzLines:{color:"#1d3044"}},crosshair:{mode:L.CrosshairMode.Normal,vertLine:{color:"#6685a5",width:1,style:L.LineStyle.Dashed,labelBackgroundColor:"#20364c"},horzLine:{color:"#6685a5",width:1,style:L.LineStyle.Dashed,labelBackgroundColor:"#20364c"}},rightPriceScale:{borderColor:"#26394c",scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:"#26394c",timeVisible:true,secondsVisible:false,rightOffset:5,barSpacing:8},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}});
+  fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{upColor:"#19d6a0",downColor:"#ff6075",borderUpColor:"#19d6a0",borderDownColor:"#ff6075",wickUpColor:"#19d6a0",wickDownColor:"#ff6075",priceLineVisible:true,lastValueVisible:true});
+  if(window.ResizeObserver){fpResizeObserver=new ResizeObserver(entries=>{for(const e of entries){if(fpChart)fpChart.applyOptions({width:Math.max(280,Math.floor(e.contentRect.width)),height:Math.max(250,Math.floor(e.contentRect.height))})}});fpResizeObserver.observe(host)}
+ }
+ const step=({"1min":60,"5min":300,"15min":900,"30min":1800,"1h":3600,"4h":14400,"1day":86400})[timeframe]||900;
+ const now=Math.floor(Date.now()/1000);
+ const rows=b.map((z,i)=>({time:z.datetime?Math.floor(new Date(z.datetime).getTime()/1000):now-(b.length-1-i)*step,open:z.o,high:z.h,low:z.l,close:z.c})).filter(z=>Number.isFinite(z.time)&&[z.open,z.high,z.low,z.close].every(Number.isFinite)).sort((a,c)=>a.time-c.time);
+ const unique=rows.filter((z,i)=>i===0||z.time!==rows[i-1].time);
+ fpCandleSeries.setData(unique);
+ fpChart.timeScale().fitContent();
+}
 function analyze(){let [s,_,d]=A[ix],p=px(),b=makeBars(),v=b.map(z=>z.c),f=ema(v.slice(-25),9),sl=ema(v.slice(-40),21),rv=rsi(v),atr=b.slice(-14).reduce((a,z)=>a+z.h-z.l,0)/14,up=f>sl;let sig="WAIT",why="Δεν υπάρχει επιβεβαιωμένη συμφωνία των δεικτών.";if(up&&rv>=50&&rv<70){sig="BUY";why="EMA 9 πάνω από EMA 21 και RSI σε θετική ζώνη."}else if(!up&&rv>30&&rv<=50){sig="SELL";why="EMA 9 κάτω από EMA 21 και RSI σε αρνητική ζώνη."}
 let stop=sig==="BUY"?p-atr*1.5:sig==="SELL"?p+atr*1.5:null,tp=stop===null?null:(sig==="BUY"?p+(p-stop)*2:p-(stop-p)*2),fmt=n=>n===null?"—":n.toFixed(d);
 $("symbol").textContent=s;$("price").textContent=fmt(p);$("signal").textContent=sig;$("signal").className="signal "+(sig==="BUY"?"buy":sig==="SELL"?"sell":"wait");$("rsi").textContent=rv.toFixed(1);$("explain").textContent=why;$("trend").textContent="Trend: "+(up?"Bullish":"Bearish");$("ema").textContent="EMA: "+(up?"9 > 21":"9 < 21");$("rsiState").textContent=rv.toFixed(1)+(rv>70?" Overbought":rv<30?" Oversold":" Neutral");$("emaState").textContent=up?"Bullish":"Bearish";$("candle").textContent=b.at(-1).c>=b.at(-1).o?"Bullish":"Bearish";$("atr").textContent=fmt(atr);$("entry").textContent=fmt(p);$("sl").textContent=fmt(stop);$("tp").textContent=fmt(tp);$("rr").textContent=stop===null?"—":"1 : 2.0";$("pSymbol").value=s;$("pEntry").value=p;$("pExit").value=p;$("manualSymbol").textContent=s;$("manualPrice").value=p;draw(b);
