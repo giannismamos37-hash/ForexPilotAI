@@ -1,9 +1,9 @@
 {
-  "name": "ForexPilot AI Live",
+  "name": "ForexPilot AI",
   "short_name": "ForexPilot",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#09131f",
   "theme_color": "#101d2c",
-  "description": "Live market-data connected trading analysis and paper trading"
+  "description": "Trading analysis and paper trading demo app"
 }
