@@ -253,6 +253,46 @@ footer button.active{background:#142c40;color:#44e3b7;box-shadow:inset 0 0 0 1px
 @media(min-width:760px){#scan>.terminal-card{max-width:900px;margin:auto}.quote-panel,.signal-panel,.execution-panel{padding-left:24px;padding-right:24px}.chart-module{padding:20px 24px}}
 @media(max-width:420px){.app-header{padding:12px 13px}.brand-copy .brand{font-size:17px}.brand-mark{width:36px;height:36px}.quote-panel{padding:16px 14px}.quote-panel .price{font-size:40px}.chart-module{padding:13px 9px 11px}.chart-tools-hint{font-size:7px;padding:6px}.indicator-toolbar button{padding:8px 9px}#chart{height:49vh!important;min-height:315px!important}#rsiChart{height:105px!important}#macdChart{height:118px!important}.execution-panel{padding:11px 11px 13px}.trade-actions button{min-height:52px;font-size:12px}#scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:10px 10px;padding:13px}}
 
+
+/* TradingView mobile-first hierarchy: symbol -> quote -> timeframe -> chart -> signal */
+.app-header{position:sticky;top:0;padding:8px 13px;background:#080e17;border-bottom:1px solid #1d2d40;box-shadow:none;backdrop-filter:blur(14px)}
+.brand-mark{display:none}.header-brand{gap:0}.brand-copy .brand{font-size:16px;letter-spacing:.35px}.brand-copy .sub{font-size:7px;letter-spacing:1.2px;margin-top:2px}
+.header-status{gap:5px}.live-pulse{width:6px;height:6px}.mode{padding:6px 8px;font-size:8px}
+main{padding-bottom:88px}
+#assets{padding:8px 10px;background:#0a121d;border-bottom:1px solid #203149;gap:6px}
+#assets .tab{min-width:88px;padding:9px 11px;border-radius:7px;font-size:11px;background:#111d2b}
+#assets .tab.active{background:#173b36;border-color:#19b98e;box-shadow:none}
+#scan>.terminal-card{margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.quote-panel{padding:10px 13px;background:#0b1420;border-bottom:1px solid #203149}
+.quote-main{align-items:center;margin:0}.market-symbol{font-size:12px;color:#a8bbcd}.quote-panel .price{font-size:31px;letter-spacing:-1.1px;margin:1px 0}.feed-line{font-size:9px;margin-top:3px}
+.quote-side{display:flex;align-items:flex-end;gap:8px;flex-direction:column}.quote-mini{min-width:58px;padding:5px 8px;border-radius:6px}.quote-mini span{font-size:7px}.quote-mini b{font-size:17px;margin-top:1px}
+.chart-module{padding:9px 8px 10px;background:#080f18}
+.chart-topline{padding:0 3px 7px}.chart-title{font-size:12px;letter-spacing:1px;margin:0}.chart-title small{font-size:10px;margin-left:6px;color:#21d6a2}
+.chart-tools-hint{font-size:7px;padding:5px 6px;border-radius:5px}
+.timeframe-strip{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 8px}
+.timeframe-strip select{width:auto;min-width:0;max-width:100%;height:32px;min-height:32px;padding:4px 25px 4px 8px;border-radius:6px;background:#142235;border:1px solid #30465d;font-size:11px;font-weight:800}
+.timeframe-strip .pill{font-size:8px;padding:5px 7px}
+.indicator-toolbar{padding:0 1px 8px;gap:5px}
+.indicator-toolbar button{padding:6px 8px;font-size:8px;border-radius:5px;background:#142235}
+#chart{height:min(58vh,540px)!important;min-height:340px!important;border:1px solid #263a50!important;border-radius:5px!important;background:#0a1420!important}
+.chart-subpanel{margin-top:9px}.chart-subpanel .chart-label{margin:0 0 4px 2px;font-size:8px}
+#rsiChart{height:88px!important;border-radius:5px!important}
+#macdChart{height:98px!important;border-radius:5px!important}
+.chart-readout{margin-top:5px;font-size:8px}
+.signal-panel{padding:10px 13px;background:#0d1825;border-top:1px solid #263a50;border-bottom:1px solid #263a50}
+.signal-panel .signal{font-size:23px;margin-top:2px}.signal-panel #explain{font-size:9px;margin-top:3px}
+.signal-state{padding:6px 8px;font-size:7px}
+.execution-panel{padding:9px 11px;background:#0b1420;border:0;border-bottom:1px solid #203149}
+.trade-actions{margin:0 0 7px;gap:7px}.trade-actions button{min-height:43px;border-radius:6px;font-size:11px;box-shadow:none}
+.market-context{font-size:8px;gap:14px;margin-top:4px}
+#scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:9px 9px;padding:12px;border-radius:10px;box-shadow:none}
+.card h2{font-size:13px;margin-bottom:10px}
+footer{padding:6px 4px calc(6px + env(safe-area-inset-bottom));background:#080e17;border-top:1px solid #203149;backdrop-filter:blur(14px)}
+footer button{font-size:9px;min-width:56px;padding:5px 7px;border-radius:7px}
+footer button.active{background:#132c2a;box-shadow:none}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:420px){.quote-panel{padding:9px 11px}.quote-panel .price{font-size:29px}.chart-module{padding:8px 6px}#chart{height:53vh!important;min-height:320px!important}#rsiChart{height:82px!important}#macdChart{height:92px!important}.indicator-toolbar button{padding:6px 7px}.trade-actions button{min-height:41px}}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
@@ -260,25 +300,24 @@ footer button.active{background:#142c40;color:#44e3b7;box-shadow:inset 0 0 0 1px
 <section id="scan">
  <div class="card terminal-card">
   <section class="quote-panel">
-   <div class="quote-meta"><div class="eyebrow">MARKET OVERVIEW</div><span class="pill demo" id="quoteBadge">WAITING</span></div>
-   <div class="quote-main"><div><div class="market-symbol" id="symbol">EUR/USD</div><div class="price" id="price">1.08500</div><div class="tiny muted feed-line"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><div class="quote-mini"><span>RSI 14</span><b id="rsi">—</b></div></div>
-  </section>
-  <section class="signal-panel">
-   <div class="signal-copy"><div class="eyebrow">FOREXPILOT SIGNAL</div><div id="signal" class="signal wait">WAIT</div><p class="tiny muted" id="explain">Waiting for analysis…</p></div>
-   <div class="signal-state"><span class="signal-state-dot"></span><span>AI SCAN</span></div>
+   <div class="quote-main"><div><div class="market-symbol" id="symbol">EUR/USD</div><div class="price" id="price">1.08500</div><div class="tiny muted feed-line"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><div class="quote-side"><span class="pill demo" id="quoteBadge">WAITING</span><div class="quote-mini"><span>RSI 14</span><b id="rsi">—</b></div></div></div>
   </section>
   <section class="chart-module">
-   <div class="chart-topline"><div><div class="eyebrow">PRICE ACTION</div><div class="chart-title">Live chart <span>·</span> <small id="tf">15m</small></div></div><span class="chart-tools-hint">CROSSHAIR · ZOOM · PAN</span></div>
-   <div class="indicator-toolbar"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">Bollinger</button><button class="pill" id="drawHLine" onclick="setDrawingMode('hline',this)">＋ LINE</button><button class="pill" onclick="clearDrawings()">CLEAR</button></div>
+   <div class="chart-topline"><div class="chart-title">CHART <small id="tf">15m</small></div><span class="chart-tools-hint">CROSSHAIR · ZOOM · PAN</span></div>
+   <div class="timeframe-strip"><label class="sr-only" for="timeframe">Timeframe</label><select id="timeframe" onchange="setTimeframe(this.value)"><option value="1min">1m</option><option value="5min">5m</option><option value="15min" selected>15m</option><option value="30min">30m</option><option value="1h">1H</option><option value="4h">4H</option><option value="1day">1D</option></select><span class="pill" id="liveBadge">DEMO DATA</span></div>
+   <div class="indicator-toolbar"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">BB</button><button class="pill" id="drawHLine" onclick="setDrawingMode('hline',this)">＋ LINE</button><button class="pill" onclick="clearDrawings()">CLEAR</button></div>
    <div id="opportunityBanner" class="opportunity-banner hidden" role="button" tabindex="0" onclick="showOpportunityDetails()"><div class="opp-dot"></div><div class="opp-copy"><b id="oppTitle">Νέα ευκαιρία</b><span id="oppSummary">Περιμένουμε επιβεβαιωμένο σήμα</span></div><span class="opp-arrow">›</span></div>
    <div id="chart" aria-label="Interactive candlestick chart"><div id="chartLoading">Loading interactive chart…</div></div>
    <div class="chart-subpanel"><div class="chart-label">RSI · 14</div><div id="rsiChart" style="height:105px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div></div>
    <div class="chart-subpanel"><div class="chart-label">MACD · 12 / 26 / 9</div><div id="macdChart" style="height:125px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div></div>
    <div class="chart-readout"><span>MACD <b id="macdValue">—</b></span><span>VOLUME <b id="volumeValue">—</b></span></div>
   </section>
+  <section class="signal-panel">
+   <div class="signal-copy"><div class="eyebrow">FOREXPILOT SIGNAL</div><div id="signal" class="signal wait">WAIT</div><p class="tiny muted" id="explain">Waiting for analysis…</p></div>
+   <div class="signal-state"><span class="signal-state-dot"></span><span>AI SCAN</span></div>
+  </section>
   <section class="execution-panel">
    <div class="trade-actions"><button class="buy-action" onclick="quickTrade(&quot;BUY&quot;)">BUY / LONG</button><button class="sell-action" onclick="quickTrade(&quot;SELL&quot;)">SELL / SHORT</button></div>
-   <div class="execution-controls"><label>TIMEFRAME<select id="timeframe" onchange="setTimeframe(this.value)"><option value="1min">1 λεπτό</option><option value="5min">5 λεπτά</option><option value="15min" selected>15 λεπτά</option><option value="30min">30 λεπτά</option><option value="1h">1 ώρα</option><option value="4h">4 ώρες</option><option value="1day">1 ημέρα</option></select></label><span class="pill" id="liveBadge">DEMO DATA</span></div>
    <div class="market-context"><span id="trend">Trend: —</span><span id="ema">EMA 9/21: —</span></div>
   </section>
  </div>
