@@ -190,22 +190,97 @@ footer button.active{background:#13283b;color:#39e0b1;box-shadow:inset 0 0 0 1px
  .metric{padding:11px 10px}.metric b{font-size:16px}
 }
 
+
+/* ForexPilot — full terminal interface redesign */
+:root{--bg:#070c14;--panel:#0d1724;--panel2:#132438;--line:#253b52;--txt:#f2f7fc;--muted:#8da1b6;--green:#20d6a2;--red:#ff647b;--gold:#f2c76c;--blue:#63b7ff}
+html,body{background:#070c14}
+body{background:radial-gradient(ellipse at 50% -24%,#1a3652 0%,#0a1421 42%,#070c14 76%);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif}
+.app-header{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:rgba(7,14,23,.96);border-bottom:1px solid #294159;backdrop-filter:blur(18px)}
+.header-brand{display:flex;align-items:center;gap:11px}.brand-mark{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#1be0aa,#087b6d);color:#06231d;font-weight:1000;font-size:14px;letter-spacing:-.8px;box-shadow:0 5px 18px #12c99a30}
+.brand-copy .brand{font-size:19px;line-height:1.05;font-weight:950;letter-spacing:.4px}.brand-copy .sub{font-size:8px;letter-spacing:1.5px;margin-top:5px;color:#829bb3}
+.header-status{display:flex;align-items:center;gap:7px}.live-pulse{width:7px;height:7px;border-radius:50%;background:#20d6a2;box-shadow:0 0 0 4px #20d6a21a,0 0 12px #20d6a2}
+.mode{border:1px solid #176d5e;background:#0d2b29;color:#5be9c2;border-radius:8px;padding:8px 10px;font-size:9px;letter-spacing:1px;font-weight:900}
+main{max-width:860px;margin:auto;padding:0 0 104px}
+#assets{display:flex;gap:8px;padding:13px 13px 12px;overflow:auto;scrollbar-width:none;background:#0b1522;border-bottom:1px solid #21364d}
+#assets::-webkit-scrollbar{display:none}
+#assets .tab{flex:0 0 auto;min-width:104px;border:1px solid #2b425a;border-radius:10px;padding:11px 14px;background:#111f2f;color:#b8c8d8;font-size:12px;font-weight:900}
+#assets .tab.active{background:linear-gradient(135deg,#15453e,#102d32);border-color:#20c99b;color:#62f0c8;box-shadow:inset 0 0 0 1px #20c99b35}
+#scan>.terminal-card{margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.quote-panel{padding:18px 16px 16px;background:linear-gradient(145deg,#13263a,#0d1928);border-bottom:1px solid #294158}
+.quote-meta,.quote-main,.chart-topline,.execution-controls,.market-context{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.eyebrow{font-size:9px;font-weight:900;letter-spacing:1.5px;color:#829bb3}
+.quote-main{align-items:flex-end;margin-top:9px}.market-symbol{font-size:13px;font-weight:850;letter-spacing:.5px;color:#a9bfd2}
+.quote-panel .price{font-size:clamp(38px,10vw,50px);font-weight:950;line-height:1.12;letter-spacing:-2px;margin-top:3px;font-variant-numeric:tabular-nums}
+.feed-line{display:flex;align-items:center;gap:5px;margin-top:7px;font-size:10px}
+.quote-mini{min-width:76px;text-align:right;padding:9px 11px;border:1px solid #294159;border-radius:10px;background:#0a1725}
+.quote-mini span{display:block;color:#8199b1;font-size:9px;letter-spacing:1px}.quote-mini b{display:block;font-size:23px;margin-top:3px;font-variant-numeric:tabular-nums}
+.signal-panel{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:#0d1927;border-bottom:1px solid #243a51}
+.signal-copy{min-width:0}.signal-panel .signal{font-size:29px;line-height:1.1;letter-spacing:1px;margin-top:4px}
+.signal-panel #explain{margin:6px 0 0;font-size:10px;line-height:1.45}
+.signal-state{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #2b4258;border-radius:8px;color:#9bb0c5;font-size:8px;font-weight:900;letter-spacing:1.1px;white-space:nowrap}
+.signal-state-dot{width:6px;height:6px;border-radius:50%;background:#e9bd62;box-shadow:0 0 8px #e9bd62}
+.chart-module{padding:15px 12px 12px;background:linear-gradient(180deg,#0b1522,#09121d)}
+.chart-topline{padding:0 3px 12px}.chart-title{font-size:17px;font-weight:900;margin-top:4px;letter-spacing:-.3px}.chart-title span{color:#5c7790}.chart-title small{font-size:11px;color:#8ba3ba;font-weight:750}
+.chart-tools-hint{font-size:8px;letter-spacing:.9px;color:#8298ae;border:1px solid #263d55;padding:7px 8px;border-radius:7px}
+.indicator-toolbar{display:flex;gap:6px;overflow:auto;padding:0 2px 11px;scrollbar-width:none}.indicator-toolbar::-webkit-scrollbar{display:none}
+.indicator-toolbar button{flex:0 0 auto;padding:8px 10px;border:1px solid #2b4259;background:#142337;color:#a9bfd2;border-radius:7px;font-size:9px;font-weight:900;letter-spacing:.3px}
+#chart{height:min(56vh,510px)!important;min-height:335px!important;border:1px solid #2a425b!important;border-radius:10px!important;background:#0a1420!important;overflow:hidden}
+.chart-subpanel{margin-top:13px}.chart-subpanel .chart-label{font-size:9px;letter-spacing:1.4px;margin:0 0 6px 2px}
+#rsiChart{height:112px!important;border:1px solid #263d54!important;border-radius:9px!important;background:#0a1420!important}
+#macdChart{height:126px!important;border:1px solid #263d54!important;border-radius:9px!important;background:#0a1420!important}
+.chart-readout{display:flex;gap:18px;margin-top:8px;color:#8399af;font-size:9px;letter-spacing:.7px}
+.chart-readout b{color:#dce8f3;margin-left:4px;font-size:10px}
+.execution-panel{padding:12px 13px 15px;background:#101d2b;border-top:1px solid #294158;border-bottom:1px solid #263b52}
+.trade-actions{display:flex;gap:9px;margin:0 0 12px}
+.trade-actions button{flex:1;min-height:55px;border-radius:10px;font-size:13px;font-weight:950;letter-spacing:.8px}
+.trade-actions .buy-action{background:linear-gradient(135deg,#25e0ad,#12b98b);color:#04251d;box-shadow:0 5px 16px #19d6a025}
+.trade-actions .sell-action{background:linear-gradient(135deg,#ff7b8c,#e84d68);color:#2a0710;box-shadow:0 5px 16px #ff607522}
+.execution-controls label{flex:1;margin:0;font-size:9px;letter-spacing:1px;font-weight:900}
+.execution-controls select{display:block;margin-top:5px;min-height:42px;background:#091522;border:1px solid #2b425a;border-radius:8px;font-size:13px}
+.market-context{justify-content:flex-start;gap:18px;margin-top:9px;font-size:9px;color:#8da2b7}
+#scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:12px 12px;background:linear-gradient(145deg,#122237,#0d1725);border:1px solid #2a4058;border-radius:14px;padding:15px;box-shadow:0 8px 22px #0003}
+.card h2{font-size:14px;letter-spacing:.2px;margin-bottom:13px}
+.metric{background:#091522;border:1px solid #263c54;border-radius:10px;padding:12px}
+.metric span,label{font-size:9px;letter-spacing:.65px;color:#8ca2b8}
+.metric b{font-size:16px;line-height:1.35}
+input,select{background:#091522;border:1px solid #2a4159;border-radius:9px;min-height:45px;color:#edf4fb}
+button.alt{background:#192c42;color:#dce9f5;border:1px solid #304861}
+.opportunity-banner{border-radius:10px;margin:0 0 10px;padding:11px;background:linear-gradient(100deg,#10382f,#102638);border-color:#1b9f80}
+footer{background:rgba(6,11,19,.97);border-top:1px solid #263b52;padding:8px 5px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(18px)}
+footer button{min-width:66px;border-radius:10px;color:#8499af;font-size:10px;font-weight:850;line-height:1.7;padding:7px 9px}
+footer button.active{background:#142c40;color:#44e3b7;box-shadow:inset 0 0 0 1px #1b4354}
+.notice{font-size:10px;line-height:1.65;color:#8da2b7}
+@media(min-width:760px){#scan>.terminal-card{max-width:900px;margin:auto}.quote-panel,.signal-panel,.execution-panel{padding-left:24px;padding-right:24px}.chart-module{padding:20px 24px}}
+@media(max-width:420px){.app-header{padding:12px 13px}.brand-copy .brand{font-size:17px}.brand-mark{width:36px;height:36px}.quote-panel{padding:16px 14px}.quote-panel .price{font-size:40px}.chart-module{padding:13px 9px 11px}.chart-tools-hint{font-size:7px;padding:6px}.indicator-toolbar button{padding:8px 9px}#chart{height:49vh!important;min-height:315px!important}#rsiChart{height:105px!important}#macdChart{height:118px!important}.execution-panel{padding:11px 11px 13px}.trade-actions button{min-height:52px;font-size:12px}#scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:10px 10px;padding:13px}}
+
 </style></head><body>
-<header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode" id="modeBadge">CONNECTING</span></div></header>
+<header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
 <div class="tabs" id="assets"></div>
 <section id="scan">
- <div class="card">
-  <div class="row"><div><div class="muted tiny" id="symbol">EUR/USD</div><div class="price" id="price">1.08500</div><div class="tiny muted"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><span class="pill demo" id="quoteBadge">WAITING</span></div>
-  <hr><div class="row"><div><div class="tiny muted">FOREXPILOT SIGNAL</div><div id="signal" class="signal wait">WAIT</div></div><div style="text-align:right"><div class="tiny muted">RSI 14</div><div class="price" id="rsi">—</div></div></div>
-  <p class="tiny muted" id="explain">Waiting for analysis…</p><div class="row" style="margin:12px 0 7px"><div class="chart-label">TRADINGVIEW-STYLE CHART</div><span class="pill">CROSSHAIR · ZOOM · PAN</span></div>
-  <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">Bollinger Bands</button><button class="pill" id="drawHLine" onclick="setDrawingMode('hline',this)">＋ H-LINE</button><button class="pill" onclick="clearDrawings()">CLEAR</button></div>
-  <div id="opportunityBanner" class="opportunity-banner hidden" role="button" tabindex="0" onclick="showOpportunityDetails()"><div class="opp-dot"></div><div class="opp-copy"><b id="oppTitle">Νέα ευκαιρία</b><span id="oppSummary">Περιμένουμε επιβεβαιωμένο σήμα</span></div><span class="opp-arrow">›</span></div>
-  <div id="chart" aria-label="Interactive candlestick chart"><div id="chartLoading">Loading interactive chart…</div></div>
-  <div class="chart-label" style="margin-top:12px">RSI · 14</div><div id="rsiChart" style="height:105px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div>
-  <div class="chart-label" style="margin-top:12px">MACD · 12 / 26 / 9</div><div id="macdChart" style="height:125px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div>
-  <div class="row tiny muted" style="margin:8px 0"><span>MACD</span><b id="macdValue">—</b><span>Volume</span><b id="volumeValue">—</b></div><div class="trade-actions"><button class="buy-action" onclick="quickTrade(&quot;BUY&quot;)">BUY / LONG</button><button class="sell-action" onclick="quickTrade(&quot;SELL&quot;)">SELL / SHORT</button></div>
-  <div class="row" style="gap:8px;margin-top:10px"><label style="margin:0;flex:1">Timeframe / Χρονικό πλαίσιο<select id="timeframe" onchange="setTimeframe(this.value)"><option value="1min">1 λεπτό</option><option value="5min">5 λεπτά</option><option value="15min" selected>15 λεπτά</option><option value="30min">30 λεπτά</option><option value="1h">1 ώρα</option><option value="4h">4 ώρες</option><option value="1day">1 ημέρα</option></select></label><span class="pill" id="liveBadge">DEMO DATA</span></div><div class="row tiny muted" style="margin-top:8px"><span id="trend">Trend: —</span><span id="ema">EMA 9/21: —</span><span id="tf">15m</span></div>
+ <div class="card terminal-card">
+  <section class="quote-panel">
+   <div class="quote-meta"><div class="eyebrow">MARKET OVERVIEW</div><span class="pill demo" id="quoteBadge">WAITING</span></div>
+   <div class="quote-main"><div><div class="market-symbol" id="symbol">EUR/USD</div><div class="price" id="price">1.08500</div><div class="tiny muted feed-line"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><div class="quote-mini"><span>RSI 14</span><b id="rsi">—</b></div></div>
+  </section>
+  <section class="signal-panel">
+   <div class="signal-copy"><div class="eyebrow">FOREXPILOT SIGNAL</div><div id="signal" class="signal wait">WAIT</div><p class="tiny muted" id="explain">Waiting for analysis…</p></div>
+   <div class="signal-state"><span class="signal-state-dot"></span><span>AI SCAN</span></div>
+  </section>
+  <section class="chart-module">
+   <div class="chart-topline"><div><div class="eyebrow">PRICE ACTION</div><div class="chart-title">Live chart <span>·</span> <small id="tf">15m</small></div></div><span class="chart-tools-hint">CROSSHAIR · ZOOM · PAN</span></div>
+   <div class="indicator-toolbar"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">Bollinger</button><button class="pill" id="drawHLine" onclick="setDrawingMode('hline',this)">＋ LINE</button><button class="pill" onclick="clearDrawings()">CLEAR</button></div>
+   <div id="opportunityBanner" class="opportunity-banner hidden" role="button" tabindex="0" onclick="showOpportunityDetails()"><div class="opp-dot"></div><div class="opp-copy"><b id="oppTitle">Νέα ευκαιρία</b><span id="oppSummary">Περιμένουμε επιβεβαιωμένο σήμα</span></div><span class="opp-arrow">›</span></div>
+   <div id="chart" aria-label="Interactive candlestick chart"><div id="chartLoading">Loading interactive chart…</div></div>
+   <div class="chart-subpanel"><div class="chart-label">RSI · 14</div><div id="rsiChart" style="height:105px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div></div>
+   <div class="chart-subpanel"><div class="chart-label">MACD · 12 / 26 / 9</div><div id="macdChart" style="height:125px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div></div>
+   <div class="chart-readout"><span>MACD <b id="macdValue">—</b></span><span>VOLUME <b id="volumeValue">—</b></span></div>
+  </section>
+  <section class="execution-panel">
+   <div class="trade-actions"><button class="buy-action" onclick="quickTrade(&quot;BUY&quot;)">BUY / LONG</button><button class="sell-action" onclick="quickTrade(&quot;SELL&quot;)">SELL / SHORT</button></div>
+   <div class="execution-controls"><label>TIMEFRAME<select id="timeframe" onchange="setTimeframe(this.value)"><option value="1min">1 λεπτό</option><option value="5min">5 λεπτά</option><option value="15min" selected>15 λεπτά</option><option value="30min">30 λεπτά</option><option value="1h">1 ώρα</option><option value="4h">4 ώρες</option><option value="1day">1 ημέρα</option></select></label><span class="pill" id="liveBadge">DEMO DATA</span></div>
+   <div class="market-context"><span id="trend">Trend: —</span><span id="ema">EMA 9/21: —</span></div>
+  </section>
  </div>
  <div class="card"><h2>Price alerts / Ειδοποιήσεις τιμών</h2><div class="row"><div style="flex:1"><label>Alert price for current pair</label><input id="alertPrice" type="number" step="any" placeholder="Target price"></div><div style="align-self:end"><button onclick="addAlert()">Add alert</button></div></div><button class="alt full" onclick="enableNotifications()">Enable phone notifications</button><div id="alertList" class="notice" style="margin-top:10px">No active alerts</div></div>
  <div class="card"><h2>Signal plan / Πλάνο σήματος</h2><div class="grid">
