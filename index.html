@@ -90,6 +90,23 @@ footer button.active{color:#40e4b5;background:#12342f}
 .hidden{display:none!important}
 @media(min-width:700px){main{max-width:900px}.card{margin-left:16px;margin-right:16px}#chart{height:430px}}
 
+
+/* User-selectable themes */
+:root[data-theme="blue"]{--bg:#070b13;--panel:#0e1725;--panel2:#14243a;--line:#203149;--txt:#f1f6fc;--muted:#8194aa;--green:#19d6a0;--red:#ff6075;--gold:#f4c66b;--blue:#65aaff}
+:root[data-theme="purple"]{--bg:#100b1b;--panel:#1b1430;--panel2:#261c40;--line:#44345f;--txt:#f7f1ff;--muted:#b4a4ca;--green:#c084fc;--red:#fb7185;--gold:#fbbf24;--blue:#818cf8}
+:root[data-theme="light"]{--bg:#eef3f8;--panel:#ffffff;--panel2:#e5edf5;--line:#cbd7e3;--txt:#172638;--muted:#61758a;--green:#078b68;--red:#d83e58;--gold:#a66b00;--blue:#2563eb}
+:root[data-theme="light"] body{background:#eef3f8;color:#172638}
+:root[data-theme="light"] header,:root[data-theme="light"] footer{background:#fff;border-color:#cbd7e3}
+:root[data-theme="light"] .card,:root[data-theme="light"] #scan>.card:first-child{background:#fff;border-color:#cbd7e3;box-shadow:0 4px 18px #24364a12}
+:root[data-theme="light"] .metric,:root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] #chart,:root[data-theme="light"] #rsiChart{background:#f2f6fa;color:#172638;border-color:#cbd7e3}
+:root[data-theme="light"] .tab{background:#edf2f7;color:#526579;border-color:#cbd7e3}
+:root[data-theme="light"] .tab.active{background:#d7f5eb;color:#075b46;border-color:#078b68}
+:root[data-theme="light"] footer button{color:#61758a}
+:root[data-theme="purple"] body{background:radial-gradient(ellipse at 50% -20%,#33204d 0%,#130d20 55%,#100b1b 100%)}
+:root[data-theme="purple"] header,:root[data-theme="purple"] footer{background:#160f25}
+:root[data-theme="purple"] .card,:root[data-theme="purple"] #scan>.card:first-child{background:linear-gradient(145deg,#211735,#171126);border-color:#44345f}
+:root[data-theme="purple"] .metric,:root[data-theme="purple"] input,:root[data-theme="purple"] select,:root[data-theme="purple"] #chart,:root[data-theme="purple"] #rsiChart{background:#140f22;border-color:#44345f;color:#f7f1ff}
+
 </style></head><body>
 <header><div class="row"><div><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">MARKET SCANNER · RISK MANAGER · PAPER TRADING</div></div><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
@@ -136,7 +153,7 @@ footer button.active{color:#40e4b5;background:#12342f}
 <section id="settingsTab" class="hidden">
  <div class="card"><h2>Live data connection / Σύνδεση δεδομένων</h2><p class="notice">Η εφαρμογή ζητά δεδομένα OHLC από τον server ForexPilot AI, ο οποίος χρησιμοποιεί Twelve Data. Όταν εμφανίζεται η ένδειξη LIVE DATA, τα κεριά και η τιμή προέρχονται από τον πάροχο. Η ανανέωση γίνεται περίπου κάθε 60 δευτερόλεπτα και η καθυστέρηση/διαθεσιμότητα εξαρτάται από το σύμβολο και το πρόγραμμα του παρόχου. Αν η σύνδεση αποτύχει, εμφανίζεται DEMO DATA και χρησιμοποιούνται συνθετικά δεδομένα. Το TradingView δεν είναι συνδεδεμένο ως chart/API.</p>
  <label>Manual demo price for <span id="manualSymbol">EUR/USD</span></label><input id="manualPrice" type="number" step="any"><button class="full" onclick="applyPrice()">Update demo price</button>
- <hr><h2>TradingView / Broker connection</h2><p class="notice">Δεν υπάρχει ακόμη σύνδεση με λογαριασμό broker ούτε αποστολή πραγματικών εντολών. Τα BUY/SELL είναι ενδείξεις ανάλυσης και το Paper Trading παραμένει εικονικό. Τα alerts τιμών ελέγχονται όταν ανανεώνονται τα δεδομένα ενώ η εφαρμογή είναι ανοιχτή· δεν είναι ακόμη εγγυημένες ειδοποιήσεις στο παρασκήνιο.</p></div>
+ <h2>Appearance / Εμφάνιση</h2><label>Επίλεξε χρώματα εφαρμογής</label><select id="themeChoice" onchange="setTheme(this.value)"><option value="blue">Midnight Blue · Πράσινο</option><option value="purple">Purple · Μωβ</option><option value="light">Light · Ανοιχτό</option></select><p class="notice">Η επιλογή αποθηκεύεται στο κινητό και εφαρμόζεται σε όλες τις οθόνες.</p><hr><h2>TradingView / Broker connection</h2><p class="notice">Δεν υπάρχει ακόμη σύνδεση με λογαριασμό broker ούτε αποστολή πραγματικών εντολών. Τα BUY/SELL είναι ενδείξεις ανάλυσης και το Paper Trading παραμένει εικονικό. Τα alerts τιμών ελέγχονται όταν ανανεώνονται τα δεδομένα ενώ η εφαρμογή είναι ανοιχτή· δεν είναι ακόμη εγγυημένες ειδοποιήσεις στο παρασκήνιο.</p></div>
  <div class="card"><h2>Safety</h2><p class="notice">Μόνο demo/paper trading. Δεν στέλνονται πραγματικές εντολές. Τα σήματα είναι rule-based εκπαιδευτικές ενδείξεις, όχι AI προβλέψεις ή επενδυτικές συμβουλές. Forex/CFD με μόχλευση μπορεί να προκαλέσει γρήγορες απώλειες.</p></div>
 </section>
 </main>
@@ -146,7 +163,8 @@ footer button.active{color:#40e4b5;background:#12342f}
 <script src="https://unpkg.com/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 const A=[["EUR/USD",1.08500,5],["GBP/USD",1.27100,5],["USD/JPY",149.500,3],["XAU/USD",2350,2],["BTC/USD",65000,2]];
-let ix=0,custom={},liveBars=null,timeframe="15min",paper=JSON.parse(localStorage.getItem("fp_app_paper")||"[]");const $=x=>document.getElementById(x),API_BASE=window.FOREXPILOT_API_BASE||"";
+let ix=0,custom={},liveBars=null,timeframe="15min",paper=JSON.parse(localStorage.getItem("fp_app_paper")||"[]");const $=x=>document.getElementById(x),API_BASE=window.FOREXPILOT_API_BASE||(location.protocol==="capacitor:"||location.hostname==="localhost"||location.hostname==="127.0.0.1"?"https://forexpilotai.onrender.com":"");
+function setTheme(name){if(!["blue","purple","light"].includes(name))return;document.documentElement.dataset.theme=name;localStorage.setItem("fp_theme",name)}function initTheme(){const t=localStorage.getItem("fp_theme")||"blue";setTheme(t);const el=$("themeChoice");if(el)el.value=t}
 function tab(id,b){["scan","riskTab","paperTab","settingsTab"].forEach(x=>$(x).classList.toggle("hidden",x!==id));document.querySelectorAll("footer button").forEach(x=>x.classList.remove("active"));b.classList.add("active")}
 function px(){return custom[ix]??A[ix][1]}
 function makeBars(){if(liveBars&&liveBars.length>5)return liveBars;let p=px(),arr=[];for(let i=0;i<55;i++){let base=p+Math.sin(i*1.53+ix)*p*.0007+(i-27)*p*.000006;let close=base+Math.sin(i*2.17+ix*.8)*p*.00035;arr.push({o:base,c:close,h:Math.max(base,close)+p*.00018,l:Math.min(base,close)-p*.00017})}return arr}
@@ -203,5 +221,5 @@ function renderPaper(){if(!paper.length){$("history").innerHTML='<p class="notic
 function clearPaper(){if(confirm("Delete demo history?")){paper=[];localStorage.setItem("fp_app_paper","[]");renderPaper()}}
 function setTimeframe(v){timeframe=v;liveBars=null;$("tf").textContent=v==="1day"?"1D":v.replace("min","m");analyze();loadLive()}
 async function loadLive(){const symbol=A[ix][0];$("feed").textContent="Connecting to market data…";try{const r=await fetch(`${API_BASE}/api/series?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(timeframe)}`,{cache:"no-store"});const raw=await r.text();let data;try{data=JSON.parse(raw)}catch{throw new Error(`Backend returned non-JSON (HTTP ${r.status}). Check Render API service.`)}if(!r.ok)throw new Error(data.error||"Live feed unavailable");if(!Array.isArray(data.values)||data.values.length<10)throw new Error("Not enough market candles");liveBars=data.values.map(v=>({o:v.open,c:v.close,h:v.high,l:v.low,datetime:v.datetime}));custom[ix]=liveBars.at(-1).c;checkAlerts(custom[ix]);$("feed").textContent=`LIVE · ${data.source} · ${new Date(data.fetchedAt).toLocaleTimeString("el-GR")}`;$("liveBadge").textContent="LIVE DATA";$("liveBadge").style.color="var(--green)";$("modeBadge").textContent="LIVE FEED";$("modeBadge").style.borderColor="#168d70";$("modeBadge").style.background="#10382f";$("modeBadge").style.color="var(--green)";$("quoteBadge").textContent="LIVE";$("quoteBadge").style.borderColor="#168d70";$("quoteBadge").style.color="var(--green)";$("feed").previousElementSibling.style.background="var(--green)";analyze()}catch(e){liveBars=null;$("feed").textContent="DEMO FALLBACK · "+e.message;$("liveBadge").textContent="DEMO DATA";$("liveBadge").style.color="var(--gold)";$("modeBadge").textContent="DEMO FEED";$("modeBadge").style.borderColor="#71572a";$("modeBadge").style.background="#2c2518";$("modeBadge").style.color="var(--gold)";$("quoteBadge").textContent="DEMO";$("quoteBadge").style.borderColor="#71572a";$("quoteBadge").style.color="var(--gold)";$("feed").previousElementSibling.style.background="var(--gold)";analyze()}}
-renderAssets();analyze();renderPaper();renderAlerts();loadLive();setInterval(loadLive,60000);if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+initTheme();renderAssets();analyze();renderPaper();renderAlerts();loadLive();setInterval(loadLive,60000);if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 </script></body></html>
