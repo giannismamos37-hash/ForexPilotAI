@@ -1,12 +1,19 @@
 {
   "name": "forexpilot-live-starter",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "build": "mkdir -p www && cp index.html manifest.json sw.js www/"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.0",
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/android": "^7.4.0"
   }
 }
