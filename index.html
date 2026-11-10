@@ -267,6 +267,10 @@ function draw(b){
  fpMacdSignal.setData(sig.map((v,i)=>({time:data[i].time,value:v})));
  fpMacdHist.setData(hist.map((v,i)=>({time:data[i].time,value:v,color:v>=0?"#16c99a":"#f05268"})));
  fpChart.timeScale().fitContent();fpRsiChart.timeScale().fitContent();fpMacdChart.timeScale().fitContent();
+ // Re-apply dimensions and data on the next paint. This avoids a blank first render
+ // on mobile browsers when the chart container is measured before layout settles.
+ const repaint=()=>{if(!fpChart||!host.isConnected||!data.length)return;const w=Math.max(280,Math.floor(host.getBoundingClientRect().width));const h=Math.max(260,Math.floor(host.getBoundingClientRect().height));fpChart.applyOptions({width:w,height:h});fpCandleSeries.setData(data);fpChart.timeScale().fitContent();};
+ if(typeof requestAnimationFrame==="function")requestAnimationFrame(repaint);else setTimeout(repaint,80);
  $("macdValue").textContent=ml.at(-1).toFixed(A[ix][2]);$("volumeValue").textContent=b.some(z=>z.volume!=null&&Number(z.volume)>0)?String(b.filter(z=>z.volume!=null).at(-1).volume):"Δεν παρέχεται από την πηγή για αυτό το σύμβολο";
 }
 function analyze(){let [s,_,d]=A[ix],p=px(),b=makeBars(),v=b.map(z=>z.c),f=ema(v.slice(-25),9),sl=ema(v.slice(-40),21),rv=rsi(v),atr=b.slice(-14).reduce((a,z)=>a+z.h-z.l,0)/14,up=f>sl;let sig="WAIT",why="Δεν υπάρχει επιβεβαιωμένη συμφωνία των δεικτών.";if(up&&rv>=50&&rv<70){sig="BUY";why="EMA 9 πάνω από EMA 21 και RSI σε θετική ζώνη."}else if(!up&&rv>30&&rv<=50){sig="SELL";why="EMA 9 κάτω από EMA 21 και RSI σε αρνητική ζώνη."}
