@@ -726,6 +726,28 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 @media(max-width:390px){:root .execution-panel .trade-actions button,:root .execution-panel .trade-center-controls .capital-close-btn{height:50px!important;min-height:50px!important;font-size:9px!important}}
 :root[data-theme="light"] .execution-panel{background:#080d19!important}
 
+
+/* Lower transparent signal/capital strip; keep execution buttons fixed */
+:root .signal-panel{
+ position:absolute!important;left:0!important;right:0!important;
+ bottom:0!important;top:auto!important;
+ height:68px!important;min-height:68px!important;
+ display:flex!important;align-items:flex-end!important;
+ padding:0 8px 5px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ z-index:9!important;pointer-events:none!important;
+}
+:root .signal-panel .signal-copy,
+:root .signal-panel .signal-heading-row,
+:root .signal-panel .signal-capital-group,
+:root .signal-panel .signal-state{background:transparent!important}
+:root .execution-panel{bottom:0!important;z-index:8!important}
+@media(max-width:420px){
+ :root .signal-panel{height:68px!important;min-height:68px!important;bottom:0!important;padding-bottom:5px!important}
+ :root .execution-panel{bottom:0!important}
+}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
