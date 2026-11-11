@@ -770,6 +770,21 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 :root .execution-panel{z-index:8!important;bottom:0!important}
 @media(max-width:420px){:root .signal-panel{bottom:50px!important;height:66px!important;min-height:66px!important;padding:5px 7px!important}:root .signal-panel .signal-heading-row{gap:8px!important}:root .signal-panel .signal-capital{min-width:96px!important;padding:4px 6px!important}:root .signal-panel .signal-capital b{font-size:12px!important}:root .signal-panel .signal-trend{font-size:8px!important;line-height:11px!important}:root .signal-panel .signal{font-size:19px!important}}
 
+
+/* MATCH THE STATUS HUD TO THE THREE BUTTON COLUMNS; REMOVE OVERLAP/GAPS */
+:root .signal-panel{position:absolute!important;left:0!important;right:0!important;bottom:54px!important;top:auto!important;height:78px!important;min-height:78px!important;padding:5px 0!important;margin:0!important;display:flex!important;align-items:center!important;background:#101e34!important;border:0!important;border-top:1px solid #304966!important;box-shadow:none!important;z-index:9!important;overflow:hidden!important}
+:root .signal-panel .signal-copy{display:block!important;width:100%!important;min-width:0!important;margin:0!important;padding:0!important}
+:root .signal-panel .signal-heading-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:center!important;justify-content:stretch!important;gap:0!important;width:100%!important;margin:0!important;padding:0!important}
+:root .signal-panel .signal-heading-row>div:first-child{grid-column:1!important;justify-self:center!important;text-align:center!important}
+:root .signal-panel .signal-capital-group{display:contents!important}
+:root .signal-panel .signal-capital{grid-column:2!important;justify-self:center!important;align-self:center!important;width:calc(100% - 12px)!important;min-width:0!important;max-width:190px!important;margin:0!important;box-sizing:border-box!important}
+:root .signal-panel .signal-trend{grid-column:3!important;justify-self:center!important;align-self:center!important;width:calc(100% - 14px)!important;min-width:0!important;text-align:center!important;white-space:normal!important}
+:root .signal-panel .signal-state{display:none!important}
+:root .execution-panel{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:54px!important;min-height:54px!important;margin:0!important;padding:0!important;z-index:10!important;background:#080d19!important}
+:root .execution-panel .trade-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;width:100%!important;margin:0!important;padding:0!important}
+:root .execution-panel .trade-actions button,:root .execution-panel .trade-center-controls .capital-close-btn{height:54px!important;min-height:54px!important;margin:0!important;border-radius:0!important;width:100%!important}
+@media(max-width:420px){:root .signal-panel{bottom:54px!important;height:78px!important;min-height:78px!important}:root .signal-panel .signal{font-size:19px!important;line-height:21px!important}:root .signal-panel .eyebrow{font-size:7px!important;letter-spacing:.6px!important}:root .signal-panel .signal-capital{padding:5px 4px!important}:root .signal-panel .signal-capital b{font-size:12px!important}:root .signal-panel .signal-trend{font-size:8px!important;line-height:12px!important}:root .execution-panel{height:54px!important;min-height:54px!important}}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
