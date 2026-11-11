@@ -1,4 +1,4 @@
-const C="fpai-v7";
+const C="fpai-v8";
 self.addEventListener("install",e=>e.waitUntil((async()=>{const c=await caches.open(C);await c.addAll(["./","./index.html","./manifest.json"]);await self.skipWaiting()})()));
 self.addEventListener("activate",e=>e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==C).map(k=>caches.delete(k)));await self.clients.claim()})()));
 self.addEventListener("fetch",e=>{
