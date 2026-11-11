@@ -690,6 +690,7 @@ function ema(v,n){let k=2/(n+1),x=v[0];for(let i=1;i<v.length;i++)x=v[i]*k+x*(1-
 function rsi(v){let g=0,l=0;for(let i=v.length-14;i<v.length;i++){let d=v[i]-v[i-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/14/(l/14))}
 let fpChart=null,fpCandleSeries=null,fpVolumeSeries=null,fpResizeObserver=null,fpRsiChart=null,fpRsiSeries=null,fpMacdChart=null,fpMacdLine=null,fpMacdSignal=null,fpMacdHist=null,fpLines={},fpVisible={ema9:true,ema21:true,ema50:false,ema200:false,bb:false},fpDrawingMode=null,fpDrawings=[],fpAutoLines=[];
 let fpSignalMarkers=null,fpCurrentSignal={side:'WAIT',time:null,symbol:null,reason:''},fpLastNotifiedSignal='';
+let fpTradeLines=[];
 function emaArray(values,n){let k=2/(n+1),v=values[0],out=[v];for(let i=1;i<values.length;i++){v=values[i]*k+v*(1-k);out.push(v)}return out}
 function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";Object.keys(fpLines).filter(k=>k===key||(key==="bb"&&k.startsWith("bb"))).forEach(k=>fpLines[k].applyOptions({visible:fpVisible[key]}));}
 function setDrawingMode(mode,btn){fpDrawingMode=mode;btn.style.opacity=".55";}
@@ -731,6 +732,7 @@ function draw(b){
  if(fpSignalMarkers){const marker=fpCurrentSignal.symbol===A[ix][0]&&fpCurrentSignal.time? [{time:fpCurrentSignal.time,position:fpCurrentSignal.side==="BUY"?"belowBar":"aboveBar",color:fpCurrentSignal.side==="BUY"?"#19d6a0":"#ff6075",shape:"circle",text:fpCurrentSignal.side}]:[];fpSignalMarkers.setMarkers(marker);}
  fpAutoLines.forEach(line=>{try{fpCandleSeries.removePriceLine(line)}catch{}});fpAutoLines=[];
  if(data.length>10){const recent=data.slice(-30),support=Math.min(...recent.map(z=>z.low)),resistance=Math.max(...recent.map(z=>z.high));fpAutoLines.push(fpCandleSeries.createPriceLine({price:support,color:"#19d6a0",lineWidth:1,lineStyle:L.LineStyle.Dotted,axisLabelVisible:true,title:"SUPPORT"}));fpAutoLines.push(fpCandleSeries.createPriceLine({price:resistance,color:"#ff6075",lineWidth:1,lineStyle:L.LineStyle.Dotted,axisLabelVisible:true,title:"RESISTANCE"}));}
+ syncPaperPositionLines();
  fpVolumeSeries.setData(data.filter(z=>z.volume!==null&&z.volume>0).map(z=>({time:z.time,value:z.volume,color:z.close>=z.open?"#16c99a66":"#f0526866"})));
  [["ema9",9],["ema21",21],["ema50",50],["ema200",200]].forEach(([key,n])=>fpLines[key].setData(emaArray(closes,n).map((v,i)=>({time:data[i].time,value:v}))));
  const n=20,mid=closes.map((_,i)=>{const a=closes.slice(Math.max(0,i-n+1),i+1);return a.reduce((x,y)=>x+y,0)/a.length}),sd=closes.map((v,i)=>{const a=closes.slice(Math.max(0,i-n+1),i+1),m=mid[i];return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/a.length)});
@@ -811,7 +813,28 @@ function notifyOpportunity(symbol,side,entry,stop,target,reason){
  }else if("Notification"in window&&Notification.permission==="granted"){new Notification(title,{body,tag:"fp-"+symbol+"-"+timeframe});}
 }
 function renderAssets(){$("assets").innerHTML=A.map((a,i)=>`<button class="tab ${i===ix?'active':''}" onclick="select(${i})">${a[0]}</button>`).join("")}
-function quickTrade(side){$("pSide").value=side;$("pSymbol").value=A[ix][0];$("pEntry").value=px();$("pExit").value=px();tab("paperTab",document.querySelectorAll("footer button")[2]);}
+function quickTrade(side){
+ if(!["BUY","SELL"].includes(side))return;
+ if(typeof pe==="undefined"){alert("Το Paper Trading δεν έχει αρχικοποιηθεί ακόμη.");return;}
+ const symbol=A[ix][0],digits=A[ix][2],bar=Array.isArray(liveBars)&&liveBars.length?liveBars.at(-1):null;
+ const entry=Number(bar?.c??px());
+ if(!(entry>0)){alert("Δεν υπάρχει έγκυρη τιμή για άνοιγμα θέσης.");return;}
+ if(pe.open.some(t=>t.symbol===symbol)){alert("Υπάρχει ήδη ανοιχτή θέση στο "+symbol+". Κλείσε την πρώτα ή περίμενε να φτάσει σε SL/TP.");return;}
+ if(pe.open.length>=3){alert("Έχεις ήδη 3 ανοιχτές εικονικές θέσεις.");return;}
+ const bars=Array.isArray(liveBars)&&liveBars.length>=15?liveBars:makeBars();
+ const ranges=bars.slice(-14).map((x,i)=>{const prev=Number(bars[Math.max(0,bars.length-15+i)]?.c??x.o);return Math.max(Number(x.h)-Number(x.l),Math.abs(Number(x.h)-prev),Math.abs(Number(x.l)-prev));});
+ const atr=ranges.reduce((a,b)=>a+b,0)/Math.max(1,ranges.length);
+ const distance=Math.max(atr*1.5,entry*Math.pow(10,-digits)*10);
+ const sl=side==="BUY"?entry-distance:entry+distance;
+ const tp=side==="BUY"?entry+distance*2:entry-distance*2;
+ const riskCash=peBalance()*pe.riskPct/100,units=riskCash/distance;
+ if(!(Number.isFinite(units)&&units>0)){alert("Δεν ήταν δυνατός ο υπολογισμός μεγέθους θέσης.");return;}
+ pe.open.push({id:"manual-"+Date.now()+"-"+symbol,symbol,side,entry,sl,tp,units,digits,pnl:0,openedAt:new Date().toISOString(),riskCash,manual:true});
+ pe.lastSignal[symbol]=side;
+ peSave();peRender();
+ $("pSide").value=side;$("pSymbol").value=symbol;$("pEntry").value=entry;$("pExit").value=entry;
+ $("advisorReason").textContent=(side==="BUY"?"Άνοιξε εικονική θέση BUY":"Άνοιξε εικονική θέση SELL")+" στο "+symbol+" στην τιμή "+entry.toFixed(digits)+". Η διακεκομμένη γραμμή στο γράφημα δείχνει την τιμή εισόδου.";
+}
 function select(i){ix=i;liveBars=null;renderAssets();analyze();loadLive()}
 function applyPrice(){let n=+$("manualPrice").value;if(!(n>0)){alert("Enter a valid price");return}custom[ix]=n;analyze();alert("Demo price updated")}
 let alerts=JSON.parse(localStorage.getItem("fp_app_alerts")||"[]");
@@ -851,6 +874,16 @@ function peRender(){
  const op=$("peOpenPositions"),cp=$("peClosedPositions");
  if(op)op.innerHTML=pe.open.length?'<table><tr><th>Σύμβολο</th><th>Πλευρά</th><th>Είσοδος</th><th>Τρέχουσα</th><th>SL / TP</th><th>Ανοιχτό P/L</th></tr>'+pe.open.map(t=>{const p=Number(custom[A.findIndex(a=>a[0]===t.symbol)]??t.entry);return '<tr><td>'+t.symbol+'</td><td>'+t.side+'</td><td>'+t.entry.toFixed(t.digits)+'</td><td>'+p.toFixed(t.digits)+'</td><td>'+t.sl.toFixed(t.digits)+' / '+t.tp.toFixed(t.digits)+'</td><td style="color:'+(t.pnl>=0?'var(--green)':'var(--red)')+'">'+peMoney(t.pnl)+'</td></tr>'}).join("")+'</table>':"Δεν υπάρχουν ανοιχτές θέσεις.";
  if(cp)cp.innerHTML=closed.length?'<table><tr><th>Σύμβολο</th><th>Πλευρά</th><th>Έξοδος</th><th>Αποτέλεσμα</th><th>Λόγος</th></tr>'+closed.slice(0,8).map(t=>'<tr><td>'+t.symbol+'</td><td>'+t.side+'</td><td>'+t.exit.toFixed(t.digits)+'</td><td style="color:'+(t.pnl>=0?'var(--green)':'var(--red)')+'">'+(t.pnl>=0?"+":"")+peMoney(t.pnl)+'</td><td>'+t.reason+'</td></tr>').join("")+'</table>':"Δεν υπάρχουν ακόμη κλεισμένες θέσεις.";
+ syncPaperPositionLines();
+}
+function syncPaperPositionLines(){
+ if(typeof pe==="undefined"||!fpCandleSeries)return;
+ fpTradeLines.forEach(line=>{try{fpCandleSeries.removePriceLine(line)}catch{}});
+ fpTradeLines=[];
+ pe.open.filter(t=>t.symbol===A[ix][0]).forEach(t=>{
+  const color=t.side==="BUY"?"#19d6a0":"#ff6075";
+  fpTradeLines.push(fpCandleSeries.createPriceLine({price:Number(t.entry),color,lineWidth:2,lineStyle:2,axisLabelVisible:true,title:(t.side==="BUY"?"BUY ENTRY ":"SELL ENTRY ")+Number(t.entry).toFixed(t.digits)}));
+ });
 }
 function paperToggleAuto(){pe.auto=!pe.auto;peSave();peRender()}
 function paperReset(){
