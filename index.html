@@ -102,6 +102,16 @@ footer button.active{color:#40e4b5;background:#12342f}
 :root[data-theme="light"] .advisor-card{background:#f4fbfa!important;border-color:#9bcfc1!important}
 :root[data-theme="light"] .advisor-checks span{background:#e8f2f1;color:#365d59;border-color:#c3ded8}
 
+
+/* Compact paper-account capital beside the market symbol */
+.market-symbol-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:3px}
+.capital-chip{display:inline-flex;flex-direction:column;justify-content:center;gap:2px;min-width:92px;padding:5px 8px;border:1px solid #287d6c;border-radius:8px;background:linear-gradient(145deg,#10362f,#102638);font-variant-numeric:tabular-nums}
+.capital-chip span{font-size:8px;line-height:1.1;font-weight:900;letter-spacing:.9px;color:#83ad9f}
+.capital-chip b{font-size:11px;line-height:1.2;font-weight:950;color:#5ce9bf;white-space:nowrap}
+:root[data-theme="light"] .capital-chip{background:#e6f5ef;border-color:#9bcfc1}
+:root[data-theme="light"] .capital-chip span{color:#52786c}
+:root[data-theme="light"] .capital-chip b{color:#08785c}
+
 /* User-selectable themes */
 :root[data-theme="blue"]{--bg:#070b13;--panel:#0e1725;--panel2:#14243a;--line:#203149;--txt:#f1f6fc;--muted:#8194aa;--green:#19d6a0;--red:#ff6075;--gold:#f4c66b;--blue:#65aaff}
 :root[data-theme="purple"]{--bg:#100b1b;--panel:#1b1430;--panel2:#261c40;--line:#44345f;--txt:#f7f1ff;--muted:#b4a4ca;--green:#c084fc;--red:#fb7185;--gold:#fbbf24;--blue:#818cf8}
@@ -587,7 +597,7 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 <section id="scan">
  <div class="card terminal-card">
   <section class="quote-panel">
-   <div class="quote-main"><div><div class="market-symbol" id="symbol">EUR/USD</div><div class="price" id="price">1.08500</div><div class="tiny muted feed-line"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><div class="quote-side"><span class="pill demo" id="quoteBadge">WAITING</span><div class="quote-mini"><span>RSI 14</span><b id="rsi">—</b></div></div></div>
+   <div class="quote-main"><div><div class="market-symbol-row"><div class="market-symbol" id="symbol">EUR/USD</div><div class="capital-chip"><span>ΚΕΦΑΛΑΙΟ</span><b id="headerCapital">10.000,00 €</b></div></div><div class="price" id="price">1.08500</div><div class="tiny muted feed-line"><span class="status"></span><span id="feed">Demo data — not live</span></div></div><div class="quote-side"><span class="pill demo" id="quoteBadge">WAITING</span><div class="quote-mini"><span>RSI 14</span><b id="rsi">—</b></div></div></div>
   </section>
   <section class="chart-module">
    <div class="chart-topline"><div class="chart-title">CHART <small id="tf">15m</small></div><span class="chart-tools-hint">CROSSHAIR · ZOOM · PAN</span></div>
@@ -865,7 +875,7 @@ function peFloating(){return pe.open.reduce((s,t)=>s+t.pnl,0)}
 function peRender(){
  const closed=pe.closed, wins=closed.filter(t=>t.pnl>0).length, total=closed.reduce((s,t)=>s+t.pnl,0);
  const set=(id,v)=>{const e=$(id);if(e)e.textContent=v};
- set("peInitial",peMoney(pe.initial)+" €");set("peBalance",peMoney(peBalance())+" €");
+ set("peInitial",peMoney(pe.initial)+" €");set("peBalance",peMoney(peBalance())+" €");set("headerCapital",peMoney(peBalance())+" €");
  set("peFloating",peMoney(peFloating()));set("peTotal",(total>=0?"+":"")+peMoney(total));
  set("peClosed",String(closed.length));set("peWinRate",closed.length?(wins/closed.length*100).toFixed(1)+"%":"—");
  set("paperEngineStatus",pe.auto?"AUTO ON":"PAUSED");
