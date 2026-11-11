@@ -561,6 +561,11 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 #chart{touch-action:none!important;overscroll-behavior:contain!important}
 #scan,#scan>.terminal-card,.chart-module{touch-action:pan-y!important}
 
+
+/* Live candle focus controls */
+.live-candle-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;margin:0 0 7px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.live-candle-readout{display:flex;flex-direction:column;gap:3px;min-width:0}.live-candle-readout b{font-size:9px;letter-spacing:1px;color:var(--green)}.live-candle-readout span{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}.live-candle-readout #liveCandleOHLC{color:var(--txt);white-space:normal}.live-candle-tools button{flex:0 0 auto;padding:10px 11px;border:1px solid #238b72;background:#10382f;color:#62edc2;font-weight:900}
+:root[data-theme="light"] .live-candle-tools{background:#f2f6fa;border-color:#cbd7e3}:root[data-theme="light"] .live-candle-readout #liveCandleOHLC{color:#172638}
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
@@ -575,6 +580,7 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
    <div class="timeframe-strip"><label class="sr-only" for="timeframe">Timeframe</label><select id="timeframe" onchange="setTimeframe(this.value)"><option value="1min">1m</option><option value="5min">5m</option><option value="15min" selected>15m</option><option value="30min">30m</option><option value="1h">1H</option><option value="4h">4H</option><option value="1day">1D</option></select><span class="pill" id="liveBadge">DEMO DATA</span></div>
    <div class="indicator-toolbar"><button class="pill" onclick="toggleIndicator('ema9',this)">EMA 9</button><button class="pill" onclick="toggleIndicator('ema21',this)">EMA 21</button><button class="pill" onclick="toggleIndicator('ema50',this)">EMA 50</button><button class="pill" onclick="toggleIndicator('ema200',this)">EMA 200</button><button class="pill" onclick="toggleIndicator('bb',this)">BB</button><button class="pill" id="drawHLine" onclick="setDrawingMode('hline',this)">＋ LINE</button><button class="pill" onclick="clearDrawings()">CLEAR</button></div>
    <div id="opportunityBanner" class="opportunity-banner hidden" role="button" tabindex="0" onclick="showOpportunityDetails()"><div class="opp-dot"></div><div class="opp-copy"><b id="oppTitle">Νέα ευκαιρία</b><span id="oppSummary">Περιμένουμε επιβεβαιωμένο σήμα</span></div><span class="opp-arrow">›</span></div>
+   <div class="live-candle-tools"><div class="live-candle-readout"><b>LIVE CANDLE</b><span id="liveCandleState">Αναμονή δεδομένων</span><span id="liveCandleOHLC">O — · H — · L — · C —</span></div><button type="button" class="pill" id="centerLiveCandle" onclick="centerLiveCandle()">◎ ΚΕΝΤΡΟ LIVE</button></div>
    <div id="chart" aria-label="Interactive candlestick chart"><div id="chartLoading">Loading interactive chart…</div></div>
    <div class="chart-subpanel"><div class="chart-label">RSI · 14</div><div id="rsiChart" style="height:105px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div></div>
    <div class="chart-subpanel"><div class="chart-label">MACD · 12 / 26 / 9</div><div id="macdChart" style="height:125px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel)"></div></div>
@@ -665,6 +671,8 @@ function emaArray(values,n){let k=2/(n+1),v=values[0],out=[v];for(let i=1;i<valu
 function toggleIndicator(key,btn){fpVisible[key]=!fpVisible[key];btn.style.opacity=fpVisible[key]?"1":".4";Object.keys(fpLines).filter(k=>k===key||(key==="bb"&&k.startsWith("bb"))).forEach(k=>fpLines[k].applyOptions({visible:fpVisible[key]}));}
 function setDrawingMode(mode,btn){fpDrawingMode=mode;btn.style.opacity=".55";}
 function clearDrawings(){if(fpCandleSeries)fpDrawings.forEach(line=>{try{fpCandleSeries.removePriceLine(line)}catch{}});fpDrawings=[];fpDrawingMode=null;const b=$("drawHLine");if(b)b.style.opacity="1";}
+function centerLiveCandle(){if(!fpChart||!Array.isArray(liveBars)||!liveBars.length)return;const range=fpChart.timeScale().getVisibleLogicalRange();const last=liveBars.length-1;const span=range?Math.max(30,range.to-range.from):44;fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,last-span/2),to:last+span/2});const b=$("centerLiveCandle");if(b){b.textContent="◎ LIVE ΣΤΟ ΚΕΝΤΡΟ";setTimeout(()=>{b.textContent="◎ ΚΕΝΤΡΟ LIVE"},1300)}}
+function updateLiveCandleReadout(bar){const state=$("liveCandleState"),ohlc=$("liveCandleOHLC");if(!state||!ohlc)return;if(!bar){state.textContent="Αναμονή live δεδομένων";ohlc.textContent="O — · H — · L — · C —";return}const digits=A[ix][2],f=n=>Number.isFinite(Number(n))?Number(n).toFixed(digits):"—";state.textContent="● ΚΕΡΙ ΣΕ ΕΞΕΛΙΞΗ · "+(timeframe==="1day"?"1D":timeframe.replace("min","m"));ohlc.textContent="O "+f(bar.o)+" · H "+f(bar.h)+" · L "+f(bar.l)+" · C "+f(bar.c)}
 function draw(b){
  const host=$("chart"),rh=$("rsiChart"),mh=$("macdChart");
  if(!window.LightweightCharts){host.innerHTML='<div id="chartLoading">Chart library unavailable. Connect to internet and reload.</div>';return}
@@ -673,7 +681,7 @@ function draw(b){
  const fg="#131722";
  const line="#e6e8eb";
  const previousRange=fpChart?fpChart.timeScale().getVisibleLogicalRange():null;
- const base={layout:{background:{type:"solid",color:bg},textColor:fg,fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:line},horzLines:{color:line}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{visible:true,borderVisible:true,borderColor:line,minimumWidth:76,entireTextOnly:false,autoScale:true,scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:line,timeVisible:true,secondsVisible:false,rightOffset:2,barSpacing:11,fixRightEdge:true,rightBarStaysOnScroll:true},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:true},handleScale:{axisPressedMouseMove:{time:true,price:true},axisDoubleClickReset:true,mouseWheel:true,pinch:true}};
+ const base={layout:{background:{type:"solid",color:bg},textColor:fg,fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:line},horzLines:{color:line}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{visible:true,borderVisible:true,borderColor:line,minimumWidth:76,entireTextOnly:false,autoScale:true,scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:line,timeVisible:true,secondsVisible:false,rightOffset:22,barSpacing:11,fixRightEdge:false,rightBarStaysOnScroll:false},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:true},handleScale:{axisPressedMouseMove:{time:true,price:true},axisDoubleClickReset:true,mouseWheel:true,pinch:true}};
  if(!fpChart){
   host.innerHTML="";fpChart=L.createChart(host,{...base,width:host.clientWidth,height:host.clientHeight});
   fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{priceFormat:{type:"price",precision:A[ix][2],minMove:1/Math.pow(10,A[ix][2])},upColor:"#089981",downColor:"#f23645",borderUpColor:"#089981",borderDownColor:"#f23645",wickUpColor:"#089981",wickDownColor:"#f23645",priceLineVisible:true,lastValueVisible:true});
@@ -695,6 +703,7 @@ function draw(b){
  const step=({"1min":60,"5min":300,"15min":900,"30min":1800,"1h":3600,"4h":14400,"1day":86400})[timeframe]||900,now=Math.floor(Date.now()/1000);
  const rows=b.map((z,i)=>({time:z.datetime?Math.floor(new Date(z.datetime).getTime()/1000):now-(b.length-1-i)*step,open:z.o,high:z.h,low:z.l,close:z.c,volume:Number.isFinite(Number(z.volume))?Number(z.volume):null})).filter(z=>Number.isFinite(z.time)&&[z.open,z.high,z.low,z.close].every(Number.isFinite)).sort((a,c)=>a.time-c.time);
  const data=rows.filter((z,i)=>i===0||z.time!==rows[i-1].time),closes=data.map(z=>z.close);
+ updateLiveCandleReadout(b.at(-1));
  fpCandleSeries.setData(data);
  if(fpSignalMarkers){const marker=fpCurrentSignal.symbol===A[ix][0]&&fpCurrentSignal.time? [{time:fpCurrentSignal.time,position:fpCurrentSignal.side==="BUY"?"belowBar":"aboveBar",color:fpCurrentSignal.side==="BUY"?"#19d6a0":"#ff6075",shape:"circle",text:fpCurrentSignal.side}]:[];fpSignalMarkers.setMarkers(marker);}
  fpAutoLines.forEach(line=>{try{fpCandleSeries.removePriceLine(line)}catch{}});fpAutoLines=[];
@@ -711,10 +720,10 @@ function draw(b){
  fpMacdLine.setData(ml.map((v,i)=>({time:data[i].time,value:v})));
  fpMacdSignal.setData(sig.map((v,i)=>({time:data[i].time,value:v})));
  fpMacdHist.setData(hist.map((v,i)=>({time:data[i].time,value:v,color:v>=0?"#16c99a":"#f05268"})));
- const visibleFrom=Math.max(0,data.length-42);if(previousRange){try{fpChart.timeScale().setVisibleLogicalRange(previousRange)}catch{fpChart.timeScale().setVisibleLogicalRange({from:visibleFrom,to:data.length+2})}}else{fpChart.timeScale().setVisibleLogicalRange({from:visibleFrom,to:data.length+2})}fpRsiChart.timeScale().fitContent();fpMacdChart.timeScale().fitContent();
+ const visibleFrom=Math.max(0,data.length-22);if(previousRange){try{fpChart.timeScale().setVisibleLogicalRange(previousRange)}catch{fpChart.timeScale().setVisibleLogicalRange({from:visibleFrom,to:data.length+22})}}else{fpChart.timeScale().setVisibleLogicalRange({from:visibleFrom,to:data.length+22})}fpRsiChart.timeScale().fitContent();fpMacdChart.timeScale().fitContent();
  // Re-apply dimensions and data on the next paint. This avoids a blank first render
  // on mobile browsers when the chart container is measured before layout settles.
- const repaint=()=>{if(!fpChart||!host.isConnected||!data.length)return;const w=Math.max(280,Math.floor(host.getBoundingClientRect().width));const h=Math.max(260,Math.floor(host.getBoundingClientRect().height));fpChart.applyOptions({width:w,height:h});fpCandleSeries.setData(data);if(previousRange){try{fpChart.timeScale().setVisibleLogicalRange(previousRange)}catch{fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,data.length-42),to:data.length+2})}}else{fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,data.length-42),to:data.length+2})}};
+ const repaint=()=>{if(!fpChart||!host.isConnected||!data.length)return;const w=Math.max(280,Math.floor(host.getBoundingClientRect().width));const h=Math.max(260,Math.floor(host.getBoundingClientRect().height));fpChart.applyOptions({width:w,height:h});fpCandleSeries.setData(data);if(previousRange){try{fpChart.timeScale().setVisibleLogicalRange(previousRange)}catch{fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,data.length-22),to:data.length+22})}}else{fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,data.length-22),to:data.length+22})}};
  if(typeof requestAnimationFrame==="function")requestAnimationFrame(repaint);else setTimeout(repaint,80);
  $("macdValue").textContent=ml.at(-1).toFixed(A[ix][2]);$("volumeValue").textContent=b.some(z=>z.volume!=null&&Number(z.volume)>0)?String(b.filter(z=>z.volume!=null).at(-1).volume):"Δεν παρέχεται από την πηγή για αυτό το σύμβολο";
 }
