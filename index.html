@@ -105,11 +105,11 @@ footer button.active{color:#40e4b5;background:#12342f}
 
 /* Compact paper-account capital beside the market symbol */
 .market-symbol-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:3px}
-.capital-chip{display:inline-flex;flex-direction:column;justify-content:center;gap:2px;min-width:92px;padding:5px 8px;border:1px solid #287d6c;border-radius:8px;background:linear-gradient(145deg,#10362f,#102638);font-variant-numeric:tabular-nums}
+.capital-chip{display:inline-flex;flex-direction:column;justify-content:center;gap:2px;min-width:92px;padding:5px 8px;border:1px solid rgba(40,125,108,.65);border-radius:8px;background:rgba(16,54,47,.16);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);font-variant-numeric:tabular-nums}
 .capital-chip span{font-size:8px;line-height:1.1;font-weight:900;letter-spacing:.9px;color:#83ad9f}
 .capital-chip b{font-size:11px;line-height:1.2;font-weight:950;color:#5ce9bf;white-space:nowrap}
-.capital-close-btn{border:1px solid #9a3f50;border-radius:8px;background:linear-gradient(145deg,#49202b,#2b1722);color:#ff9aaa;padding:7px 9px;font-size:9px;font-weight:950;letter-spacing:.35px;white-space:nowrap;cursor:pointer;min-height:34px}.capital-close-btn:disabled{opacity:.35;cursor:not-allowed}:root[data-theme="light"] .capital-close-btn{background:#fff0f1;color:#b4233a;border-color:#e6aab3}
-:root[data-theme="light"] .capital-chip{background:#e6f5ef;border-color:#9bcfc1}
+.capital-close-btn{border:1px solid rgba(255,110,130,.65);border-radius:7px;background:rgba(35,18,26,.18);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);color:#ff9aaa;padding:7px 9px;font-size:9px;font-weight:950;letter-spacing:.35px;white-space:nowrap;cursor:pointer;min-height:34px;transition:background .15s,border-color .15s}.capital-close-btn:not(:disabled):active{background:rgba(255,110,130,.18)}.capital-close-btn:disabled{opacity:.35;cursor:not-allowed}:root[data-theme="light"] .capital-close-btn{background:rgba(255,255,255,.16);color:#b4233a;border-color:rgba(180,35,58,.55)}
+:root[data-theme="light"] .capital-chip{background:rgba(230,245,239,.16);border-color:rgba(155,207,193,.7)}
 :root[data-theme="light"] .capital-chip span{color:#52786c}
 :root[data-theme="light"] .capital-chip b{color:#08785c}
 
