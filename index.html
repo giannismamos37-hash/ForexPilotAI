@@ -647,6 +647,44 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
  .trade-center-controls .capital-close-btn{min-height:52px!important;font-size:8px!important}
 }
 
+
+/* MOBILE EXECUTION BAR — high-specificity neon override for light-theme rules */
+:root .execution-panel{
+ background:rgba(5,9,24,.96)!important;
+ border-top:1px solid rgba(140,90,255,.55)!important;
+ box-shadow:0 -8px 28px rgba(0,0,0,.42)!important;
+ backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
+ padding:8px 10px!important;
+}
+:root .execution-panel .trade-actions button.buy-action{
+ color:#fff!important;
+ background:linear-gradient(135deg,#c000ff 0%,#7900ff 58%,#087dff 100%)!important;
+ border:2px solid #d34dff!important;border-radius:15px!important;
+ box-shadow:0 0 8px #d000ff,0 0 20px #9d00ff, inset 0 0 14px #f2baff!important;
+ text-shadow:0 0 9px #fff!important;
+}
+:root .execution-panel .trade-center-controls .capital-close-btn{
+ color:#002c30!important;
+ background:linear-gradient(135deg,#64fff0 0%,#00e6d2 55%,#00a9c8 100%)!important;
+ border:2px solid #72fff5!important;border-radius:15px!important;
+ box-shadow:0 0 8px #00fff0,0 0 20px #00d9ff,inset 0 0 14px #d5ffff!important;
+ text-shadow:0 0 5px #fff!important;
+ opacity:1!important;
+}
+:root .execution-panel .trade-actions button.sell-action{
+ color:#fff!important;
+ background:linear-gradient(135deg,#ff39c8 0%,#f00091 58%,#a90065 100%)!important;
+ border:2px solid #ff71d9!important;border-radius:15px!important;
+ box-shadow:0 0 8px #ff35c8,0 0 20px #ff009f,inset 0 0 14px #ffc2ed!important;
+ text-shadow:0 0 9px #fff!important;
+}
+:root[data-theme="light"] .execution-panel{background:rgba(5,9,24,.96)!important}
+:root[data-theme="light"] .execution-panel .trade-actions button.buy-action,
+:root[data-theme="light"] .execution-panel .trade-center-controls .capital-close-btn,
+:root[data-theme="light"] .execution-panel .trade-actions button.sell-action{background-image:linear-gradient(135deg,#c000ff,#7900ff 58%,#087dff)!important}
+:root[data-theme="light"] .execution-panel .trade-center-controls .capital-close-btn{background-image:linear-gradient(135deg,#64fff0,#00e6d2 55%,#00a9c8)!important}
+:root[data-theme="light"] .execution-panel .trade-actions button.sell-action{background-image:linear-gradient(135deg,#ff39c8,#f00091 58%,#a90065)!important}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
