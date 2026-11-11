@@ -91,6 +91,17 @@ footer button.active{color:#40e4b5;background:#12342f}
 @media(min-width:700px){main{max-width:900px}.card{margin-left:16px;margin-right:16px}#chart{height:430px}}
 
 
+
+/* AI advisor panel */
+.advisor-card{background:linear-gradient(145deg,#112b35,#0d1928)!important;border:1px solid #197e70!important}
+.advisor-heading{font-size:13px;font-weight:850;margin:4px 0 8px;color:var(--txt)}
+.advisor-signal{font-size:22px;font-weight:950;letter-spacing:.7px;color:var(--gold);margin:5px 0}
+.advisor-signal.buy{color:var(--green)}.advisor-signal.sell{color:var(--red)}.advisor-signal.wait{color:var(--gold)}
+.advisor-checks{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.advisor-checks span{font-size:9px;font-weight:800;color:#a9c3d5;background:#0a1b28;border:1px solid #29475a;border-radius:7px;padding:6px 8px}
+:root[data-theme="light"] .advisor-card{background:#f4fbfa!important;border-color:#9bcfc1!important}
+:root[data-theme="light"] .advisor-checks span{background:#e8f2f1;color:#365d59;border-color:#c3ded8}
+
 /* User-selectable themes */
 :root[data-theme="blue"]{--bg:#070b13;--panel:#0e1725;--panel2:#14243a;--line:#203149;--txt:#f1f6fc;--muted:#8194aa;--green:#19d6a0;--red:#ff6075;--gold:#f4c66b;--blue:#65aaff}
 :root[data-theme="purple"]{--bg:#100b1b;--panel:#1b1430;--panel2:#261c40;--line:#44345f;--txt:#f7f1ff;--muted:#b4a4ca;--green:#c084fc;--red:#fb7185;--gold:#fbbf24;--blue:#818cf8}
@@ -598,6 +609,15 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
    <div class="market-context"><span id="trend">Trend: —</span><span id="ema">EMA 9/21: —</span></div>
   </section>
  </div>
+
+ <div class="card advisor-card" id="advisorPanel">
+  <div class="row"><h2>✦ AI ΣΥΜΒΟΥΛΟΣ</h2><span class="pill demo" id="advisorStatus">ΡΥΘΜΙΣΗ ΚΡΙΤΗΡΙΩΝ</span></div>
+  <div class="advisor-heading">Σάρωση γραφήματος κεριών</div>
+  <div class="advisor-signal" id="advisorSignal">WAIT · Αναμονή</div>
+  <p class="notice" id="advisorReason">Ο σύμβουλος είναι έτοιμος. Θα ορίσουμε μαζί ποια μοτίβα κεριών και ποιες συνθήκες θα αναζητά.</p>
+  <div class="advisor-checks" id="advisorChecks"><span>EMA 9/21</span><span>RSI 14</span><span>Τελευταίο κερί</span><span>ATR / Risk</span></div>
+  <p class="notice">Προς το παρόν εμφανίζει τις υπάρχουσες τεχνικές ενδείξεις της εφαρμογής. Δεν εκτελεί συναλλαγές ούτε αποτελεί επενδυτική σύσταση.</p>
+ </div>
  <div class="card"><h2>Price alerts / Ειδοποιήσεις τιμών</h2><div class="row"><div style="flex:1"><label>Alert price for current pair</label><input id="alertPrice" type="number" step="any" placeholder="Target price"></div><div style="align-self:end"><button onclick="addAlert()">Add alert</button></div></div><button class="alt full" onclick="enableNotifications()">Enable phone notifications</button><div id="alertList" class="notice" style="margin-top:10px">No active alerts</div></div>
  <div class="card"><h2>Signal plan / Πλάνο σήματος</h2><div class="grid">
   <div class="metric"><span class="tiny muted">Entry / Είσοδος</span><b id="entry">—</b></div><div class="metric"><span class="tiny muted">Stop Loss</span><b id="sl">—</b></div><div class="metric"><span class="tiny muted">Take Profit</span><b id="tp">—</b></div><div class="metric"><span class="tiny muted">Risk / Reward</span><b id="rr">—</b></div>
@@ -730,6 +750,19 @@ function draw(b){
  if(typeof requestAnimationFrame==="function")requestAnimationFrame(repaint);else setTimeout(repaint,80);
  $("macdValue").textContent=ml.at(-1).toFixed(A[ix][2]);$("volumeValue").textContent=b.some(z=>z.volume!=null&&Number(z.volume)>0)?String(b.filter(z=>z.volume!=null).at(-1).volume):"Δεν παρέχεται από την πηγή για αυτό το σύμβολο";
 }
+
+function updateAdvisorPanel(){
+ const status=$("advisorStatus"),signal=$("advisorSignal"),reason=$("advisorReason");
+ if(!status||!signal||!reason)return;
+ const live=Array.isArray(liveBars)&&liveBars.length>=30;
+ const side=$("signal")?.textContent?.trim()||"WAIT";
+ status.textContent=live?"ΣΑΡΩΣΗ LIVE":"ΑΝΑΜΟΝΗ LIVE DATA";
+ status.classList.toggle("demo",!live);
+ signal.textContent=(side==="BUY"?"BUY · ΠΙΘΑΝΗ ΑΝΟΔΙΚΗ ΚΙΝΗΣΗ":side==="SELL"?"SELL · ΠΙΘΑΝΗ ΚΑΘΟΔΙΚΗ ΚΙΝΗΣΗ":"WAIT · ΧΩΡΙΣ ΕΠΙΒΕΒΑΙΩΣΗ");
+ signal.className="advisor-signal "+(side==="BUY"?"buy":side==="SELL"?"sell":"wait");
+ reason.textContent=live?($("explain")?.textContent||"Δεν υπάρχει σαφής συμφωνία ενδείξεων."):"Περιμένω επιβεβαιωμένα δεδομένα αγοράς. Τα demo κεριά δεν δημιουργούν πραγματικά σήματα. Θα προσθέσουμε τα δικά σου κριτήρια candlestick στην επόμενη φάση.";
+}
+
 function analyze(){
  const [symbol,,digits]=A[ix],hasLive=Array.isArray(liveBars)&&liveBars.length>=30;
  const bars=hasLive?liveBars:makeBars(),closes=bars.map(x=>Number(x.c)).filter(Number.isFinite);
@@ -762,6 +795,7 @@ function analyze(){
  $("rEntry").value=price;$("rStop").value=stop??(price-atr*1.5);$("rTarget").value=target??(price+atr*3);
  fpCurrentSignal={side:sig,time:hasLive&&last.datetime?Math.floor(new Date(last.datetime).getTime()/1000):null,symbol,reason:why};
  draw(bars);
+ updateAdvisorPanel();
  if(typeof updateOpportunityBanner==="function")updateOpportunityBanner();
  if(hasLive&&["BUY","SELL"].includes(sig)){
   const key=[symbol,timeframe,last.datetime,sig].join("|");
