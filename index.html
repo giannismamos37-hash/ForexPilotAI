@@ -1096,7 +1096,31 @@ function addPaper(){let e=+$("pEntry").value,x=+$("pExit").value,u=+$("pUnits").
 function renderPaper(){if(!paper.length){$("history").innerHTML='<p class="notice">Δεν υπάρχουν ακόμη demo trades.</p>';return}$("history").innerHTML='<table><tr><th>Symbol</th><th>Side</th><th>Illustrative P/L</th><th>Date</th></tr>'+paper.map(t=>`<tr><td>${t.symbol}</td><td>${t.side}</td><td style="color:${t.pnl>=0?'#4cdbad':'#ff727e'}">${t.pnl.toFixed(2)}</td><td>${t.date}</td></tr>`).join("")+'</table><p class="notice">P/L = μεταβολή τιμής × μονάδες. Δεν περιλαμβάνει pip value, contract size, spread, swaps ή προμήθειες.</p>'}
 function clearPaper(){if(confirm("Delete demo history?")){paper=[];localStorage.setItem("fp_app_paper","[]");renderPaper()}}
 function candleDurationSeconds(){return ({"1min":60,"5min":300,"15min":900,"30min":1800,"1h":3600,"4h":14400,"1day":86400})[timeframe]||900}
-function updateCandleCountdown(){const el=$("candleCountdown");if(!el)return;const duration=candleDurationSeconds(),now=Math.floor(Date.now()/1000),remaining=duration-(now%duration);const h=Math.floor(remaining/3600),m=Math.floor((remaining%3600)/60),sec=remaining%60;el.textContent=h?String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"):String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");el.title="Χρόνος μέχρι το κλείσιμο του τρέχοντος κεριού";}
+function updateCandleCountdown(){
+ const el=$("candleCountdown");if(!el)return;
+ const duration=candleDurationSeconds(),now=Date.now();
+ let remainingMs=null;
+ const last=Array.isArray(liveBars)&&liveBars.length?liveBars.at(-1):null;
+ if(last?.datetime){
+  let stamp=typeof last.datetime==="number"?last.datetime:Number.NaN;
+  if(!Number.isFinite(stamp)){const parsed=Date.parse(last.datetime);if(Number.isFinite(parsed))stamp=parsed/1000;}
+  else if(stamp>1e12)stamp/=1000;
+  if(Number.isFinite(stamp)){
+   const closeAt=(Math.floor(stamp/duration)+1)*duration*1000;
+   const candidate=closeAt-now;
+   if(candidate>0&&candidate<=duration*1000)remainingMs=candidate;
+  }
+ }
+ if(remainingMs===null){
+  const nowSec=Math.floor(now/1000),remaining=duration-(nowSec%duration);
+  remainingMs=remaining*1000-(now%1000);
+ }
+ const total=Math.max(0,Math.ceil(remainingMs/1000));
+ const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;
+ el.textContent=h?String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"):String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+ el.title="Αντίστροφη μέτρηση μέχρι το κλείσιμο του "+(timeframe==="1day"?"ημερήσιου":timeframe.replace("min","λεπτού"))+" κεριού";
+ el.setAttribute("aria-label","Χρόνος μέχρι το κλείσιμο του κεριού: "+el.textContent);
+}
 function setTimeframe(v){timeframe=v;liveBars=null;$("tf").textContent=v==="1day"?"1D":v.replace("min","m");analyze();loadLive()}
 async function loadLive(){const symbol=A[ix][0];$("feed").textContent="Connecting to market data…";try{const r=await fetch(`${API_BASE}/api/series?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(timeframe)}`,{cache:"no-store"});const raw=await r.text();let data;try{data=JSON.parse(raw)}catch{throw new Error(`Backend returned non-JSON (HTTP ${r.status}). Check Render API service.`)}if(!r.ok)throw new Error(data.error||"Live feed unavailable");if(!Array.isArray(data.values)||data.values.length<10)throw new Error("Not enough market candles");liveBars=data.values.map(v=>({o:Number(v.open),c:Number(v.close),h:Number(v.high),l:Number(v.low),volume:v.volume==null?null:Number(v.volume),datetime:v.datetime}));custom[ix]=liveBars.at(-1).c;checkAlerts(custom[ix]);$("feed").textContent=`LIVE · ${data.source} · ${new Date(data.fetchedAt).toLocaleTimeString("el-GR")}`;$("liveBadge").textContent="LIVE DATA";$("liveBadge").style.color="var(--green)";$("modeBadge").textContent="LIVE FEED";$("modeBadge").style.borderColor="#168d70";$("modeBadge").style.background="#10382f";$("modeBadge").style.color="var(--green)";$("quoteBadge").textContent="LIVE";$("quoteBadge").style.borderColor="#168d70";$("quoteBadge").style.color="var(--green)";$("feed").previousElementSibling.style.background="var(--green)";analyze();if(typeof paperEngineTick==="function")paperEngineTick()}catch(e){liveBars=null;$("feed").textContent="DEMO FALLBACK · "+e.message;$("liveBadge").textContent="DEMO DATA";$("liveBadge").style.color="var(--gold)";$("modeBadge").textContent="DEMO FEED";$("modeBadge").style.borderColor="#71572a";$("modeBadge").style.background="#2c2518";$("modeBadge").style.color="var(--gold)";$("quoteBadge").textContent="DEMO";$("quoteBadge").style.borderColor="#71572a";$("quoteBadge").style.color="var(--gold)";$("feed").previousElementSibling.style.background="var(--gold)";analyze()}}
 initTheme();renderAssets();analyze();renderPaper();renderAlerts();loadLive();updateCandleCountdown();setInterval(updateCandleCountdown,250);setInterval(loadLive,60000);if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
