@@ -748,6 +748,12 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
  :root .execution-panel{bottom:0!important}
 }
 
+
+/* Signal/capital strip sits ABOVE the trade buttons, never on top */
+:root .signal-panel{position:absolute!important;left:0!important;right:0!important;top:auto!important;bottom:54px!important;height:48px!important;min-height:48px!important;display:flex!important;align-items:center!important;padding:0 8px 3px!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;z-index:7!important;pointer-events:none!important}
+:root .execution-panel{position:absolute!important;bottom:0!important;z-index:8!important}
+@media(max-width:420px){:root .signal-panel{bottom:50px!important;height:48px!important;min-height:48px!important}:root .execution-panel{bottom:0!important}}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
