@@ -854,8 +854,17 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 .trade-confirm{background:linear-gradient(120deg,#00d98c,#08a96d)!important;color:#03251b!important;box-shadow:0 0 18px #00d98c40!important}
 .trade-cancel{background:#17283e!important;color:#e3edf7!important;border:1px solid #3c5570!important}
 
+
+/* Main navigation button + large live account balance on signal page */
+.app-header{gap:8px!important}
+.account-page-link{flex:0 0 auto!important;padding:10px 11px!important;border:1px solid #20c99b!important;border-radius:11px!important;background:linear-gradient(135deg,#073d35,#075b49)!important;color:#8fffe0!important;font-size:10px!important;font-weight:950!important;white-space:nowrap!important}
+.trade-capital-hero{margin:4px auto 18px!important;padding:18px 14px!important;text-align:center!important;border:2px solid #19c99a!important;border-radius:16px!important;background:linear-gradient(140deg,#07382f,#0b2630)!important;box-shadow:0 0 22px #00d99b35!important}
+.trade-capital-hero span{display:block;color:#a6f7df;font-size:12px;font-weight:950;letter-spacing:1.3px}
+.trade-capital-hero b{display:block;margin-top:8px;color:#62ffd0;font-size:clamp(30px,8vw,44px);line-height:1.15;font-weight:1000;font-variant-numeric:tabular-nums;text-shadow:0 0 16px #00d99b55}
+.trade-capital-hero small{display:block;margin-top:5px;color:#b3d7ce;font-size:10px}
+
 </style></head><body>
-<header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
+<header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><button class="account-page-link" type="button" onclick="openTradePageFromHome()">ΚΕΦΑΛΑΙΟ / ΘΕΣΕΙΣ</button><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
 <div class="tabs" id="assets"></div>
 <section id="scan">
@@ -1181,7 +1190,7 @@ function peFloating(){return pe.open.reduce((s,t)=>s+t.pnl,0)}
 function peRender(){
  const closed=pe.closed, wins=closed.filter(t=>t.pnl>0).length, total=closed.reduce((s,t)=>s+t.pnl,0);
  const set=(id,v)=>{const e=$(id);if(e)e.textContent=v};
- set("peInitial",peMoney(pe.initial)+" €");set("peBalance",peMoney(peBalance())+" €");set("headerCapital",peMoney(peBalance())+" €");
+ set("peInitial",peMoney(pe.initial)+" €");set("peBalance",peMoney(peBalance())+" €");set("headerCapital",peMoney(peBalance())+" €");set("detailCapital",peMoney(peBalance())+" €");
  const headerClose=$("headerCloseTrade");if(headerClose){const hasCurrent=pe.open.some(t=>t.symbol===A[ix][0]);headerClose.disabled=!hasCurrent;headerClose.textContent=hasCurrent?"ΚΛΕΙΣΕ TRADE":"ΧΩΡΙΣ ΘΕΣΗ";}
  set("peFloating",peMoney(peFloating()));set("peTotal",(total>=0?"+":"")+peMoney(total));
  set("peClosed",String(closed.length));set("peWinRate",closed.length?(wins/closed.length*100).toFixed(1)+"%":"—");
@@ -1220,6 +1229,48 @@ function paperReset(){
  pe={initial:cap,riskPct:risk,auto:true,open:[],closed:[],lastSignal:{}};peSave();peRender();
 }
 let peLastBannerSignal="";
+function openTradePageFromHome(){
+ const side=$("signal")?.textContent?.trim(),symbol=A[ix]?.[0],digits=A[ix]?.[2]??5;
+ const entry=Number(Array.isArray(liveBars)&&liveBars.length?liveBars.at(-1).c:px());
+ const sl=Number($("sl")?.textContent),tp=Number($("tp")?.textContent);
+ $("detailCapital").textContent=peMoney(peBalance())+" €";
+ if(["BUY","SELL"].includes(side)&&entry>0&&sl>0&&tp>0){
+  window.pendingOpportunity={side,symbol,digits,entry,sl,tp,timeframe,createdAt:Date.now()};
+  $("detailSide").textContent=side==="BUY"?"BUY (LONG)":"SELL (SHORT)";
+  $("detailSide").style.color=side==="BUY"?"#5df0b0":"#ff7187";
+  $("detailSymbol").textContent=symbol+" · "+$("tf").textContent;
+  $("detailEntry").textContent=entry.toFixed(digits);$("detailSL").textContent=sl.toFixed(digits);$("detailTP").textContent=tp.toFixed(digits);
+  const risk=Math.abs(entry-sl),reward=Math.abs(tp-entry);
+  $("detailRR").textContent=risk>0?(reward/risk).toFixed(2)+" : 1":"—";
+  $("detailLive").textContent=$("liveBadge")?.textContent==="LIVE DATA"?"LIVE DATA":"DEMO DATA";
+  $("detailExplanation").textContent=$("explain")?.textContent||"Έλεγξε τα επίπεδα πριν συνεχίσεις.";
+  $("detailSide").closest(".trade-detail-market").style.display="grid";
+  $("detailEntry").closest(".trade-detail-prices").style.display="block";
+  $("detailRR").closest(".trade-detail-metrics").style.display="grid";
+  $("detailExplanation").textContent="Τρέχον σήμα. Επιβεβαίωσε ότι τα δεδομένα είναι live πριν ανοίξεις εικονική θέση.";
+  $("detailLive").textContent=$("liveBadge")?.textContent||"—";
+  $("detailEntry").closest(".trade-detail-prices").style.display="block";
+  $("detailEntry").parentElement.parentElement.style.display="block";
+  $("detailEntry").parentElement.parentElement.parentElement.style.display="block";
+  $("detailExplanation").textContent=$("explain")?.textContent||"";
+  $("detailEntry").parentElement.parentElement.parentElement.querySelectorAll("div").forEach(()=>{});
+  $("detailSide").closest(".trade-detail-market").style.display="grid";
+  $("detailSide").closest(".trade-detail-card").querySelector(".trade-confirm").disabled=false;
+ }else{
+  window.pendingOpportunity=null;
+  $("detailSide").textContent="WAIT";
+  $("detailSide").style.color="#ffd45f";
+  $("detailSymbol").textContent=symbol+" · "+$("tf").textContent;
+  $("detailEntry").textContent=$("price")?.textContent||"—";
+  $("detailSL").textContent=$("sl")?.textContent||"—";$("detailTP").textContent=$("tp")?.textContent||"—";
+  $("detailRR").textContent=$("rr")?.textContent||"—";
+  $("detailLive").textContent=$("liveBadge")?.textContent||"—";
+  $("detailExplanation").textContent="Δεν υπάρχει επιβεβαιωμένο BUY/SELL αυτή τη στιγμή. Μπορείς να δεις το κεφάλαιο και να επιστρέψεις στην κεντρική σελίδα.";
+  $("detailSide").closest(".trade-detail-card").querySelector(".trade-confirm").disabled=true;
+ }
+ $("detailCapital").textContent=peMoney(peBalance())+" €";
+ $("scan").classList.add("hidden");$("tradeDetailsPage").classList.remove("hidden");$("assets").classList.add("hidden");window.scrollTo({top:0,behavior:"instant"});
+}
 function showOpportunityDetails(){
  const b=$("opportunityBanner");if(!b||b.classList.contains("hidden"))return;
  const side=$("signal")?.textContent?.trim(),symbol=A[ix]?.[0],digits=A[ix]?.[2]??5;
