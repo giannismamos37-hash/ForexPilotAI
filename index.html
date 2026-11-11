@@ -754,6 +754,22 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 :root .execution-panel{position:absolute!important;bottom:0!important;z-index:8!important}
 @media(max-width:420px){:root .signal-panel{bottom:50px!important;height:48px!important;min-height:48px!important}:root .execution-panel{bottom:0!important}}
 
+
+/* HIGH-CONTRAST STATUS HUD — visible capital, WAIT, trend and EMA */
+:root .signal-panel{position:absolute!important;left:0!important;right:0!important;bottom:54px!important;top:auto!important;height:66px!important;min-height:66px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:6px 10px!important;gap:8px!important;background:linear-gradient(105deg,rgba(9,20,38,.97),rgba(19,34,58,.96))!important;border:1px solid #426080!important;border-left:0!important;border-right:0!important;box-shadow:0 -4px 18px rgba(0,0,0,.24)!important;backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important;z-index:9!important;pointer-events:none!important}
+:root .signal-panel .signal-copy{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;flex:1 1 auto!important}
+:root .signal-panel .signal-heading-row{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;width:100%!important;min-width:0!important}
+:root .signal-panel .eyebrow{font-size:8px!important;line-height:11px!important;color:#b7c9df!important;font-weight:900!important;letter-spacing:1px!important}
+:root .signal-panel .signal{font-size:21px!important;line-height:23px!important;font-weight:950!important;color:#ffd45c!important;text-shadow:0 0 9px #ffc83d55!important}
+:root .signal-panel .signal-capital-group{display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important}
+:root .signal-panel .signal-capital{display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 9px!important;min-width:104px!important;background:#123c39!important;border:1px solid #20c99b!important;border-radius:8px!important}
+:root .signal-panel .signal-capital span{font-size:8px!important;line-height:10px!important;color:#9fffe1!important;font-weight:900!important;letter-spacing:.8px!important}
+:root .signal-panel .signal-capital b{display:block!important;font-size:14px!important;line-height:17px!important;color:#62ffd0!important;font-weight:950!important;white-space:nowrap!important}
+:root .signal-panel .signal-trend{display:flex!important;flex-direction:column!important;gap:4px!important;font-size:9px!important;line-height:12px!important;color:#e1edff!important;white-space:nowrap!important;font-weight:750!important}
+:root .signal-panel .signal-state{display:none!important}
+:root .execution-panel{z-index:8!important;bottom:0!important}
+@media(max-width:420px){:root .signal-panel{bottom:50px!important;height:66px!important;min-height:66px!important;padding:5px 7px!important}:root .signal-panel .signal-heading-row{gap:8px!important}:root .signal-panel .signal-capital{min-width:96px!important;padding:4px 6px!important}:root .signal-panel .signal-capital b{font-size:12px!important}:root .signal-panel .signal-trend{font-size:8px!important;line-height:11px!important}:root .signal-panel .signal{font-size:19px!important}}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
