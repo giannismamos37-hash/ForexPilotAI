@@ -556,6 +556,11 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 .execution-panel .trade-actions button.sell-action{color:#f23645!important}
 .execution-panel .trade-actions,.signal-panel,.execution-panel{background:rgba(255,255,255,.88)!important}
 
+
+/* Two-finger chart navigation and TradingView right price scale v10 */
+#chart{touch-action:none!important;overscroll-behavior:contain!important}
+#scan,#scan>.terminal-card,.chart-module{touch-action:pan-y!important}
+
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
@@ -667,10 +672,11 @@ function draw(b){
  const bg="#ffffff";
  const fg="#131722";
  const line="#e6e8eb";
- const base={layout:{background:{type:"solid",color:bg},textColor:fg,fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:line},horzLines:{color:line}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{borderColor:line,scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:line,timeVisible:true,secondsVisible:false,rightOffset:2,barSpacing:11,fixRightEdge:true,rightBarStaysOnScroll:true},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}};
+ const previousRange=fpChart?fpChart.timeScale().getVisibleLogicalRange():null;
+ const base={layout:{background:{type:"solid",color:bg},textColor:fg,fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:line},horzLines:{color:line}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{visible:true,borderVisible:true,borderColor:line,minimumWidth:76,entireTextOnly:false,autoScale:true,scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:line,timeVisible:true,secondsVisible:false,rightOffset:2,barSpacing:11,fixRightEdge:true,rightBarStaysOnScroll:true},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:true},handleScale:{axisPressedMouseMove:{time:true,price:true},axisDoubleClickReset:true,mouseWheel:true,pinch:true}};
  if(!fpChart){
   host.innerHTML="";fpChart=L.createChart(host,{...base,width:host.clientWidth,height:host.clientHeight});
-  fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{upColor:"#089981",downColor:"#f23645",borderUpColor:"#089981",borderDownColor:"#f23645",wickUpColor:"#089981",wickDownColor:"#f23645",priceLineVisible:true,lastValueVisible:true});
+  fpCandleSeries=fpChart.addSeries(L.CandlestickSeries,{priceFormat:{type:"price",precision:A[ix][2],minMove:1/Math.pow(10,A[ix][2])},upColor:"#089981",downColor:"#f23645",borderUpColor:"#089981",borderDownColor:"#f23645",wickUpColor:"#089981",wickDownColor:"#f23645",priceLineVisible:true,lastValueVisible:true});
   if(typeof L.createSeriesMarkers==="function")fpSignalMarkers=L.createSeriesMarkers(fpCandleSeries,[]);
   fpVolumeSeries=fpChart.addSeries(L.HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:"volume",lastValueVisible:false,priceLineVisible:false});fpChart.priceScale("volume").applyOptions({scaleMargins:{top:.82,bottom:0},visible:false});
   fpChart.subscribeClick(param=>{if(!fpDrawingMode||!param.point)return;const price=fpCandleSeries.coordinateToPrice(param.point.y);if(price==null)return;const line=fpCandleSeries.createPriceLine({price,color:"#f4c66b",lineWidth:1,lineStyle:L.LineStyle.Dashed,axisLabelVisible:true,title:"H-LINE"});fpDrawings.push(line);fpDrawingMode=null;const b=$("drawHLine");if(b)b.style.opacity="1";});
@@ -705,10 +711,10 @@ function draw(b){
  fpMacdLine.setData(ml.map((v,i)=>({time:data[i].time,value:v})));
  fpMacdSignal.setData(sig.map((v,i)=>({time:data[i].time,value:v})));
  fpMacdHist.setData(hist.map((v,i)=>({time:data[i].time,value:v,color:v>=0?"#16c99a":"#f05268"})));
- const visibleFrom=Math.max(0,data.length-42);fpChart.timeScale().setVisibleLogicalRange({from:visibleFrom,to:data.length+2});fpRsiChart.timeScale().fitContent();fpMacdChart.timeScale().fitContent();
+ const visibleFrom=Math.max(0,data.length-42);if(previousRange){try{fpChart.timeScale().setVisibleLogicalRange(previousRange)}catch{fpChart.timeScale().setVisibleLogicalRange({from:visibleFrom,to:data.length+2})}}else{fpChart.timeScale().setVisibleLogicalRange({from:visibleFrom,to:data.length+2})}fpRsiChart.timeScale().fitContent();fpMacdChart.timeScale().fitContent();
  // Re-apply dimensions and data on the next paint. This avoids a blank first render
  // on mobile browsers when the chart container is measured before layout settles.
- const repaint=()=>{if(!fpChart||!host.isConnected||!data.length)return;const w=Math.max(280,Math.floor(host.getBoundingClientRect().width));const h=Math.max(260,Math.floor(host.getBoundingClientRect().height));fpChart.applyOptions({width:w,height:h});fpCandleSeries.setData(data);fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,data.length-42),to:data.length+2});};
+ const repaint=()=>{if(!fpChart||!host.isConnected||!data.length)return;const w=Math.max(280,Math.floor(host.getBoundingClientRect().width));const h=Math.max(260,Math.floor(host.getBoundingClientRect().height));fpChart.applyOptions({width:w,height:h});fpCandleSeries.setData(data);if(previousRange){try{fpChart.timeScale().setVisibleLogicalRange(previousRange)}catch{fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,data.length-42),to:data.length+2})}}else{fpChart.timeScale().setVisibleLogicalRange({from:Math.max(0,data.length-42),to:data.length+2})}};
  if(typeof requestAnimationFrame==="function")requestAnimationFrame(repaint);else setTimeout(repaint,80);
  $("macdValue").textContent=ml.at(-1).toFixed(A[ix][2]);$("volumeValue").textContent=b.some(z=>z.volume!=null&&Number(z.volume)>0)?String(b.filter(z=>z.volume!=null).at(-1).volume):"Δεν παρέχεται από την πηγή για αυτό το σύμβολο";
 }
