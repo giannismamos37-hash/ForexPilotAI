@@ -1473,11 +1473,10 @@ paperInit();
  let fpScannerStarted=false,fpScannerBusy=false,fpScannerLast={};
  function fpEnsureScannerUI(){
   if(document.getElementById("fpGlobalScanner"))return;
-  const host=document.querySelector("main")||document.body;
-  const box=document.createElement("section");box.id="fpGlobalScanner";box.className="card";
-  box.style.cssText="position:relative;z-index:3;margin:10px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)";
-  box.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>🌐 Global Opportunity Scanner</b><span id="fpScannerState" class="pill">Εκκίνηση…</span></div><div id="fpScannerMsg" class="tiny muted" style="margin-top:8px">Σαρώνει όλα τα διαθέσιμα ζεύγη σε '+timeframe+'.</div><div id="fpScannerResults" style="margin-top:9px"></div><button id="fpScannerEnable" class="btn" style="margin-top:8px;width:100%">Ενεργοποίηση ειδοποιήσεων κινητού</button><div class="tiny muted" style="margin-top:6px">Η πρώτη έκδοση σαρώνει όσο η εφαρμογή/σελίδα είναι ενεργή. Για ειδοποιήσεις όταν είναι πλήρως κλειστή απαιτείται server-side scanner και push backend.</div>';
-  host.prepend(box);
+  const host=document.querySelector("#scan")||document.querySelector("main")||document.body;
+  const box=document.createElement("section");box.id="fpGlobalScanner";box.className="card fp-scanner-compact";
+  box.innerHTML='<details><summary><b>🌐 GLOBAL OPPORTUNITY SCANNER</b><span id="fpScannerState" class="pill">Εκκίνηση…</span></summary><div id="fpScannerMsg" class="tiny muted" style="margin-top:8px">Σάρωση αγορών στο timeframe '+timeframe+'.</div><div id="fpScannerResults" style="margin-top:9px"></div><button id="fpScannerEnable" class="btn full">Ενεργοποίηση ειδοποιήσεων κινητού</button><p class="tiny muted">Push alerts από server — διαχείριση ειδοποιήσεων από τις ρυθμίσεις Android.</p></details>';
+  const tabs=host.querySelector(".tabs");if(tabs)tabs.insertAdjacentElement("afterend",box);else host.prepend(box);
   const btn=document.getElementById("fpScannerEnable");if(btn)btn.onclick=fpSetupPush;
  }
  function fpScannerStatus(s,msg){const a=document.getElementById("fpScannerState"),b=document.getElementById("fpScannerMsg");if(a)a.textContent=s;if(b)b.textContent=msg;}
@@ -1681,4 +1680,20 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 :root[data-theme="light"] #scan>.card:not(:first-child),:root[data-theme="light"] #riskTab .card,:root[data-theme="light"] #paperTab .card,:root[data-theme="light"] #settingsTab .card{background:#fff!important;color:#172638!important;border-color:#cbd7e3!important}
 :root[data-theme="light"] .metric{background:#f3f7fb!important;border-color:#cbd7e3!important}
 :root[data-theme="light"] .metric b{color:#172638!important}
+</style>
+
+<style id="fp-2026-final-polish">
+#fpGlobalScanner.fp-scanner-compact{margin:0 10px 8px;padding:10px 12px;background:#0d1724;border:1px solid #22364b;border-radius:12px;box-shadow:none}
+#fpGlobalScanner details>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;min-height:32px}
+#fpGlobalScanner details>summary::-webkit-details-marker{display:none}
+#fpGlobalScanner #fpScannerState{font-size:8px;white-space:nowrap}
+#fpGlobalScanner #fpScannerMsg{line-height:1.4}
+#fpGlobalScanner #fpScannerResults>div{background:#101d2b!important;border:1px solid #20364b;margin-top:6px;padding:10px;border-radius:9px}
+#fpGlobalScanner button{min-height:44px;border-radius:9px}
+#fpGlobalScanner .tiny{font-size:10px}
+#scan>.terminal-card{margin:0!important;border-radius:0!important}
+#scan #chart{height:min(48vh,390px)!important;min-height:290px!important;border-radius:0!important;border-left:0!important;border-right:0!important}
+#scan .quote-panel{padding-left:14px!important;padding-right:14px!important}
+footer{box-shadow:0 -6px 24px #0003}
+@media(max-width:420px){#fpGlobalScanner.fp-scanner-compact{margin:0 8px 7px;padding:9px 10px}#scan #chart{height:43vh!important;min-height:275px!important}}
 </style>
