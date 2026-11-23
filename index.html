@@ -1135,9 +1135,9 @@ function draw(b){
  const host=$("chart"),rh=$("rsiChart"),mh=$("macdChart");
  if(!window.LightweightCharts){host.innerHTML='<div id="chartLoading">Chart library unavailable. Connect to internet and reload.</div>';return}
  const L=window.LightweightCharts;
- const bg="#ffffff";
- const fg="#131722";
- const line="#e6e8eb";
+ const bg="#0b1522";
+ const fg="#e8f1fa";
+ const line="#263b50";
  const previousRange=fpChart?fpChart.timeScale().getVisibleLogicalRange():null;
  const base={layout:{background:{type:"solid",color:bg},textColor:fg,fontFamily:"Inter,system-ui,sans-serif"},grid:{vertLines:{color:line},horzLines:{color:line}},crosshair:{mode:L.CrosshairMode.Normal},rightPriceScale:{visible:true,borderVisible:true,borderColor:line,minimumWidth:76,entireTextOnly:false,autoScale:true,scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:line,timeVisible:true,secondsVisible:false,rightOffset:22,barSpacing:11,fixRightEdge:false,rightBarStaysOnScroll:false},handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:true},handleScale:{axisPressedMouseMove:{time:true,price:true},axisDoubleClickReset:true,mouseWheel:true,pinch:true}};
  if(!fpChart){
