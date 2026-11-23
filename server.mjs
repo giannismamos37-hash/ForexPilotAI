@@ -10,6 +10,7 @@ const PORT=Number(process.env.PORT||8080),TD_KEY=process.env.TWELVE_DATA_API_KEY
 const SYMBOLS=["EUR/USD","GBP/USD","USD/JPY","XAU/USD","BTC/USD"],INTERVALS=["1min","5min","15min","30min","1h","4h","1day"];
 const storage=process.env.FP_DATA_DIR||root;try{fs.mkdirSync(storage,{recursive:true})}catch(e){console.warn("Storage directory unavailable",e.message)}
 const cache=new Map(),tokens=new Set(),positions=new Map(),lastSignal=new Map(),scannerResults=new Map(),signalHistory=[],closedTrades=[];
+let scannerStatus={state:"starting",reason:"",lastRun:null,updated:0,errors:0};
 const HISTORY_FILE=path.join(storage,"fp_signal_history.json"),TOKEN_FILE=path.join(storage,"fp_tokens.json"),POSITIONS_FILE=path.join(storage,"fp_positions.json"),TRADE_HISTORY_FILE=path.join(storage,"fp_trade_history.json"),SIGNAL_KEYS_FILE=path.join(storage,"fp_signal_keys.json");
 try{const saved=JSON.parse(fs.readFileSync(HISTORY_FILE,"utf8"));if(Array.isArray(saved))signalHistory.push(...saved.slice(0,100))}catch{}
 function saveSignalHistory(){try{fs.writeFileSync(HISTORY_FILE,JSON.stringify(signalHistory.slice(0,100)))}catch(e){console.warn("Signal history persistence unavailable",e.message)}}
@@ -65,14 +66,17 @@ function strategy(symbol,bars){
  const trendScore=Math.min(35,Math.abs(fast-slow)/Math.max(atr,1e-8)*20),rsiScore=Math.max(0,25-Math.abs(rsi-(side==="BUY"?60:40))*1.25),candleScore=Math.min(25,Math.abs(last.close-last.open)/Math.max(atr,1e-8)*25),priceScore=Math.min(15,Math.abs(last.close-fast)/Math.max(atr,1e-8)*15),score=Math.round(trendScore+rsiScore+candleScore+priceScore);return {symbol,side,price:last.close,sl,tp,rsi,atr,datetime:last.datetime,score,reason:"EMA trend strength + RSI position + candle body + price/EMA separation; ATR SL and 1:2 target"};
 }
 async function scanMarkets(){
- if(!TD_KEY)return console.log("Scanner paused: Twelve Data API key missing");
+ if(!TD_KEY){scannerStatus={state:"blocked",reason:"Twelve Data API key missing",lastRun:new Date().toISOString()};return}
+ scannerStatus={state:"running",reason:"",lastRun:new Date().toISOString()};
+ let errors=0,updated=0;
  for(const symbol of SYMBOLS){
-  try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);if(!s)continue;scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString()});if(s.side==="WAIT")continue;
+  try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);if(!s)continue;updated++;scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString(),quality:s.score>=80?"STRONG":s.score>=70?"GOOD":s.side==="WAIT"?"WAIT":"LOW"});if(s.side==="WAIT"||s.score<70)continue;
    const k=symbol+"|"+s.side+"|"+s.datetime;if(lastSignal.get(symbol)===k)continue;lastSignal.set(symbol,k);saveSignalKeys();signalHistory.unshift({...s,timeframe:"15min",createdAt:new Date().toISOString()});if(signalHistory.length>100)signalHistory.length=100;saveSignalHistory();
    const digits=symbol==="USD/JPY"?3:symbol==="XAU/USD"||symbol==="BTC/USD"?2:5;
    await pushNotification("ForexPilot AI · "+s.side+" "+symbol,"Entry "+s.price.toFixed(digits)+" · SL "+s.sl.toFixed(digits)+" · TP "+s.tp.toFixed(digits)+" · M15 · score "+s.score+"/100",{type:"signal",symbol,side:s.side,entry:s.price,sl:s.sl,tp:s.tp,timeframe:"15min",score:s.score});
-  }catch(e){console.warn("Scan",symbol,e.message)}
+  }catch(e){errors++;console.warn("Scan",symbol,e.message);scannerResults.set(symbol,{symbol,side:"ERROR",reason:"Market data unavailable",updatedAt:new Date().toISOString()})}
  }
+ scannerStatus={state:errors===SYMBOLS.length?"error":errors?"partial":"ok",reason:errors?errors+" market(s) unavailable":"",lastRun:new Date().toISOString(),updated,errors};
 }
 async function monitorPositions(){
  for(const [id,t] of positions){
@@ -87,9 +91,9 @@ setInterval(()=>monitorPositions().catch(e=>console.warn("Monitor",e.message)),3
 const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url,"http://"+(req.headers.host||"localhost"));
  if(req.method==="OPTIONS"){res.writeHead(204,{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type"});return res.end()}
- if(req.method==="GET"&&url.pathname==="/api/health")return send(res,200,{ok:true,provider:"Twelve Data",apiKeyConfigured:Boolean(TD_KEY),pushConfigured:firebaseReady,registeredDevices:tokens.size,scanner:"server-side-3min",mode:"alerts-and-paper"});
+ if(req.method==="GET"&&url.pathname==="/api/health")return send(res,200,{ok:true,provider:"Twelve Data",apiKeyConfigured:Boolean(TD_KEY),pushConfigured:firebaseReady,registeredDevices:tokens.size,scanner:"server-side-3min",scannerStatus,mode:"alerts-and-paper"});
  if(req.method==="GET"&&url.pathname==="/api/push/config")return send(res,200,{firebaseConfig,vapidKey:process.env.FCM_VAPID_KEY||"",configured:firebaseReady});
- if(req.method==="GET"&&url.pathname==="/api/scanner")return send(res,200,{symbols:SYMBOLS,interval:"15min",updatedAt:new Date().toISOString(),results:SYMBOLS.map(symbol=>scannerResults.get(symbol)||{symbol,side:"LOADING",reason:"Waiting for first scan"})});
+ if(req.method==="GET"&&url.pathname==="/api/scanner")return send(res,200,{symbols:SYMBOLS,interval:"15min",scannerStatus,results:SYMBOLS.map(symbol=>scannerResults.get(symbol)||{symbol,side:"LOADING",reason:"Waiting for first scan"})});
  if(req.method==="GET"&&url.pathname==="/api/signals/history")return send(res,200,{signals:signalHistory});
  if(req.method==="POST"&&url.pathname==="/api/signals/history/clear"){signalHistory.length=0;saveSignalHistory();return send(res,200,{ok:true});}
  if(req.method==="POST"&&url.pathname==="/api/push/register"){try{const b=await body(req),token=String(b.token||"").trim();if(token.length<80||token.length>5000)return send(res,400,{error:"Invalid FCM token"});tokens.add(token);saveTokens();return send(res,200,{ok:true,registered:tokens.size})}catch(e){return send(res,400,{error:e.message})}}
