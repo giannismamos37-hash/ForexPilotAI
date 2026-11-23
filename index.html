@@ -1346,7 +1346,7 @@ paperInit();
   box.style.cssText="position:relative;z-index:3;margin:10px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)";
   box.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>🌐 Global Opportunity Scanner</b><span id="fpScannerState" class="pill">Εκκίνηση…</span></div><div id="fpScannerMsg" class="tiny muted" style="margin-top:8px">Σαρώνει όλα τα διαθέσιμα ζεύγη σε '+timeframe+'.</div><div id="fpScannerResults" style="margin-top:9px"></div><button id="fpScannerEnable" class="btn" style="margin-top:8px;width:100%">Ενεργοποίηση ειδοποιήσεων κινητού</button><div class="tiny muted" style="margin-top:6px">Η πρώτη έκδοση σαρώνει όσο η εφαρμογή/σελίδα είναι ενεργή. Για ειδοποιήσεις όταν είναι πλήρως κλειστή απαιτείται server-side scanner και push backend.</div>';
   host.prepend(box);
-  const btn=document.getElementById("fpScannerEnable");if(btn)btn.onclick=async()=>{if(!("Notification"in window)){alert("Οι ειδοποιήσεις δεν υποστηρίζονται σε αυτό το browser.");return;}const p=await Notification.requestPermission();document.getElementById("fpScannerState").textContent=p==="granted"?"Notifications ON":"Notifications OFF";};
+  const btn=document.getElementById("fpScannerEnable");if(btn)btn.onclick=fpSetupPush;
  }
  function fpScannerStatus(s,msg){const a=document.getElementById("fpScannerState"),b=document.getElementById("fpScannerMsg");if(a)a.textContent=s;if(b)b.textContent=msg;}
  function fpEma(arr,n){const k=2/(n+1);let v=arr[0];for(let i=1;i<arr.length;i++)v=arr[i]*k+v*(1-k);return v}
@@ -1399,7 +1399,28 @@ paperInit();
   }catch(e){fpScannerStatus("SCAN ERROR",String(e.message||e))}
   finally{fpScannerBusy=false}
  }
- function fpScannerStart(){if(fpScannerStarted)return;fpScannerStarted=true;fpEnsureScannerUI();fpScannerTick();setInterval(fpScannerTick,FP_SCANNER_INTERVAL);document.addEventListener("visibilitychange",()=>{if(!document.hidden)fpScannerTick()});}
+async function fpLoadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement("script");s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error("Firebase SDK load failed"));document.head.appendChild(s)})}
+ async function fpSetupPush(){
+  const btn=document.getElementById("fpScannerEnable");if(btn){btn.disabled=true;btn.textContent="Σύνδεση ειδοποιήσεων…"}
+  try{
+   if(!("Notification"in window)||!("serviceWorker"in navigator)){throw new Error("Απαιτείται browser με Notification και Service Worker.")}
+   const permission=await Notification.requestPermission();if(permission!=="granted")throw new Error("Δεν δόθηκε άδεια ειδοποιήσεων.");
+   const configRes=await fetch(API_BASE+"/api/push/config",{cache:"no-store"}),cfg=await configRes.json();
+   if(!cfg.configured||!cfg.vapidKey||!cfg.firebaseConfig?.apiKey)throw new Error("Firebase δεν έχει ρυθμιστεί στον server. Χρειάζεται Firebase Web config, VAPID key και Service Account στο Render.");
+   if(!window.firebase){await fpLoadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");await fpLoadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js")}
+   if(!firebase.apps.length)firebase.initializeApp(cfg.firebaseConfig);
+   const messaging=firebase.messaging(),reg=await navigator.serviceWorker.register("./sw.js");
+   const token=await messaging.getToken({vapidKey:cfg.vapidKey,serviceWorkerRegistration:reg});
+   if(!token)throw new Error("Δεν δημιουργήθηκε FCM token. Ελέγξτε Firebase Cloud Messaging και VAPID.");
+   const response=await fetch(API_BASE+"/api/push/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token})});
+   if(!response.ok)throw new Error("Ο server δεν αποθήκευσε το token.");
+   const status=document.getElementById("fpScannerState");if(status)status.textContent="PUSH ENABLED";
+   const msg=document.getElementById("fpScannerMsg");if(msg)msg.textContent="Το κινητό καταχωρήθηκε. Ο server-side scanner θα στέλνει alerts όσο λειτουργεί ο server.";
+   if(btn)btn.textContent="Οι ειδοποιήσεις είναι ενεργές";
+  }catch(e){alert(e.message);if(btn)btn.textContent="Ενεργοποίηση ειδοποιήσεων κινητού"}
+  finally{if(btn)btn.disabled=false}
+ }
+  function fpScannerStart(){if(fpScannerStarted)return;fpScannerStarted=true;fpEnsureScannerUI();fpScannerTick();setInterval(fpScannerTick,FP_SCANNER_INTERVAL);document.addEventListener("visibilitychange",()=>{if(!document.hidden)fpScannerTick()});}
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fpScannerStart);else fpScannerStart();
 })();
 </script></body></html>
