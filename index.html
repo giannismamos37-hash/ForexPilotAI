@@ -1334,6 +1334,74 @@ function paperInit(){
  peRender();
 }
 paperInit();
+
+/* ForexPilot AI Global Opportunity Scanner — first frontend prototype */
+(function(){
+ const FP_SCANNER_INTERVAL=180000, FP_SCAN_SYMBOLS=A.map(x=>x[0]);
+ let fpScannerStarted=false,fpScannerBusy=false,fpScannerLast={};
+ function fpEnsureScannerUI(){
+  if(document.getElementById("fpGlobalScanner"))return;
+  const host=document.querySelector("main")||document.body;
+  const box=document.createElement("section");box.id="fpGlobalScanner";box.className="card";
+  box.style.cssText="position:relative;z-index:3;margin:10px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)";
+  box.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>🌐 Global Opportunity Scanner</b><span id="fpScannerState" class="pill">Εκκίνηση…</span></div><div id="fpScannerMsg" class="tiny muted" style="margin-top:8px">Σαρώνει όλα τα διαθέσιμα ζεύγη σε '+timeframe+'.</div><div id="fpScannerResults" style="margin-top:9px"></div><button id="fpScannerEnable" class="btn" style="margin-top:8px;width:100%">Ενεργοποίηση ειδοποιήσεων κινητού</button><div class="tiny muted" style="margin-top:6px">Η πρώτη έκδοση σαρώνει όσο η εφαρμογή/σελίδα είναι ενεργή. Για ειδοποιήσεις όταν είναι πλήρως κλειστή απαιτείται server-side scanner και push backend.</div>';
+  host.prepend(box);
+  const btn=document.getElementById("fpScannerEnable");if(btn)btn.onclick=async()=>{if(!("Notification"in window)){alert("Οι ειδοποιήσεις δεν υποστηρίζονται σε αυτό το browser.");return;}const p=await Notification.requestPermission();document.getElementById("fpScannerState").textContent=p==="granted"?"Notifications ON":"Notifications OFF";};
+ }
+ function fpScannerStatus(s,msg){const a=document.getElementById("fpScannerState"),b=document.getElementById("fpScannerMsg");if(a)a.textContent=s;if(b)b.textContent=msg;}
+ function fpEma(arr,n){const k=2/(n+1);let v=arr[0];for(let i=1;i<arr.length;i++)v=arr[i]*k+v*(1-k);return v}
+ function fpCalcSignal(symbol,bars){
+  if(!Array.isArray(bars)||bars.length<30)return null;
+  const close=bars.map(x=>Number(x.close)),last=bars.at(-1),prev=bars.at(-2);
+  if(close.some(x=>!Number.isFinite(x))||!last)return null;
+  const fast=fpEma(close,9),slow=fpEma(close,21);
+  let gain=0,loss=0;for(let i=Math.max(1,close.length-14);i<close.length;i++){const d=close[i]-close[i-1];if(d>0)gain+=d;else loss-=d}
+  const rsi=loss===0?100:100-100/(1+(gain/14)/(loss/14));
+  const trs=bars.slice(-14).map((x,i)=>{const p=Number(bars[Math.max(0,bars.length-15+i)]?.close??x.open);return Math.max(Number(x.high)-Number(x.low),Math.abs(Number(x.high)-p),Math.abs(Number(x.low)-p))});
+  const atr=trs.reduce((s,v)=>s+v,0)/Math.max(1,trs.length),price=Number(last.close);
+  const bullish=fast>slow&&price>fast&&rsi>=52&&rsi<=68&&price>Number(last.open);
+  const bearish=fast<slow&&price<fast&&rsi>=32&&rsi<=48&&price<Number(last.open);
+  if(!bullish&&!bearish)return {symbol,side:"WAIT",price,rsi,datetime:last.datetime};
+  const side=bullish?"BUY":"SELL",sl=side==="BUY"?price-atr*1.5:price+atr*1.5,tp=side==="BUY"?price+(price-sl)*2:price-(sl-price)*2;
+  return {symbol,side,price,sl,tp,rsi,atr,datetime:last.datetime,score:85,reason:"EMA 9/21 trend + RSI confirmation + candle direction + ATR risk levels"};
+ }
+ async function fpScanOne(symbol){
+  const r=await fetch(API_BASE+"/api/series?symbol="+encodeURIComponent(symbol)+"&interval="+encodeURIComponent(timeframe),{cache:"no-store"});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  const data=await r.json();if(!Array.isArray(data.values))throw new Error("No candle data");
+  return fpCalcSignal(symbol,data.values);
+ }
+ function fpScannerRender(items){
+  const el=document.getElementById("fpScannerResults");if(!el)return;
+  const active=items.filter(x=>x&&x.side!=="WAIT");
+  if(!active.length){el.innerHTML='<div class="tiny muted">Δεν βρέθηκε setup που να περνά τα φίλτρα. Δεν στέλνουμε άσκοπα σήματα.</div>';return;}
+  el.innerHTML=active.map(x=>'<div style="padding:9px;margin-top:7px;border-radius:10px;background:#0d1926"><b style="color:'+(x.side==="BUY"?"var(--green)":"var(--red)")+'">'+x.side+' · '+x.symbol+'</b><div class="tiny">Entry '+x.price.toFixed(A.find(a=>a[0]===x.symbol)?.[2]??5)+' · SL '+x.sl.toFixed(A.find(a=>a[0]===x.symbol)?.[2]??5)+' · TP '+x.tp.toFixed(A.find(a=>a[0]===x.symbol)?.[2]??5)+' · Score '+x.score+'/100</div></div>').join("");
+ }
+ async function fpScannerTick(){
+  if(fpScannerBusy)return;fpScannerBusy=true;fpEnsureScannerUI();
+  fpScannerStatus("ΣΑΡΩΣΗ","Έλεγχος "+FP_SCAN_SYMBOLS.length+" symbols · "+timeframe+"…");
+  try{
+   const results=await Promise.allSettled(FP_SCAN_SYMBOLS.map(fpScanOne)),items=results.filter(x=>x.status==="fulfilled").map(x=>x.value).filter(Boolean);
+   fpScannerRender(items);
+   const active=items.filter(x=>x.side!=="WAIT");
+   fpScannerStatus("LIVE SCAN",new Date().toLocaleTimeString("el-GR")+" · "+items.length+" αγορές ελέγχθηκαν · "+active.length+" setups");
+   for(const x of active){
+    const key=[x.symbol,x.side,x.datetime,timeframe].join("|");
+    if(fpScannerLast[x.symbol]===key)continue;
+    fpScannerLast[x.symbol]=key;
+    if("Notification"in window&&Notification.permission==="granted"){
+     const title="ForexPilot AI · "+(x.side==="BUY"?"BUY":"SELL")+" "+x.symbol;
+     const digits=A.find(a=>a[0]===x.symbol)?.[2]??5;
+     const body="ENTRY "+x.price.toFixed(digits)+" · SL "+x.sl.toFixed(digits)+" · TP "+x.tp.toFixed(digits)+" · "+timeframe+" · Score "+x.score+"/100";
+     if("serviceWorker"in navigator){navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body,tag:"fp-global-"+x.symbol,renotify:false,icon:"./icon-192.png"})).catch(()=>{});}else try{new Notification(title,{body,tag:"fp-global-"+x.symbol})}catch{}
+    }
+   }
+  }catch(e){fpScannerStatus("SCAN ERROR",String(e.message||e))}
+  finally{fpScannerBusy=false}
+ }
+ function fpScannerStart(){if(fpScannerStarted)return;fpScannerStarted=true;fpEnsureScannerUI();fpScannerTick();setInterval(fpScannerTick,FP_SCANNER_INTERVAL);document.addEventListener("visibilitychange",()=>{if(!document.hidden)fpScannerTick()});}
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fpScannerStart);else fpScannerStart();
+})();
 </script></body></html>
 <style>
 /* ForexPilot — mobile quote/chart overlap correction */
