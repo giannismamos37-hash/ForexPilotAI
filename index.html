@@ -863,6 +863,44 @@ html,body,main,#scan,#scan>.terminal-card,.chart-module{background:#fff!importan
 .trade-capital-hero b{display:block;margin-top:8px;color:#62ffd0;font-size:clamp(30px,8vw,44px);line-height:1.15;font-weight:1000;font-variant-numeric:tabular-nums;text-shadow:0 0 16px #00d99b55}
 .trade-capital-hero small{display:block;margin-top:5px;color:#b3d7ce;font-size:10px}
 
+
+/* 2026 PREMIUM INSTITUTIONAL DESIGN — graphite, restrained emerald, crisp hierarchy */
+:root{--bg:#070a0f;--panel:#10151d;--panel2:#151d28;--line:#26313f;--txt:#edf2f7;--muted:#8b99aa;--green:#00d68f;--red:#ff5267;--gold:#e5b85c;--blue:#75a9ff}
+html,body{background:#070a0f!important;color:#edf2f7!important}
+body{background:radial-gradient(ellipse at 50% -24%,#182433 0%,#090d14 48%,#070a0f 100%)!important;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif!important}
+header,.app-header{background:rgba(9,13,19,.96)!important;border-bottom:1px solid #26313f!important;backdrop-filter:blur(18px)!important;box-shadow:0 8px 24px #0002!important}
+.brand-mark{background:linear-gradient(135deg,#00d68f,#0b8f70)!important;color:#031d15!important;border-radius:12px!important;box-shadow:none!important}
+.brand span{color:#00d68f!important}.sub{color:#8190a2!important;letter-spacing:1.4px!important}
+.mode{background:#17251f!important;border:1px solid #28604d!important;color:#7ce5b9!important;border-radius:8px!important}
+main{max-width:980px!important}
+.tabs{gap:8px!important;padding:12px 12px 14px!important}
+.tab{background:#111821!important;border:1px solid #283543!important;color:#99a8b8!important;border-radius:10px!important;min-width:unset!important;padding:10px 14px!important;box-shadow:none!important}
+.tab.active{background:#12362c!important;border-color:#1c775b!important;color:#66e8b7!important;box-shadow:inset 0 0 0 1px #1c775b33!important}
+.card{background:linear-gradient(145deg,#111821,#0d131b)!important;border:1px solid #263341!important;border-radius:15px!important;box-shadow:0 6px 22px #0002!important}
+#scan>.card:first-child{background:linear-gradient(145deg,#111a25,#0d141d)!important;border-color:#263747!important}
+h2,h3{color:#edf2f7!important;letter-spacing:.15px!important}
+.price{font-variant-numeric:tabular-nums!important;letter-spacing:-1px!important}
+.metric{background:#0b1119!important;border:1px solid #222f3d!important;border-radius:11px!important}
+.metric span,.muted,.notice{color:#8b99aa!important}
+#chart,#rsiChart,#macdChart{background:#0b1119!important;border:1px solid #243140!important;border-radius:12px!important}
+input,select{background:#0b1119!important;border:1px solid #2a3746!important;color:#edf2f7!important;border-radius:9px!important}
+input:focus,select:focus{border-color:#00b982!important;box-shadow:0 0 0 2px #00b98220!important}
+button{box-shadow:none!important;text-shadow:none!important}
+footer{background:rgba(8,12,18,.97)!important;border-top:1px solid #26313f!important;backdrop-filter:blur(18px)!important}
+footer button{color:#8392a5!important;border-radius:10px!important}
+footer button.active{background:#122b25!important;color:#5ee5b2!important}
+/* Trade execution buttons: flat premium color, no neon */
+:root .execution-panel{background:#080d13!important;border-top:1px solid #26313f!important}
+:root .execution-panel .trade-actions button.buy-action{background:linear-gradient(180deg,#16bd88,#079c6c)!important;border:1px solid #35d6a4!important;box-shadow:none!important;color:#031d15!important;text-shadow:none!important}
+:root .execution-panel .trade-center-controls .capital-close-btn{background:linear-gradient(180deg,#e7bc5d,#c99328)!important;border:1px solid #f0cf7e!important;box-shadow:none!important;color:#241800!important;text-shadow:none!important}
+:root .execution-panel .trade-actions button.sell-action{background:linear-gradient(180deg,#f35b6d,#d83c53)!important;border:1px solid #ff8793!important;box-shadow:none!important;color:#fff!important;text-shadow:none!important}
+:root .signal-panel{background:linear-gradient(100deg,#101923,#131e2b)!important;border-top:1px solid #2b3949!important;box-shadow:none!important}
+:root .signal-panel .signal-capital{background:#102b25!important;border-color:#23624d!important}
+:root .signal-panel .signal-capital span{color:#8cc9b2!important}
+:root .signal-panel .signal-capital b{color:#49d6a1!important;text-shadow:none!important}
+.opportunity-banner{background:linear-gradient(100deg,#10271f,#101d27)!important;border-color:#24654f!important;box-shadow:none!important}
+.advisor-card{background:linear-gradient(145deg,#101d28,#0d151e)!important;border-color:#263d4c!important}
+@media(min-width:700px){main{max-width:1120px!important}#chart{height:480px!important}}
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><button class="account-page-link" type="button" onclick="openTradePageFromHome()">ΚΕΦΑΛΑΙΟ / ΘΕΣΕΙΣ</button><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
