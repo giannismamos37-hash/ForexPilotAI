@@ -1,0 +1,17 @@
+name: Validate ForexPilot AI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check server.mjs
+      - run: node --check sw.js
+      - run: node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); if(!h.includes('Global Opportunity Scanner')||!h.includes('fpSetupPush')) process.exit(1); console.log('Frontend scanner/push markers verified')"
