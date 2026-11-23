@@ -10,9 +10,11 @@ const PORT=Number(process.env.PORT||8080),TD_KEY=process.env.TWELVE_DATA_API_KEY
 const SYMBOLS=["EUR/USD","GBP/USD","USD/JPY","XAU/USD","BTC/USD"],INTERVALS=["1min","5min","15min","30min","1h","4h","1day"];
 const storage=process.env.FP_DATA_DIR||root;try{fs.mkdirSync(storage,{recursive:true})}catch(e){console.warn("Storage directory unavailable",e.message)}
 const cache=new Map(),tokens=new Set(),positions=new Map(),lastSignal=new Map(),scannerResults=new Map(),signalHistory=[],closedTrades=[];
-const HISTORY_FILE=path.join(storage,"fp_signal_history.json"),TOKEN_FILE=path.join(storage,"fp_tokens.json"),POSITIONS_FILE=path.join(storage,"fp_positions.json"),TRADE_HISTORY_FILE=path.join(storage,"fp_trade_history.json");
+const HISTORY_FILE=path.join(storage,"fp_signal_history.json"),TOKEN_FILE=path.join(storage,"fp_tokens.json"),POSITIONS_FILE=path.join(storage,"fp_positions.json"),TRADE_HISTORY_FILE=path.join(storage,"fp_trade_history.json"),SIGNAL_KEYS_FILE=path.join(storage,"fp_signal_keys.json");
 try{const saved=JSON.parse(fs.readFileSync(HISTORY_FILE,"utf8"));if(Array.isArray(saved))signalHistory.push(...saved.slice(0,100))}catch{}
 function saveSignalHistory(){try{fs.writeFileSync(HISTORY_FILE,JSON.stringify(signalHistory.slice(0,100)))}catch(e){console.warn("Signal history persistence unavailable",e.message)}}
+try{const saved=JSON.parse(fs.readFileSync(SIGNAL_KEYS_FILE,"utf8"));if(saved&&typeof saved==="object")Object.entries(saved).forEach(([k,v])=>lastSignal.set(k,String(v)))}catch{}
+function saveSignalKeys(){try{fs.writeFileSync(SIGNAL_KEYS_FILE,JSON.stringify(Object.fromEntries(lastSignal)))}catch(e){console.warn("Signal dedup persistence unavailable",e.message)}}
 try{JSON.parse(fs.readFileSync(TOKEN_FILE,"utf8")).forEach(t=>tokens.add(t))}catch{}
 try{const saved=JSON.parse(fs.readFileSync(POSITIONS_FILE,"utf8"));if(Array.isArray(saved))saved.forEach(p=>{if(p&&p.id&&SYMBOLS.includes(p.symbol)&&["BUY","SELL"].includes(p.side))positions.set(String(p.id),p)})}catch{}
 try{const saved=JSON.parse(fs.readFileSync(TRADE_HISTORY_FILE,"utf8"));if(Array.isArray(saved))closedTrades.push(...saved.slice(0,100))}catch{}
@@ -66,7 +68,7 @@ async function scanMarkets(){
  if(!TD_KEY)return console.log("Scanner paused: Twelve Data API key missing");
  for(const symbol of SYMBOLS){
   try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);if(!s)continue;scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString()});if(s.side==="WAIT")continue;
-   const k=symbol+"|"+s.side+"|"+s.datetime;if(lastSignal.get(symbol)===k)continue;lastSignal.set(symbol,k);signalHistory.unshift({...s,timeframe:"15min",createdAt:new Date().toISOString()});if(signalHistory.length>100)signalHistory.length=100;saveSignalHistory();
+   const k=symbol+"|"+s.side+"|"+s.datetime;if(lastSignal.get(symbol)===k)continue;lastSignal.set(symbol,k);saveSignalKeys();signalHistory.unshift({...s,timeframe:"15min",createdAt:new Date().toISOString()});if(signalHistory.length>100)signalHistory.length=100;saveSignalHistory();
    const digits=symbol==="USD/JPY"?3:symbol==="XAU/USD"||symbol==="BTC/USD"?2:5;
    await pushNotification("ForexPilot AI · "+s.side+" "+symbol,"Entry "+s.price.toFixed(digits)+" · SL "+s.sl.toFixed(digits)+" · TP "+s.tp.toFixed(digits)+" · M15 · score "+s.score+"/100",{type:"signal",symbol,side:s.side,entry:s.price,sl:s.sl,tp:s.tp,timeframe:"15min",score:s.score});
   }catch(e){console.warn("Scan",symbol,e.message)}
