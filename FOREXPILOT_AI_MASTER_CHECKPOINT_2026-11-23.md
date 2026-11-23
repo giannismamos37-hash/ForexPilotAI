@@ -1,4 +1,10 @@
-# ForexPilot AI — Master Checkpoint (23 Nov 2026)
+# Mamos Project — Master Checkpoint (23 Nov 2026)
+
+## Project Name
+**Mamos Project**
+
+## Main Application
+ForexPilot AI.
 
 ## Purpose
 Build ForexPilot AI as a complete, mobile-first trading platform—not a static demo. The target experience combines TradingView-style charting/analysis with cTrader-style trading, order-management and mobile usability.
