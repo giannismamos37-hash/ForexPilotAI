@@ -273,6 +273,25 @@ body{background:radial-gradient(ellipse at 50% -20%,#14283b 0%,#060a0f 58%);}
 .card{background:linear-gradient(145deg,#101a25,#0b1219);border-color:#233343;border-radius:16px;padding:16px;box-shadow:0 10px 30px #0002}.card h2{font-size:15px}.metric{background:#080f16;border-color:#203142;border-radius:12px}.metric strong{font-size:18px}
 .bottom{background:rgba(7,12,18,.94);border-top-color:#223242;padding:9px 7px calc(8px + env(safe-area-inset-bottom))}.bottom button{padding:11px 3px;font-weight:750}.bottom button.active{color:var(--green);background:#11251f}
 @media(min-width:760px){main{max-width:1250px}.section{gap:14px;padding:16px}.chartbox{height:620px}}
+
+/* ForexPilot AI — actual workspace redesign v4 */
+#scannerPage{display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-areas:"quote" "controls" "chart" "signal" "actions" "details";gap:0!important}
+#scannerPage>.quote{grid-area:quote!important;position:relative!important;display:flex!important;align-items:center!important;padding:12px 16px!important;background:#0b1119!important}
+#scannerPage>.controls{grid-area:controls!important;display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none!important}
+#scannerPage>.chartbox{grid-area:chart!important;height:clamp(420px,68vh,760px)!important;min-height:420px!important;border:0!important;border-radius:0!important;background:#070b10!important}
+#scannerPage>.signal{grid-area:signal!important;display:flex!important;align-items:center!important;border-left:3px solid var(--gold)!important;border-block:1px solid #253544!important;margin:0!important}
+#scannerPage>.actions{grid-area:actions!important;display:grid!important;grid-template-columns:1fr 1fr 1fr!important;gap:10px!important;padding:12px!important}
+#scannerPage>.section{grid-area:details!important;display:grid!important;grid-template-columns:1fr!important;gap:10px!important;padding:12px!important}
+.top{background:#060a10!important;border-bottom:1px solid #253442!important;padding:14px 16px!important}
+.logo{font-size:20px!important;letter-spacing:1.3px!important}.subtitle{font-size:9px!important;letter-spacing:2px!important}
+.symbols{background:#080e15!important;padding:8px 10px!important;gap:7px!important}.sym{border-radius:8px!important;border:1px solid #253543!important;padding:11px 14px!important;background:#0e1721!important}.sym.active{border-color:#00c087!important;background:#0c2920!important;color:#36dba5!important}
+.quote{border-bottom:1px solid #22313e!important}.price{font-size:clamp(34px,9vw,50px)!important}.controls .tool,.controls select{border-radius:9px!important}
+.chartbox:before{content:"MARKET CHART  •  LIVE WORKSPACE";top:10px;left:12px;color:#607487;font-size:9px;letter-spacing:1.6px}
+.actions button{min-height:56px!important;border-radius:10px!important}
+.card{background:#0c141d!important;border-color:#243442!important;border-radius:13px!important}
+.bottom{background:#070c12!important;border-top:1px solid #263542!important}
+@media(min-width:900px){#scannerPage{grid-template-columns:minmax(0,1.65fr) minmax(320px,.85fr)!important;grid-template-areas:"quote quote" "controls controls" "chart signal" "chart actions" "chart details"!important;align-items:start!important}#scannerPage>.chartbox{height:calc(100vh - 245px)!important;min-height:620px!important}#scannerPage>.section{align-self:stretch!important;display:flex!important;flex-direction:column!important;padding:10px!important}#scannerPage>.signal{margin-top:10px!important}#scannerPage>.actions{padding:10px!important;grid-template-columns:1fr!important}}
+@media(max-width:759px){#scannerPage>.chartbox{height:clamp(420px,64vh,700px)!important;min-height:420px!important}#scannerPage>.section{padding:10px!important}.top{padding:12px 13px!important}.actions button{min-height:52px!important}}
 </style></head><body>
 <header class="top"><div><div class="logo">FOREX<em>PILOT</em> AI</div><div class="subtitle">MARKET SCANNER · RISK · PAPER TRADING</div></div><button class="status" id="pushBtn">ENABLE ALERTS</button></header>
 <div class="symbols" id="symbols"></div>
