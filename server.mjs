@@ -68,7 +68,6 @@ async function monitorPositions(){
  for(const [id,t] of positions){
   try{const d=await getSeries(t.symbol,"1min"),last=d.values.at(-1);if(!last)continue;const sl=t.side==="BUY"?last.low<=t.sl:last.high>=t.sl,tp=t.side==="BUY"?last.high>=t.tp:last.low<=t.tp;
    if(sl||tp){const exit=sl?t.sl:t.tp;positions.delete(id);await pushNotification("ForexPilot AI · "+(sl?"STOP LOSS":"TAKE PROFIT")+" · "+t.symbol,"Position closed by "+(sl?"SL":"TP")+" at "+exit,{type:"exit",id,symbol:t.symbol,side:t.side,exit,reason:sl?"SL":"TP"});}
-   }
   }catch(e){console.warn("Position monitor",t.symbol,e.message)}
  }
 }
