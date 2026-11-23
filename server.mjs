@@ -52,7 +52,7 @@ async function getSeries(symbol,interval="15min"){
  const u=new URL("https://api.twelvedata.com/time_series");u.searchParams.set("symbol",symbol);u.searchParams.set("interval",interval);u.searchParams.set("outputsize","100");u.searchParams.set("apikey",TD_KEY);
  const r=await fetch(u,{signal:AbortSignal.timeout(12000)}),p=await r.json();
  if(!r.ok||p.status==="error"||!Array.isArray(p.values))throw new Error(String(p.message||p.code||"Market data unavailable"));
- const values=p.values.map(v=>({datetime:v.datetime,open:Number(v.open),high:Number(v.high),low:Number(v.low),close:Number(v.close)})).filter(v=>[v.open,v.high,v.low,v.close].every(Number.isFinite)).reverse();
+ const values=p.values.map(v=>({datetime:v.datetime,open:Number(v.open),high:Number(v.high),low:Number(v.low),close:Number(v.close)})).filter(v=>[v.open,v.high,v.low,v.close].every(Number.isFinite)&&v.high>=v.low&&v.open>=v.low&&v.open<=v.high&&v.close>=v.low&&v.close<=v.high).reverse();if(values.length<40)throw new Error("Insufficient valid OHLC candles returned by market data provider");
  const data={symbol,interval,values,fetchedAt:new Date().toISOString(),source:"Twelve Data"};cache.set(k,{at:Date.now(),data});return data;
 }
 function ema(a,n){const k=2/(n+1);let v=a[0];for(let i=1;i<a.length;i++)v=a[i]*k+v*(1-k);return v}
