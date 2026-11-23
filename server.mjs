@@ -59,7 +59,7 @@ function ema(a,n){const k=2/(n+1);let v=a[0];for(let i=1;i<a.length;i++)v=a[i]*k
 function strategy(symbol,bars){
  if(!Array.isArray(bars)||bars.length<50)return null;const close=bars.map(x=>x.close),last=bars.at(-1),fast=ema(close.slice(-30),9),slow=ema(close.slice(-50),21);
  let g=0,l=0;for(let i=close.length-14;i<close.length;i++){const d=close[i]-close[i-1];if(d>0)g+=d;else l-=d}const rsi=l===0?100:100-100/(1+(g/14)/(l/14));
- const tr=bars.slice(-14).map((x,i)=>{const prev=bars[Math.max(0,bars.length-15+i)].close;return Math.max(x.high-x.low,Math.abs(x.high-prev),Math.abs(x.low-prev))}),atr=tr.reduce((a,b)=>a+b,0)/tr.length;
+ const tr=bars.slice(-14).map((x,i)=>{const prev=bars[Math.max(0,bars.length-15+i)].close;return Math.max(x.high-x.low,Math.abs(x.high-prev),Math.abs(x.low-prev))}),atr=tr.reduce((a,b)=>a+b,0)/tr.length;if(!Number.isFinite(atr)||atr<=0)return {symbol,side:"WAIT",price:last.close,datetime:last.datetime,reason:"ATR validation failed"};
  const buy=fast>slow&&last.close>fast&&rsi>=52&&rsi<=68&&last.close>last.open,bear=fast<slow&&last.close<fast&&rsi>=32&&rsi<=48&&last.close<last.open;
  if(!buy&&!bear)return {symbol,side:"WAIT",price:last.close,datetime:last.datetime,rsi,atr,reason:"No complete EMA/RSI/candle confirmation"};
  const side=buy?"BUY":"SELL",sl=side==="BUY"?last.close-atr*1.5:last.close+atr*1.5,tp=side==="BUY"?last.close+(last.close-sl)*2:last.close-(sl-last.close)*2;
