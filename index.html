@@ -1131,7 +1131,7 @@ function quickTrade(side){
  const tp=side==="BUY"?entry+distance*2:entry-distance*2;
  const riskCash=peBalance()*pe.riskPct/100,units=riskCash/distance;
  if(!(Number.isFinite(units)&&units>0)){alert("Δεν ήταν δυνατός ο υπολογισμός μεγέθους θέσης.");return;}
- pe.open.push({id:"manual-"+Date.now()+"-"+symbol,symbol,side,entry,sl,tp,units,digits,pnl:0,openedAt:new Date().toISOString(),riskCash,manual:true});
+ const tradeId="manual-"+Date.now()+"-"+symbol;const trade={id:tradeId,symbol,side,entry,sl,tp,units,digits,pnl:0,openedAt:new Date().toISOString(),riskCash,manual:true};pe.open.push(trade);if(typeof fpRegisterServerTrade==="function")fpRegisterServerTrade(trade);
  pe.lastSignal[symbol]=side;
  peSave();peRender();
  $("pSide").value=side;$("pSymbol").value=symbol;$("pEntry").value=entry;$("pExit").value=entry;
@@ -1312,7 +1312,7 @@ function paperEngineTick(){
   if(slHit||tpHit){
    const exit=slHit?t.sl:t.tp;
    t.pnl=(t.side==="BUY"?exit-t.entry:t.entry-exit)*t.units;
-   pe.closed.unshift({...t,exit,pnl:t.pnl,closedAt:new Date().toISOString(),reason:slHit?"STOP LOSS":"TAKE PROFIT"});
+   pe.closed.unshift({...t,exit,pnl:t.pnl,closedAt:new Date().toISOString(),reason:slHit?"STOP LOSS":"TAKE PROFIT"});if(typeof fpCloseServerTrade==="function")fpCloseServerTrade(t.id);
    pe.open.splice(i,1);
   }
  }
@@ -1321,7 +1321,7 @@ function paperEngineTick(){
   const distance=Math.abs(entry-sl),riskCash=peBalance()*pe.riskPct/100;
   if(Number.isFinite(sl)&&Number.isFinite(tp)&&sl>0&&tp>0&&distance>0&&riskCash>0){
    const units=riskCash/distance;
-   pe.open.push({symbol,side:sig,entry,sl,tp,units,digits:A[idx][2],pnl:0,openedAt:new Date().toISOString(),riskCash});
+   const tradeId="auto-"+Date.now()+"-"+symbol;const trade={id:tradeId,symbol,side:sig,entry,sl,tp,units,digits:A[idx][2],pnl:0,openedAt:new Date().toISOString(),riskCash};pe.open.push(trade);if(typeof fpRegisterServerTrade==="function")fpRegisterServerTrade(trade);
   }
  }
  pe.lastSignal[symbol]=sig;
@@ -1365,6 +1365,8 @@ paperInit();
   const side=bullish?"BUY":"SELL",sl=side==="BUY"?price-atr*1.5:price+atr*1.5,tp=side==="BUY"?price+(price-sl)*2:price-(sl-price)*2;
   return {symbol,side,price,sl,tp,rsi,atr,datetime:last.datetime,score:85,reason:"EMA 9/21 trend + RSI confirmation + candle direction + ATR risk levels"};
  }
+ async function fpRegisterServerTrade(t){try{await fetch(API_BASE+"/api/trades/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:t.id,symbol:t.symbol,side:t.side,entry:t.entry,sl:t.sl,tp:t.tp})})}catch{}}
+ async function fpCloseServerTrade(id){try{await fetch(API_BASE+"/api/trades/close",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id})})}catch{}}
  async function fpScanOne(symbol){
   const r=await fetch(API_BASE+"/api/series?symbol="+encodeURIComponent(symbol)+"&interval="+encodeURIComponent(timeframe),{cache:"no-store"});
   if(!r.ok)throw new Error("HTTP "+r.status);
