@@ -78,6 +78,38 @@ html,body{background:#06090d!important;color:var(--text)!important;font-family:I
 @media(max-width:390px){.sym{padding:10px 11px!important}.controls select,.controls .tool{padding:10px!important}.actions button{height:52px!important;font-size:10px!important}}
 /* Signal history panel */
 .signal-history-item{display:flex;gap:8px;align-items:flex-start;padding:10px;border:1px solid #20313e;border-radius:10px;background:#080f15;margin:7px 0;font-size:11px}.signal-history-item small{display:block;color:var(--muted);margin-top:4px}.history-positive{color:var(--green)}.history-negative{color:var(--red)}
+
+/* ForexPilot AI — mobile-first terminal fix */
+@media(max-width:759px){
+ html,body{width:100%;overflow-x:hidden!important}
+ body{padding-bottom:calc(84px + env(safe-area-inset-bottom))!important}
+ main{width:100%!important;max-width:none!important;margin:0!important}
+ .top{padding:11px 13px!important;min-height:58px}
+ .logo{font-size:17px!important}.status{font-size:9px!important;padding:8px 10px!important}
+ .symbols{display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory;padding:6px 8px!important;gap:6px!important}
+ .sym{scroll-snap-align:start;padding:10px 12px!important;font-size:11px!important;min-height:38px}
+ #scannerPage{display:flex!important;flex-direction:column!important;gap:0!important;min-height:0!important}
+ #scannerPage>.quote{padding:12px 14px!important;min-height:88px;display:flex!important;align-items:center!important}
+ .price{font-size:clamp(34px,10vw,44px)!important;line-height:1.05!important}
+ #scannerPage>.controls{display:flex!important;overflow-x:auto!important;white-space:nowrap!important;padding:8px!important;gap:6px!important}
+ #scannerPage>.controls select,#scannerPage>.controls .tool{min-height:40px!important;font-size:11px!important;padding:9px 11px!important}
+ #scannerPage>.chartbox{height:clamp(300px,43svh,460px)!important;min-height:300px!important;max-height:none!important;width:100%!important;border-inline:0!important}
+ #scannerPage>.signal{display:flex!important;padding:12px 14px!important;min-height:75px}
+ #scannerPage>.signal .signalval{font-size:22px!important}
+ #scannerPage>.actions{display:flex!important;padding:8px!important;gap:7px!important}
+ #scannerPage>.actions button{flex:1!important;min-width:0!important;min-height:50px!important;font-size:11px!important;padding:9px 3px!important}
+ #scannerPage>.section{display:flex!important;flex-direction:column!important;padding:9px!important;gap:8px!important;border:0!important;background:var(--bg)!important}
+ #scannerPage>.section>.card{margin:0!important;width:100%!important}
+ .grid{gap:6px!important}.metric{padding:10px!important}.metric strong{font-size:16px!important}
+ .bottom{left:0!important;right:0!important;display:flex!important;gap:2px!important;padding:6px 3px calc(6px + env(safe-area-inset-bottom))!important}
+ .bottom button{min-width:0!important;font-size:9px!important;padding:10px 1px!important;white-space:nowrap!important}
+}
+@media(max-width:360px){
+ .top{padding:10px!important}.logo{font-size:16px!important}.subtitle{font-size:8px!important}
+ .sym{padding:9px 10px!important}.chartbox{height:40svh!important;min-height:280px!important}
+ #scannerPage>.actions button{font-size:10px!important}
+ .bottom button{font-size:8px!important}
+}
 </style></head><body>
 <header class="top"><div><div class="logo">FOREX<em>PILOT</em> AI</div><div class="subtitle">MARKET SCANNER · RISK · PAPER TRADING</div></div><button class="status" id="pushBtn">ENABLE ALERTS</button></header>
 <div class="symbols" id="symbols"></div>
@@ -131,12 +163,3 @@ async function enablePush(){try{if(!("Notification"in window))throw Error("Notif
 async function health(){try{const h=await(await fetch("/api/health")).json(),sc=h.scannerStatus||{};$("health").textContent="Server "+(h.ok?"OK":"ERROR")+" · Data "+(h.apiKeyConfigured?"ready":"missing key")+" · Push "+(h.pushConfigured?"ready":"Firebase setup needed")+" · Devices "+h.registeredDevices+" · Scanner "+(sc.state||"unknown")+(sc.lastRun?" · "+new Date(sc.lastRun).toLocaleTimeString("el-GR"):"")+(sc.reason?" · "+sc.reason:"")}catch(e){$("health").textContent="Backend unreachable: "+e.message}}
 $("symbols").addEventListener("click",e=>{const b=e.target.closest("[data-symbol]");if(!b)return;symbol=b.dataset.symbol;$("pair").textContent=symbol;renderSymbols();load()});$("refresh").onclick=load;$("tf").onchange=()=>{interval=$("tf").value;load()};$("scanBtn").onclick=scan;$("buy").onclick=()=>openPaper("BUY");$("sell").onclick=()=>openPaper("SELL");$("close").onclick=()=>{const t=paper.filter(x=>x.symbol===symbol);if(t.length)closePaper(t.at(-1).id);else toast("No open paper position for "+symbol)};$("pushBtn").onclick=enablePush;$("alertsToggle").onclick=()=>{$("notificationTray").classList.toggle("show")};$("dismissTray").onclick=()=>$("notificationTray").classList.remove("show");$("clearAlerts").onclick=()=>{alerts=[];$("alertCount").textContent="0";renderAlertsList()};$("clearSignalHistory").onclick=()=>{signalHistory=[];localStorage.removeItem("fp-signal-history");fetch("/api/signals/history/clear",{method:"POST"}).catch(()=>{});renderSignalHistory()};document.querySelectorAll(".bottom button").forEach(b=>b.onclick=()=>page(b.dataset.page));$("saveRisk").onclick=()=>{const b=Number($("balance").value),r=Number($("risk").value),d=Number($("dailyLimit").value);if(!Number.isFinite(b)||b<=0||!Number.isFinite(r)||r<.1||r>5||!Number.isFinite(d)||d<1||d>20)return toast("Invalid settings · balance > 0, risk 0.1–5%, daily limit 1–20%");balance=b;risk=r;limit=d;localStorage.setItem("fp-balance",balance);localStorage.setItem("fp-risk",risk);localStorage.setItem("fp-limit",limit);$("balanceLabel").textContent=money(balance);$("riskLabel").textContent=risk+"%";$("riskAmount").textContent=money(balance*risk/100);toast("Risk settings saved")};$("stopAll").onclick=()=>{paper.slice().forEach(t=>closePaper(t.id));toast("All paper positions closed")};$("theme").onchange=e=>{document.documentElement.style.colorScheme=e.target.value==="light"?"light":"dark";if(e.target.value==="light"){document.documentElement.style.setProperty("--bg","#f1f5f9");document.documentElement.style.setProperty("--panel","#fff");document.documentElement.style.setProperty("--text","#172638")}else{document.documentElement.style.removeProperty("--bg");document.documentElement.style.removeProperty("--panel");document.documentElement.style.removeProperty("--text")}};$("testAlert").onclick=()=>{setAlert("Test notification","ForexPilot AI alerts are working inside the app.");if(Notification.permission==="granted")navigator.serviceWorker.ready.then(r=>r.showNotification("ForexPilot AI",{body:"Test alert"}))};$("clearData").onclick=()=>{if(confirm("Reset paper trade data and settings?")){localStorage.removeItem("fp-paper");localStorage.removeItem("fp-closed");paper=[];closed=[];renderPaper()}};renderSymbols();buildChart();renderPaper();syncPaperPositions();syncPaperTradeHistory();renderSignalHistory();syncServerSignalHistory();$("balanceLabel").textContent=money(balance);$("riskLabel").textContent=risk+"%";$("riskAmount").textContent=money(balance*risk/100);load();health();setInterval(load,60000);setInterval(pollServerScanner,180000);pollServerScanner();setInterval(syncServerSignalHistory,180000);setInterval(syncPaperPositions,60000);setInterval(syncPaperTradeHistory,180000);if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});})();
 </script></body></html>
-/* ForexPilot AI — terminal workspace layout v4 */
-@media(min-width:980px){
- #scannerPage{display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-rows:auto auto minmax(480px,1fr) auto auto;align-items:stretch;gap:0;min-height:calc(100vh - 70px)}
- #scannerPage>.quote,#scannerPage>.controls,#scannerPage>.chartbox,#scannerPage>.signal,#scannerPage>.actions{grid-column:1;}
- #scannerPage>.quote{grid-row:1} #scannerPage>.controls{grid-row:2} #scannerPage>.chartbox{grid-row:3;min-height:480px;height:calc(100vh - 285px);max-height:760px} #scannerPage>.signal{grid-row:4} #scannerPage>.actions{grid-row:5}
- #scannerPage>.section{grid-column:2;grid-row:1 / span 5;display:flex;flex-direction:column;gap:12px;padding:14px;border-left:1px solid var(--line);background:#080e14;min-width:0}
- #scannerPage>.section>.card{margin:0} #scannerPage>.section>.card:first-child{flex:1;min-height:240px}
-}
-@media(max-width:979px){#scannerPage{display:block}}
