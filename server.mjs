@@ -76,7 +76,7 @@ async function scanMarkets(){
    try{await pushNotification("ForexPilot AI · "+s.side+" "+symbol,"Entry "+s.price.toFixed(digits)+" · SL "+s.sl.toFixed(digits)+" · TP "+s.tp.toFixed(digits)+" · M15 · score "+s.score+"/100",{type:"signal",symbol,side:s.side,entry:s.price,sl:s.sl,tp:s.tp,timeframe:"15min",score:s.score})}catch(e){console.warn("Signal push delivery failed; scanner continues",e.message)}
   }catch(e){errors++;console.warn("Scan",symbol,e.message);scannerResults.set(symbol,{symbol,side:"ERROR",reason:"Market data unavailable",updatedAt:new Date().toISOString()})}
  }
- scannerStatus={state:errors===SYMBOLS.length?"error":errors?"partial":"ok",reason:errors?errors+" market(s) unavailable":"",lastRun:new Date().toISOString(),updated,errors};
+ scannerStatus={state:errors===SYMBOLS.length?"error":errors?"partial":"ok",reason:errors?errors+" market(s) unavailable":"",lastRun:new Date().toISOString(),updated,expected:SYMBOLS.length,errors};
 }
 async function monitorPositions(){
  for(const [id,t] of positions){
