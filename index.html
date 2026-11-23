@@ -116,6 +116,44 @@ html,body{background:#06090d!important;color:var(--text)!important;font-family:I
 .sym.active{border-bottom-color:var(--accent)!important}
 .bottom button.active{color:var(--green)!important}
 .signalval.buy{color:var(--green)!important}.signalval.sell{color:var(--red)!important}
+
+/* ForexPilot AI — focused mobile terminal pass (Nov 23, 2026) */
+@media(max-width:759px){
+ html,body{overflow-x:hidden!important;width:100%!important;max-width:100vw!important}
+ body{padding-bottom:calc(76px + env(safe-area-inset-bottom))!important}
+ .top{height:auto!important;min-height:54px!important;padding:9px 12px!important;gap:8px!important}
+ .logo{font-size:16px!important}.subtitle{font-size:7px!important;letter-spacing:1px!important}
+ .status{padding:7px 9px!important;font-size:8px!important;white-space:nowrap!important}
+ .symbols{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overscroll-behavior-x:contain!important;scrollbar-width:none!important}
+ .symbols::-webkit-scrollbar{display:none!important}.sym{flex:0 0 auto!important}
+ main,#scannerPage{width:100%!important;max-width:100vw!important;min-width:0!important}
+ #scannerPage{display:flex!important;flex-direction:column!important}
+ #scannerPage>.quote{min-height:72px!important;padding:10px 12px!important;gap:8px!important}
+ .price{font-size:clamp(30px,8.8vw,40px)!important;line-height:1.02!important}
+ .quote-right{min-width:56px!important}
+ #scannerPage>.controls{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none!important;max-width:100vw!important;padding:7px!important;gap:5px!important}
+ #scannerPage>.controls::-webkit-scrollbar{display:none!important}
+ #scannerPage>.controls select,#scannerPage>.controls .tool{flex:0 0 auto!important;min-height:38px!important;padding:8px 9px!important;font-size:10px!important}
+ #scannerPage>.chartbox{height:52svh!important;min-height:320px!important;max-height:520px!important;width:100%!important;margin:0!important}
+ #scannerPage>.signal{min-height:66px!important;padding:10px 12px!important}
+ #scannerPage>.signal .signalval{font-size:20px!important}
+ #scannerPage>.actions{display:flex!important;gap:5px!important;padding:7px!important}
+ #scannerPage>.actions button{flex:1 1 0!important;min-width:0!important;min-height:46px!important;height:auto!important;padding:8px 2px!important;font-size:10px!important;white-space:nowrap!important}
+ #scannerPage>.section{display:flex!important;flex-direction:column!important;gap:7px!important;padding:8px!important}
+ #scannerPage>.section>.card{width:100%!important;min-width:0!important;margin:0!important;padding:11px!important}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+ .metric{min-width:0!important;padding:9px!important}.metric strong{font-size:15px!important;overflow-wrap:anywhere!important}
+ .bottom{display:flex!important;left:0!important;right:0!important;width:100%!important;gap:2px!important;padding:5px 3px calc(5px + env(safe-area-inset-bottom))!important}
+ .bottom button{flex:1 1 0!important;min-width:0!important;padding:8px 0!important;font-size:9px!important;white-space:nowrap!important}
+ .card,.field input,.field select,.wide{max-width:100%!important}
+}
+@media(max-width:360px){
+ .logo{font-size:15px!important}.status{font-size:7px!important;padding:6px 7px!important}
+ .sym{padding:8px 9px!important;font-size:10px!important}
+ #scannerPage>.chartbox{height:48svh!important;min-height:300px!important}
+ #scannerPage>.actions button{font-size:9px!important;min-height:43px!important}
+ .bottom button{font-size:8px!important}
+}
 </style></head><body>
 <header class="top"><div><div class="logo">FOREX<em>PILOT</em> AI</div><div class="subtitle">MARKET SCANNER · RISK · PAPER TRADING</div></div><button class="status" id="pushBtn">ENABLE ALERTS</button></header>
 <div class="symbols" id="symbols"></div>
