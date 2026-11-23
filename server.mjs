@@ -78,7 +78,8 @@ async function monitorPositions(){
  }
 }
 setTimeout(()=>{scanMarkets().catch(e=>console.warn("Initial scanner",e.message));monitorPositions().catch(e=>console.warn("Initial monitor",e.message))},15000);
-setInterval(()=>{scanMarkets().catch(e=>console.warn("Scanner",e.message));monitorPositions().catch(e=>console.warn("Monitor",e.message))},180000);
+setInterval(()=>scanMarkets().catch(e=>console.warn("Scanner",e.message)),180000);
+setInterval(()=>monitorPositions().catch(e=>console.warn("Monitor",e.message)),30000);
 const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url,"http://"+(req.headers.host||"localhost"));
  if(req.method==="OPTIONS"){res.writeHead(204,{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type"});return res.end()}
