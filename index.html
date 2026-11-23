@@ -995,6 +995,118 @@ footer button.active{background:#122a23!important;color:#59dfae!important}
  .price{font-size:29px!important}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style><style id="fp-professional-terminal-2026">
+/* ForexPilot 2026: clean professional terminal, chart-first, TradingView clarity + cTrader simplicity */
+:root{
+ --bg:#0b1016;--panel:#121a22;--panel2:#18232d;--line:#293541;
+ --txt:#edf2f7;--muted:#94a3b3;--green:#26c6a3;--red:#ed6677;--gold:#e8b85b;--blue:#68a9ff;
+}
+html,body{background:var(--bg)!important;color:var(--txt)!important;overflow-x:hidden!important}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important;background:linear-gradient(180deg,#0d141c 0,#0b1016 40%,#0b1016 100%)!important}
+.app-header{position:sticky!important;top:0!important;z-index:30!important;background:rgba(12,18,25,.97)!important;border-bottom:1px solid var(--line)!important;box-shadow:0 4px 16px #0003!important;backdrop-filter:blur(14px)!important}
+.brand-mark{background:#1b2935!important;border:1px solid #304252!important;color:#d8e6f2!important;border-radius:10px!important}
+.brand{letter-spacing:.25px!important;font-weight:850!important}.brand span{color:var(--green)!important}
+.sub{color:#899bab!important;letter-spacing:1px!important}
+.mode{background:#15362f!important;color:#65e4c1!important;border:1px solid #286b59!important;border-radius:20px!important}
+main{width:100%!important;max-width:980px!important;margin:0 auto!important;padding:0 0 calc(170px + env(safe-area-inset-bottom))!important}
+#assets{display:flex!important;gap:8px!important;overflow-x:auto!important;scrollbar-width:none!important;background:#0e151d!important;border-bottom:1px solid var(--line)!important;padding:11px 12px!important}
+#assets::-webkit-scrollbar{display:none!important}
+#assets .tab{flex:0 0 auto!important;background:#151f29!important;color:#a6b4c2!important;border:1px solid #2b3947!important;border-radius:8px!important;padding:10px 14px!important;font-size:12px!important;font-weight:750!important}
+#assets .tab.active{background:#183a34!important;color:#63e3bd!important;border-color:#347967!important;box-shadow:none!important}
+#scan>.terminal-card{background:var(--panel)!important;border:1px solid var(--line)!important;border-radius:14px!important;overflow:hidden!important;margin:8px 10px 12px!important;padding:0!important;box-shadow:0 6px 20px #0002!important}
+#scan>.terminal-card>.quote-panel{position:relative!important;top:auto!important;min-height:0!important;height:auto!important;background:#121b24!important;border-bottom:1px solid var(--line)!important;padding:14px 15px!important;z-index:1!important}
+.quote-panel,.quote-panel *{opacity:1!important;text-shadow:none!important}
+.quote-panel .market-symbol,.quote-panel .feed-line,.quote-panel .quote-mini span{color:var(--muted)!important}
+.quote-panel .price{font-size:clamp(34px,8vw,43px)!important;line-height:1.05!important;font-weight:900!important;letter-spacing:-1.3px!important;color:#f3f7fb!important}
+.quote-panel .quote-side{display:flex!important;align-items:center!important;gap:8px!important}
+.quote-mini{background:#0e151c!important;border:1px solid #283744!important;border-radius:8px!important}
+.quote-mini b{color:#e9f0f6!important}
+.chart-module{position:relative!important;background:#0e151d!important;padding:10px 10px 12px!important;overflow:hidden!important}
+.chart-topline{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;padding:2px 3px 8px!important}
+.chart-title{color:#e9f1f7!important;font-weight:800!important}
+.chart-tools-hint{color:#7e91a4!important;border-color:#263744!important;background:#101a23!important;border-radius:7px!important}
+.timeframe-strip{position:static!important;display:flex!important;align-items:center!important;gap:8px!important;height:auto!important;min-height:38px!important;margin:0 0 8px!important;overflow:visible!important}
+#timeframe{background:#141f29!important;border:1px solid #2b3b49!important;color:#e5edf5!important;border-radius:8px!important;padding:9px 11px!important}
+.indicator-toolbar{position:static!important;display:flex!important;gap:6px!important;align-items:center!important;overflow-x:auto!important;scrollbar-width:none!important;height:auto!important;min-height:34px!important;margin:0 0 8px!important;padding:0!important}
+.indicator-toolbar::-webkit-scrollbar{display:none!important}
+.indicator-toolbar button{flex:0 0 auto!important;background:#151f29!important;color:#bdcbd8!important;border:1px solid #2b3a48!important;border-radius:7px!important;padding:7px 9px!important;height:32px!important;min-height:32px!important;font-size:10px!important;box-shadow:none!important}
+#opportunityBanner{position:static!important;margin:8px 0!important;border-radius:9px!important}
+.live-candle-tools{position:static!important;display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;margin:8px 0!important;flex-wrap:wrap!important;background:#111b24!important;border:1px solid #263642!important;border-radius:9px!important;padding:9px 10px!important}
+#centerLiveCandle{min-height:38px!important;background:#16232e!important;border:1px solid #2c3c4a!important;color:#c4d3e0!important;border-radius:8px!important}
+#chart{display:block!important;width:100%!important;height:clamp(310px,44vh,460px)!important;min-height:300px!important;background:#0b1219!important;border:1px solid #243441!important;border-radius:10px!important;margin:0 0 10px!important;overflow:hidden!important}
+.chart-subpanel{background:#101820!important;border:1px solid #253440!important;border-radius:9px!important;margin:8px 0!important;padding:7px 8px!important}
+.chart-label{color:#90a2b3!important;font-size:10px!important;letter-spacing:.4px!important;margin-bottom:4px!important}
+#rsiChart,#macdChart{background:#0b1219!important;border-color:#253440!important;border-radius:8px!important}
+.chart-readout{display:flex!important;justify-content:space-between!important;gap:10px!important;color:#9bacbd!important;padding:5px 3px!important;font-size:10px!important}
+.signal-panel{position:static!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;background:#121b24!important;border-top:1px solid #273642!important;padding:12px 14px!important;min-height:0!important;height:auto!important;z-index:1!important}
+.signal-panel,.signal-panel *{opacity:1!important}
+.signal-copy{flex:1 1 auto!important;min-width:0!important}
+.signal-copy .signal-heading-row{display:flex!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important}
+.signal-heading-row .eyebrow{font-size:9px!important;letter-spacing:1px!important;color:#91a3b4!important}
+#signal{font-size:24px!important;line-height:1.1!important;font-weight:900!important;letter-spacing:.5px!important}
+.signal-capital-group{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+.capital-chip{background:#0e171f!important;border:1px solid #2b3d4a!important;border-radius:8px!important;padding:8px 10px!important}
+.capital-chip span{color:#94a5b5!important;font-size:9px!important;letter-spacing:.8px!important}
+.capital-chip b{color:#56dcb7!important;font-size:16px!important}
+.signal-trend{color:#a8b8c7!important;font-size:10px!important}
+#explain{font-size:10px!important;color:#91a3b4!important;margin:5px 0 0!important;line-height:1.4!important}
+.signal-state{background:#18242e!important;color:#b5c4d1!important;border:1px solid #2c3b47!important;border-radius:8px!important;padding:7px 9px!important;white-space:nowrap!important;font-size:9px!important}
+.execution-panel{position:fixed!important;left:0!important;right:0!important;bottom:calc(58px + env(safe-area-inset-bottom,0px))!important;z-index:40!important;background:rgba(12,18,25,.97)!important;border-top:1px solid #2b3a47!important;padding:8px 9px!important;height:auto!important;min-height:0!important;box-shadow:0 -5px 20px #0003!important;backdrop-filter:blur(12px)!important}
+.trade-actions{display:flex!important;width:100%!important;gap:7px!important;margin:0!important;height:52px!important}
+.trade-actions>button,.trade-center-controls button{flex:1 1 0!important;min-width:0!important;height:52px!important;min-height:52px!important;border-radius:9px!important;font-size:12px!important;font-weight:850!important;letter-spacing:.15px!important;padding:6px 4px!important}
+.trade-actions .buy-action{background:#1c806a!important;color:#f1fffb!important;border:1px solid #279f83!important}
+.trade-actions .capital-close-btn{background:#1a2934!important;color:#c7d4df!important;border:1px solid #314352!important}
+.trade-actions .sell-action{background:#943b4a!important;color:#fff4f5!important;border:1px solid #ba5262!important}
+footer{position:fixed!important;bottom:0!important;left:0!important;right:0!important;z-index:50!important;background:rgba(10,15,21,.98)!important;border-top:1px solid #263541!important;display:flex!important;justify-content:space-around!important;align-items:center!important;padding:6px 3px calc(5px + env(safe-area-inset-bottom,0px))!important;box-shadow:0 -3px 15px #0003!important}
+footer button{flex:1 1 0!important;background:transparent!important;color:#8b9eaf!important;border-radius:8px!important;font-size:10px!important;line-height:1.25!important;padding:7px 3px!important;min-height:46px!important}
+footer button.active{background:#18272f!important;color:#54d7b2!important}
+#fpGlobalScanner.fp-scanner-compact{position:static!important;display:block!important;margin:8px 10px 10px!important;padding:10px 12px!important;background:#111a23!important;border:1px solid #2a3945!important;border-radius:12px!important;box-shadow:none!important;color:#e9f1f7!important;max-width:none!important;width:auto!important;z-index:1!important}
+#fpGlobalScanner details>summary{list-style:none!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;cursor:pointer!important;min-height:42px!important}
+#fpGlobalScanner details>summary::-webkit-details-marker{display:none!important}
+#fpGlobalScanner #fpScannerState{background:#152b26!important;color:#59d8b4!important;border:1px solid #285c4c!important;border-radius:20px!important;padding:5px 8px!important;font-size:9px!important;white-space:nowrap!important}
+#fpGlobalScanner #fpScannerResults>div{background:#121e28!important;border:1px solid #2a3a46!important;margin-top:7px!important;padding:11px!important;border-radius:9px!important}
+#fpGlobalScanner button{min-height:42px!important;border-radius:8px!important}
+.card{background:linear-gradient(145deg,#131d27,#101720)!important;border-color:#293844!important;border-radius:12px!important;box-shadow:0 5px 18px #0002!important}
+#scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:9px 10px!important;padding:14px!important;background:#121b24!important;border:1px solid #293843!important;border-radius:12px!important;box-shadow:none!important;color:#eaf1f7!important}
+.metric{background:#0d151d!important;border:1px solid #253440!important;border-radius:9px!important}
+.metric span,.notice,.muted{color:#93a5b5!important}
+.metric b{color:#eef4f9!important}
+input,select{background:#0d151d!important;color:#edf4f9!important;border-color:#2b3a47!important;border-radius:8px!important}
+button{transition:background .12s ease,transform .12s ease!important}
+button:active{transform:scale(.985)!important}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #59d8b4!important;outline-offset:2px!important}
+.hidden{display:none!important}
+@media(min-width:700px){
+ main{max-width:1080px!important;padding-left:12px!important;padding-right:12px!important}
+ #scan>.terminal-card{margin:10px auto 14px!important;border-radius:16px!important}
+ #chart{height:460px!important}
+ .execution-panel{position:static!important;margin:10px!important;border-radius:12px!important}
+ footer{position:static!important;max-width:1080px!important;margin:0 auto!important;border-radius:12px!important}
+}
+@media(max-width:600px){
+ main{padding-bottom:calc(164px + env(safe-area-inset-bottom,0px))!important}
+ #scan>.terminal-card{margin:6px 8px 10px!important;border-radius:12px!important}
+ #assets{padding:10px 9px!important}
+ #assets .tab{padding:9px 12px!important;font-size:11px!important}
+ .quote-panel{padding:12px 11px!important}
+ .quote-panel .price{font-size:clamp(31px,9vw,39px)!important}
+ .chart-module{padding:8px 7px!important}
+ #chart{height:42vh!important;min-height:285px!important;max-height:420px!important}
+ #rsiChart{height:90px!important}
+ #macdChart{height:100px!important}
+ .signal-panel{padding:10px 11px!important;gap:8px!important}
+ .signal-copy .signal-heading-row{gap:8px!important}
+ .signal-capital-group{gap:7px!important}
+ .capital-chip{padding:6px 8px!important}
+ .capital-chip b{font-size:14px!important}
+ #signal{font-size:22px!important}
+ .execution-panel{bottom:calc(57px + env(safe-area-inset-bottom,0px))!important;padding:7px 7px!important}
+ .trade-actions{height:48px!important;gap:5px!important}
+ .trade-actions>button,.trade-center-controls button{height:48px!important;min-height:48px!important;font-size:10px!important;padding:4px 2px!important}
+ footer{padding:5px 2px calc(5px + env(safe-area-inset-bottom,0px))!important}
+ footer button{font-size:9px!important;min-height:44px!important}
+ #fpGlobalScanner.fp-scanner-compact{margin:7px 8px 9px!important;padding:8px 10px!important}
+}
 </style></head><body>
 <header class="app-header"><div class="header-brand"><div class="brand-mark">FP</div><div class="brand-copy"><div class="brand">FOREX<span>PILOT</span> AI</div><div class="sub">SMART MARKET TERMINAL</div></div></div><button class="account-page-link" type="button" onclick="openTradePageFromHome()">ΚΕΦΑΛΑΙΟ / ΘΕΣΕΙΣ</button><div class="header-status"><span class="live-pulse"></span><span class="mode" id="modeBadge">CONNECTING</span></div></header>
 <main>
@@ -1557,179 +1669,3 @@ async function fpLoadScript(src){return new Promise((resolve,reject)=>{const s=d
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fpScannerStart);else fpScannerStart();
 })();
 </script></body></html>
-<style>
-/* ForexPilot — mobile quote/chart overlap correction */
-/* Keep the quote header above the chart's right price scale on narrow screens. */
-#scan>.terminal-card{position:relative;isolation:isolate;overflow:hidden;width:100%;max-width:100%;}
-#scan>.terminal-card>.quote-panel{position:relative!important;z-index:3!important;width:100%!important;max-width:100%!important;min-height:132px;background:transparent!important;overflow:hidden!important;}
-#scan>.terminal-card>.quote-panel .quote-main{width:100%!important;min-width:0!important;}
-#scan>.terminal-card>.quote-panel .quote-main>div:first-child{min-width:0!important;flex:1 1 auto!important;}
-#scan>.terminal-card>.quote-panel .quote-side{position:relative!important;z-index:4!important;flex:0 0 auto!important;}
-#scan>.terminal-card>.chart-module{position:relative!important;z-index:1!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;}
-#scan>.terminal-card #chart,#scan>.terminal-card #rsiChart,#scan>.terminal-card #macdChart{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;}
-@media(max-width:480px){#scan>.terminal-card>.quote-panel{padding:12px 13px!important;min-height:124px!important}#scan>.terminal-card>.quote-panel .price{font-size:clamp(27px,7vw,34px)!important;line-height:1.12!important}}
-</style>
-
-
-<style>
-/* Mobile safe-area fit: keep market tabs below the top edge and trade controls clear of Android system navigation. */
-html,body{min-height:100%;min-height:100dvh}
-body{padding:0!important}
-#assets{top:10px!important;height:34px!important;min-height:34px!important;padding-top:2px!important;padding-bottom:2px!important}
-#assets .tab{height:32px!important;min-height:32px!important;line-height:30px!important}
-.quote-panel{top:44px!important;height:56px!important;min-height:56px!important;padding:5px 12px!important}
-.timeframe-strip{top:104px!important}
-.indicator-toolbar{top:134px!important}
-#opportunityBanner{top:166px!important}
-.execution-panel{bottom:12px!important;padding-bottom:env(safe-area-inset-bottom)!important}
-.signal-panel{bottom:66px!important}
-@media(max-width:420px){
- #assets{top:10px!important;height:34px!important;min-height:34px!important}
- .quote-panel{top:44px!important;height:56px!important;min-height:56px!important}
- .timeframe-strip{top:104px!important}
- .indicator-toolbar{top:134px!important;height:27px!important;min-height:27px!important}
- .indicator-toolbar button{height:25px!important;min-height:25px!important}
- .signal-panel{bottom:66px!important;height:64px!important;min-height:64px!important}
- .execution-panel{bottom:12px!important;height:48px!important;min-height:48px!important}
- .execution-panel .trade-actions button,.execution-panel .trade-center-controls .capital-close-btn{height:42px!important;min-height:42px!important}
-}
-@media(min-width:421px){#assets{top:12px!important}.quote-panel{top:48px!important}.timeframe-strip{top:108px!important}.indicator-toolbar{top:138px!important}}
-</style>
-
-<style>
-/* Mobile touch + Android system-navigation safe layout patch */
-@media (max-width: 600px) {
-  html, body { width:100%; max-width:100%; overflow-x:hidden; }
-  #scan { padding-bottom: calc(116px + env(safe-area-inset-bottom, 0px)) !important; }
-  .execution-panel {
-    position:fixed !important; left:0 !important; right:0 !important;
-    bottom:calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    height:64px !important; min-height:64px !important;
-    padding:6px 5px !important; box-sizing:border-box !important;
-    z-index:1000 !important; pointer-events:auto !important;
-  }
-  .execution-panel .trade-actions { display:flex !important; width:100% !important; height:100% !important; gap:5px !important; }
-  .execution-panel .trade-actions > button,
-  .execution-panel .trade-center-controls,
-  .execution-panel .trade-center-controls button {
-    flex:1 1 0 !important; min-width:0 !important; height:100% !important;
-    min-height:48px !important; max-height:none !important; margin:0 !important;
-    touch-action:manipulation !important; pointer-events:auto !important;
-  }
-  .execution-panel button { font-size:clamp(10px, 3vw, 12px) !important; padding:4px 2px !important; }
-}
-</style>
-
-<style id="fp-2026-final-ui">
-/* 2026 FINAL UI: clean, high-contrast responsive trading cockpit */
-:root{--fp-bg:#070b12;--fp-surface:#101a28;--fp-surface2:#142338;--fp-line:#263a52;--fp-text:#f4f8fc;--fp-muted:#93a7bb;--fp-accent:#18d6a0}
-html,body{background:var(--fp-bg)!important;color:var(--fp-text)!important;overflow-x:hidden!important}
-body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important}
-.app-header{background:rgba(7,12,20,.96)!important;border-bottom:1px solid var(--fp-line)!important;box-shadow:0 8px 28px #0003!important}
-#assets{background:#0b1421!important;border-bottom:1px solid var(--fp-line)!important;padding:10px 12px!important;gap:7px!important}
-#assets .tab{min-width:auto!important;padding:10px 13px!important;border-radius:10px!important;font-size:12px!important;background:#111d2b!important;color:#aebfd0!important;border-color:#263b52!important}
-#assets .tab.active{background:#153b34!important;color:#53eac0!important;border-color:#1b9d7c!important}
-#scan>.terminal-card{width:100%!important;max-width:980px!important;margin:0 auto!important;border:1px solid #263a52!important;border-radius:0 0 18px 18px!important;background:#0c1522!important;overflow:hidden!important}
-.quote-panel{background:linear-gradient(145deg,#15263b,#0e1928)!important;border-bottom:1px solid #2a4058!important;padding:17px 16px!important}
-.quote-panel,.quote-panel *{opacity:1!important;text-shadow:none!important}
-.quote-panel .eyebrow,.quote-panel .market-symbol,.quote-panel .feed-line,.quote-mini span{color:#a4b7ca!important}
-.quote-panel .price{color:#f7fbff!important;font-size:clamp(37px,9vw,48px)!important;font-weight:950!important}
-.quote-mini{background:#0b1725!important;border:1px solid #30465d!important}
-.quote-mini b{color:#e9f2fb!important}
-.signal-panel{background:#101d2c!important;border-bottom:1px solid #2a4058!important;padding:13px 16px!important}
-.signal-panel,.signal-panel *{opacity:1!important}
-.signal-panel .eyebrow{color:#8ea5bb!important}
-.signal-panel #explain{color:#b5c6d6!important}
-.signal-state{background:#172638!important;color:#b5c6d6!important}
-.chart-module{background:#091320!important;padding:12px 10px!important}
-.chart-title{color:#eef5fb!important}
-.chart-title span,.chart-title small{color:#92a8bf!important}
-.chart-tools-hint{color:#9eb2c6!important;border-color:#293f56!important}
-.indicator-toolbar button{background:#132236!important;color:#b9c9d9!important;border-color:#2b4058!important}
-#chart,#rsiChart,#macdChart{background:#0b1522!important;border-color:#273c53!important}
-.execution-panel{background:#101d2b!important;border-top:1px solid #293f56!important}
-.execution-controls select{background:#0b1725!important;color:#edf5fb!important}
-#scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{background:linear-gradient(145deg,#121f30,#0d1724)!important;border:1px solid #2a4058!important;color:#edf5fb!important;box-shadow:0 7px 20px #0002!important}
-#scan>.card:not(:first-child) *,#riskTab .card *,#paperTab .card *,#settingsTab .card *{opacity:1!important}
-#scan>.card:not(:first-child) .muted,#riskTab .muted,#paperTab .muted,#settingsTab .muted,.notice{color:#91a6bb!important}
-.metric{background:#091522!important;border-color:#263c53!important}
-.metric span{color:#90a6bb!important}.metric b{color:#eff6fc!important}
-footer{background:rgba(7,12,20,.97)!important;border-color:#263a52!important}
-footer button{color:#9aadc1!important}footer button.active{color:#55e9c0!important;background:#15302e!important}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #20d6a2!important;outline-offset:2px}
-@media(min-width:700px){#scan>.terminal-card{border-radius:0 0 22px 22px!important}#chart{height:520px!important}.chart-module{padding:18px 20px!important}}
-@media(max-width:600px){
- main{padding-bottom:calc(100px + env(safe-area-inset-bottom))!important}
- #assets{padding:9px 10px!important}
- #assets .tab{padding:9px 11px!important;font-size:11px!important}
- .quote-panel{padding:14px 13px!important}
- .quote-panel .price{font-size:clamp(34px,10vw,42px)!important}
- .signal-panel{padding:11px 13px!important}
- .chart-module{padding:10px 8px!important}
- #chart{height:44vh!important;min-height:300px!important;max-height:440px!important}
- #rsiChart{height:100px!important}#macdChart{height:112px!important}
- .execution-panel{padding:9px 9px 11px!important}
- .trade-actions{gap:6px!important}
- .trade-actions button{min-height:49px!important;font-size:11px!important;padding:5px 3px!important}
- .card{border-radius:13px!important}
- #scan>.card:not(:first-child),#riskTab .card,#paperTab .card,#settingsTab .card{margin:9px 9px!important;padding:13px!important}
-}
-:root[data-theme="light"] html,:root[data-theme="light"] body{background:#eef3f8!important;color:#18283a!important}
-:root[data-theme="light"] .quote-panel,:root[data-theme="light"] .signal-panel,:root[data-theme="light"] .chart-module,:root[data-theme="light"] .execution-panel{background:#fff!important;color:#18283a!important}
-:root[data-theme="light"] .quote-panel .price,:root[data-theme="light"] .quote-mini b,:root[data-theme="light"] .chart-title{color:#172638!important}
-:root[data-theme="light"] #scan>.card:not(:first-child),:root[data-theme="light"] #riskTab .card,:root[data-theme="light"] #paperTab .card,:root[data-theme="light"] #settingsTab .card{background:#fff!important;color:#172638!important;border-color:#cbd7e3!important}
-:root[data-theme="light"] .metric{background:#f3f7fb!important;border-color:#cbd7e3!important}
-:root[data-theme="light"] .metric b{color:#172638!important}
-</style>
-
-<style id="fp-2026-final-polish">
-#fpGlobalScanner.fp-scanner-compact{margin:0 10px 8px;padding:10px 12px;background:#0d1724;border:1px solid #22364b;border-radius:12px;box-shadow:none}
-#fpGlobalScanner details>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;min-height:32px}
-#fpGlobalScanner details>summary::-webkit-details-marker{display:none}
-#fpGlobalScanner #fpScannerState{font-size:8px;white-space:nowrap}
-#fpGlobalScanner #fpScannerMsg{line-height:1.4}
-#fpGlobalScanner #fpScannerResults>div{background:#101d2b!important;border:1px solid #20364b;margin-top:6px;padding:10px;border-radius:9px}
-#fpGlobalScanner button{min-height:44px;border-radius:9px}
-#fpGlobalScanner .tiny{font-size:10px}
-#scan>.terminal-card{margin:0!important;border-radius:0!important}
-#scan #chart{height:min(48vh,390px)!important;min-height:290px!important;border-radius:0!important;border-left:0!important;border-right:0!important}
-#scan .quote-panel{padding-left:14px!important;padding-right:14px!important}
-footer{box-shadow:0 -6px 24px #0003}
-@media(max-width:420px){#fpGlobalScanner.fp-scanner-compact{margin:0 8px 7px;padding:9px 10px}#scan #chart{height:43vh!important;min-height:275px!important}}
-</style>
-<style id="fp-cyber-purple-2026">
-/* Cyber Purple: high-contrast, bright neon controls; mobile-first */
-:root{--fp-bg:#080812;--fp-surface:#121326;--fp-surface2:#191a35;--fp-line:#303052;--fp-text:#f7f7ff;--fp-muted:#a5a5c2;--fp-accent:#a855f7;--green:#20e0b2;--red:#ff3d81;--gold:#ffd166}
-body,html,main,#scan{background:#080812!important;color:#f7f7ff!important}
-header,.app-header{background:#0b0b18!important;border-color:#30294d!important}
-.brand span{color:#c084fc!important}
-#assets{background:#0b0b18!important;border-color:#30294d!important}
-#assets .tab{background:#141428!important;border-color:#30294d!important;color:#b4b3cd!important}
-#assets .tab.active{background:#39215a!important;color:#e9b8ff!important;border-color:#a855f7!important;box-shadow:0 0 14px #a855f733!important}
-#scan>.terminal-card{background:#0d0d1b!important;border-color:#30294d!important}
-.quote-panel{background:linear-gradient(135deg,#17152b,#0e1020)!important;border-color:#342b50!important}
-.signal-panel{background:#111124!important;border-color:#342b50!important}
-.chart-module{background:#090a15!important}
-#chart,#rsiChart,#macdChart{background:#0b0b18!important;border-color:#30294d!important}
-.indicator-toolbar button{background:#17172b!important;border-color:#363253!important;color:#d6d2ef!important}
-.indicator-toolbar button:active{box-shadow:0 0 12px #a855f7!important}
-.execution-panel{background:#101020!important;border-color:#33294e!important}
-.execution-panel .buy-action{background:linear-gradient(135deg,#8b5cf6,#c026d3)!important;color:white!important;box-shadow:0 0 14px #a855f733!important}
-.execution-panel .capital-close-btn{background:linear-gradient(135deg,#13b8a6,#20e0b2)!important;color:#062a25!important}
-.execution-panel .sell-action{background:linear-gradient(135deg,#f43f75,#ff547c)!important;color:#fff!important}
-#fpGlobalScanner.fp-scanner-compact{background:#111124!important;border:1px solid #382b57!important;border-radius:14px!important}
-#fpGlobalScanner details>summary{min-height:40px}
-#fpGlobalScanner #fpScannerState{background:#21183a!important;color:#d8b4fe!important;border:1px solid #7041a5!important;padding:4px 8px!important;border-radius:20px!important}
-#fpGlobalScanner #fpScannerResults>div{background:#17172d!important;border-color:#383255!important}
-.card{border-color:#302b4b!important}
-footer{background:#0b0b18!important;border-color:#30294d!important}
-footer button.active{color:#e9b8ff!important;background:#2b1c45!important}
-button:focus-visible,input:focus-visible,select:focus-visible{outline-color:#c084fc!important}
-@media(max-width:600px){
- #assets{display:flex!important;overflow-x:auto!important;overscroll-behavior-x:contain!important;scrollbar-width:none!important}
- #assets::-webkit-scrollbar{display:none!important}
- #assets .tab{flex:0 0 auto!important}
- #scan #chart{height:45vh!important;min-height:270px!important;max-height:430px!important}
- .execution-panel{box-shadow:0 -8px 24px #0008!important}
-}
-</style>
