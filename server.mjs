@@ -22,7 +22,7 @@ async function fcmAccessToken(){
  if(!sa.client_email||!sa.private_key)throw new Error("FCM service account is not configured");
  const head=b64url(JSON.stringify({alg:"RS256",typ:"JWT"})),claim=b64url(JSON.stringify({iss:sa.client_email,scope:"https://www.googleapis.com/auth/firebase.messaging",aud:"https://oauth2.googleapis.com/token",iat:now,exp:now+3600}));
  const sig=crypto.sign("RSA-SHA256",Buffer.from(head+"."+claim),sa.private_key.replace(/\\n/g,"\n")).toString("base64url"),jwt=head+"."+claim+"."+sig;
- const r=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({grant_type:"urn:ietf:params:oauth:grant-type:jwt-bearer,assertion":jwt}),signal:AbortSignal.timeout(12000)});
+ const r=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({grant_type:"urn:ietf:params:oauth:grant-type:jwt-bearer",assertion:jwt}),signal:AbortSignal.timeout(12000)});
  const j=await r.json();if(!r.ok||!j.access_token)throw new Error(j.error_description||j.error||"FCM OAuth error");return j.access_token;
 }
 let fcmTokenCache=null,fcmTokenAt=0;
