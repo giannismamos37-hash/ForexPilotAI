@@ -15,7 +15,7 @@ const saveTokens=()=>{try{fs.writeFileSync(tokenFile,JSON.stringify([...tokens])
 function send(res,status,obj){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type"});res.end(JSON.stringify(obj))}
 function body(req){return new Promise((resolve,reject)=>{let s="";req.on("data",d=>{s+=d;if(s.length>100000)reject(new Error("Request too large"))});req.on("end",()=>{try{resolve(s?JSON.parse(s):{})}catch{reject(new Error("Invalid JSON"))}});req.on("error",reject)})}
 const firebaseConfig={apiKey:process.env.FIREBASE_API_KEY||"",authDomain:process.env.FIREBASE_AUTH_DOMAIN||"",projectId:process.env.FIREBASE_PROJECT_ID||"",storageBucket:process.env.FIREBASE_STORAGE_BUCKET||"",messagingSenderId:process.env.FIREBASE_MESSAGING_SENDER_ID||"",appId:process.env.FIREBASE_APP_ID||""};
-const firebaseReady=Boolean(firebaseConfig.apiKey&&firebaseConfig.projectId&&firebaseConfig.messagingSenderId&&firebaseConfig.appId&&process.env.FCM_VAPID_KEY);
+const firebaseReady=Boolean(firebaseConfig.apiKey&&firebaseConfig.projectId&&firebaseConfig.messagingSenderId&&firebaseConfig.appId&&process.env.FCM_VAPID_KEY&&process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
 function b64url(v){return Buffer.from(v).toString("base64url")}
 async function fcmAccessToken(){
  const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON||"{}"),now=Math.floor(Date.now()/1000);
