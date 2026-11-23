@@ -71,6 +71,7 @@ async function monitorPositions(){
   }catch(e){console.warn("Position monitor",t.symbol,e.message)}
  }
 }
+setTimeout(()=>{scanMarkets().catch(e=>console.warn("Initial scanner",e.message));monitorPositions().catch(e=>console.warn("Initial monitor",e.message))},15000);
 setInterval(()=>{scanMarkets().catch(e=>console.warn("Scanner",e.message));monitorPositions().catch(e=>console.warn("Monitor",e.message))},180000);
 const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url,"http://"+(req.headers.host||"localhost"));
