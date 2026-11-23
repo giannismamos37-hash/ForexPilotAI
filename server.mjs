@@ -12,7 +12,7 @@ const storage=process.env.FP_DATA_DIR||root;try{fs.mkdirSync(storage,{recursive:
 const cache=new Map(),tokens=new Set(),positions=new Map(),lastSignal=new Map(),scannerResults=new Map(),signalHistory=[],closedTrades=[];
 let scannerStatus={state:"starting",reason:"",lastRun:null,updated:0,errors:0};
 const HISTORY_FILE=path.join(storage,"fp_signal_history.json"),TOKEN_FILE=path.join(storage,"fp_tokens.json"),POSITIONS_FILE=path.join(storage,"fp_positions.json"),TRADE_HISTORY_FILE=path.join(storage,"fp_trade_history.json"),SIGNAL_KEYS_FILE=path.join(storage,"fp_signal_keys.json");
-try{const saved=JSON.parse(fs.readFileSync(HISTORY_FILE,"utf8"));if(Array.isArray(saved))signalHistory.push(...saved.slice(0,100))}catch{}
+try{const saved=JSON.parse(fs.readFileSync(HISTORY_FILE,"utf8"));if(Array.isArray(saved))saved.filter(x=>x&&typeof x==="object"&&SYMBOLS.includes(x.symbol)&&["BUY","SELL","WAIT"].includes(x.side)&&Number.isFinite(Number(x.price))&&x.datetime).slice(0,100).forEach(x=>signalHistory.push(x))}catch{}
 function saveSignalHistory(){try{fs.writeFileSync(HISTORY_FILE,JSON.stringify(signalHistory.slice(0,100)))}catch(e){console.warn("Signal history persistence unavailable",e.message)}}
 try{const saved=JSON.parse(fs.readFileSync(SIGNAL_KEYS_FILE,"utf8"));if(saved&&typeof saved==="object")Object.entries(saved).forEach(([k,v])=>lastSignal.set(k,String(v)))}catch{}
 function saveSignalKeys(){try{fs.writeFileSync(SIGNAL_KEYS_FILE,JSON.stringify(Object.fromEntries(lastSignal)))}catch(e){console.warn("Signal dedup persistence unavailable",e.message)}}
