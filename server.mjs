@@ -70,7 +70,7 @@ async function scanMarkets(){
  scannerStatus={state:"running",reason:"",lastRun:new Date().toISOString()};
  let errors=0,updated=0;
  for(const symbol of SYMBOLS){
-  try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);if(!s)continue;updated++;scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString(),quality:s.score>=80?"STRONG":s.score>=70?"GOOD":s.side==="WAIT"?"WAIT":"LOW"});updated++;if(s.side==="WAIT"||s.score<70)continue;
+  try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);updated++;if(!s){scannerResults.set(symbol,{symbol,side:"WAIT",reason:"Insufficient candle history",timeframe:"15min",updatedAt:new Date().toISOString(),quality:"WAIT"});continue}scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString(),quality:s.side==="WAIT"?"WAIT":s.score>=80?"STRONG":s.score>=70?"GOOD":"LOW"});if(s.side==="WAIT"||s.score<70)continue;
    const k=symbol+"|"+s.side+"|"+s.datetime;if(lastSignal.get(symbol)===k)continue;lastSignal.set(symbol,k);saveSignalKeys();signalHistory.unshift({...s,timeframe:"15min",createdAt:new Date().toISOString()});if(signalHistory.length>100)signalHistory.length=100;saveSignalHistory();
    const digits=symbol==="USD/JPY"?3:symbol==="XAU/USD"||symbol==="BTC/USD"?2:5;
    try{await pushNotification("ForexPilot AI · "+s.side+" "+symbol,"Entry "+s.price.toFixed(digits)+" · SL "+s.sl.toFixed(digits)+" · TP "+s.tp.toFixed(digits)+" · M15 · score "+s.score+"/100",{type:"signal",symbol,side:s.side,entry:s.price,sl:s.sl,tp:s.tp,timeframe:"15min",score:s.score})}catch(e){console.warn("Signal push delivery failed; scanner continues",e.message)}
