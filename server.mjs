@@ -80,7 +80,7 @@ async function scanMarkets(){
 }
 async function monitorPositions(){
  for(const [id,t] of positions){
-  try{const d=await getSeries(t.symbol,"1min"),last=d.values.at(-1);if(!last)continue;const sl=t.side==="BUY"?last.low<=t.sl:last.high>=t.sl,tp=t.side==="BUY"?last.high>=t.tp:last.low<=t.tp;
+  try{if(!SYMBOLS.includes(t.symbol)||!["BUY","SELL"].includes(t.side)||!Number.isFinite(Number(t.entry))||Number(t.entry)<=0||!Number.isFinite(Number(t.sl))||!Number.isFinite(Number(t.tp))||!Number.isFinite(Number(t.units))||Number(t.units)<=0)continue;const d=await getSeries(t.symbol,"1min"),last=d.values.at(-1);if(!last)continue;const sl=t.side==="BUY"?last.low<=t.sl:last.high>=t.sl,tp=t.side==="BUY"?last.high>=t.tp:last.low<=t.tp;
    if(sl||tp){const gapStop=sl&&(t.side==="BUY"?last.open<=t.sl:last.open>=t.sl);const exit=sl?(gapStop?last.open:t.sl):t.tp;positions.delete(id);const pl=(exit-t.entry)*Number(t.units||0)*(t.side==="BUY"?1:-1),closed={...t,exit,pl,reason:sl?"STOP LOSS":"TAKE PROFIT",closed:new Date().toISOString()};closedTrades.unshift(closed);if(closedTrades.length>100)closedTrades.length=100;saveTradeHistory();savePositions();await pushNotification("ForexPilot AI · "+(sl?"STOP LOSS":"TAKE PROFIT")+" · "+t.symbol,"Position closed by "+(sl?"SL":"TP")+" at "+exit,{type:"exit",id,symbol:t.symbol,side:t.side,exit,reason:sl?"SL":"TP"});}
   }catch(e){console.warn("Position monitor",t.symbol,e.message)}
  }
