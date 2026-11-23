@@ -17,7 +17,7 @@ function saveSignalHistory(){try{fs.writeFileSync(HISTORY_FILE,JSON.stringify(si
 try{const saved=JSON.parse(fs.readFileSync(SIGNAL_KEYS_FILE,"utf8"));if(saved&&typeof saved==="object")Object.entries(saved).forEach(([k,v])=>lastSignal.set(k,String(v)))}catch{}
 function saveSignalKeys(){try{fs.writeFileSync(SIGNAL_KEYS_FILE,JSON.stringify(Object.fromEntries(lastSignal)))}catch(e){console.warn("Signal dedup persistence unavailable",e.message)}}
 try{JSON.parse(fs.readFileSync(TOKEN_FILE,"utf8")).forEach(t=>tokens.add(t))}catch{}
-try{const saved=JSON.parse(fs.readFileSync(POSITIONS_FILE,"utf8"));if(Array.isArray(saved))saved.forEach(p=>{if(p&&p.id&&SYMBOLS.includes(p.symbol)&&["BUY","SELL"].includes(p.side))positions.set(String(p.id),p)})}catch{}
+try{const saved=JSON.parse(fs.readFileSync(POSITIONS_FILE,"utf8"));if(Array.isArray(saved))saved.forEach(p=>{const valid=p&&p.id&&SYMBOLS.includes(p.symbol)&&["BUY","SELL"].includes(p.side)&&[p.entry,p.sl,p.tp,p.units,p.riskCash].every(v=>Number.isFinite(Number(v))&&Number(v)>0)&&((p.side==="BUY"&&Number(p.sl)<Number(p.entry)&&Number(p.tp)>Number(p.entry))||(p.side==="SELL"&&Number(p.tp)<Number(p.entry)&&Number(p.sl)>Number(p.entry)));if(valid&&positions.size<5)positions.set(String(p.id),p)})}catch{}
 try{const saved=JSON.parse(fs.readFileSync(TRADE_HISTORY_FILE,"utf8"));if(Array.isArray(saved))closedTrades.push(...saved.slice(0,100))}catch{}
 function saveTokens(){try{fs.writeFileSync(TOKEN_FILE,JSON.stringify([...tokens]))}catch(e){console.warn("Token persistence unavailable",e.message)}}
 function savePositions(){try{fs.writeFileSync(POSITIONS_FILE,JSON.stringify([...positions.values()]))}catch(e){console.warn("Paper position persistence unavailable",e.message)}}
