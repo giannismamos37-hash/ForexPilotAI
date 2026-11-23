@@ -31,7 +31,7 @@ async function pushNotification(title,body,data={}){
  if(!fcmTokenCache||Date.now()-fcmTokenAt>3500000){fcmTokenCache=await fcmAccessToken();fcmTokenAt=Date.now()}
  let sent=0;const project=firebaseConfig.projectId;
  for(const token of [...tokens]){
-  try{const r=await fetch("https://fcm.googleapis.com/v1/projects/"+project+"/messages:send",{method:"POST",headers:{Authorization:"Bearer "+fcmTokenCache,"Content-Type":"application/json"},body:JSON.stringify({message:{token,data:Object.fromEntries(Object.entries({title,body,...data}).map(([k,v])=>[k,String(v)])),android:{priority:"HIGH",notification:{channelId:"forexpilot-alerts",sound:"default"}}}}),signal:AbortSignal.timeout(12000)});if(r.status===404||r.status===400){const j=await r.json().catch(()=>({}));if(String(j.error?.message||"").includes("registration token"))tokens.delete(token)}else if(r.ok)sent++;}catch(e){console.warn("FCM send failed",e.message)}
+  try{const r=await fetch("https://fcm.googleapis.com/v1/projects/"+project+"/messages:send",{method:"POST",headers:{Authorization:"Bearer "+fcmTokenCache,"Content-Type":"application/json"},body:JSON.stringify({message:{token,data:Object.fromEntries(Object.entries({title,body,...data}).map(([k,v])=>[k,String(v)])),android:{priority:"HIGH",notification:{channelId:"forexpilot-alerts",sound:"default",tag:"fp-"+String(data.symbol||data.type||"alert")}}}}),signal:AbortSignal.timeout(12000)});if(r.status===404||r.status===400){const j=await r.json().catch(()=>({}));if(String(j.error?.message||"").includes("registration token"))tokens.delete(token)}else if(r.ok)sent++;}catch(e){console.warn("FCM send failed",e.message)}
  }
  saveTokens();return {sent};
 }
