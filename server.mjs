@@ -17,7 +17,7 @@ try{JSON.parse(fs.readFileSync(TOKEN_FILE,"utf8")).forEach(t=>tokens.add(t))}cat
 try{const saved=JSON.parse(fs.readFileSync(POSITIONS_FILE,"utf8"));if(Array.isArray(saved))saved.forEach(p=>{if(p&&p.id&&SYMBOLS.includes(p.symbol)&&["BUY","SELL"].includes(p.side))positions.set(String(p.id),p)})}catch{}
 function saveTokens(){try{fs.writeFileSync(TOKEN_FILE,JSON.stringify([...tokens]))}catch(e){console.warn("Token persistence unavailable",e.message)}}
 function savePositions(){try{fs.writeFileSync(POSITIONS_FILE,JSON.stringify([...positions.values()]))}catch(e){console.warn("Paper position persistence unavailable",e.message)}}
-const saveTokens=()=>{try{fs.writeFileSync(tokenFile,JSON.stringify([...tokens]))}catch(e){console.warn("Token persistence unavailable",e.message)}};
+
 function send(res,status,obj){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type"});res.end(JSON.stringify(obj))}
 function body(req){return new Promise((resolve,reject)=>{let s="";req.on("data",d=>{s+=d;if(s.length>100000)reject(new Error("Request too large"))});req.on("end",()=>{try{resolve(s?JSON.parse(s):{})}catch{reject(new Error("Invalid JSON"))}});req.on("error",reject)})}
 const firebaseConfig={apiKey:process.env.FIREBASE_API_KEY||"",authDomain:process.env.FIREBASE_AUTH_DOMAIN||"",projectId:process.env.FIREBASE_PROJECT_ID||"",storageBucket:process.env.FIREBASE_STORAGE_BUCKET||"",messagingSenderId:process.env.FIREBASE_MESSAGING_SENDER_ID||"",appId:process.env.FIREBASE_APP_ID||""};
@@ -62,7 +62,8 @@ function strategy(symbol,bars){
 }
 async function scanMarkets(){
  if(!TD_KEY)return console.log("Scanner paused: Twelve Data API key missing");
- for(const symbol of SYMBOLS){\n  try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);if(!s)continue;scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString()});if(s.side==="WAIT")continue;
+ for(const symbol of SYMBOLS){
+  try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);if(!s)continue;scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString()});if(s.side==="WAIT")continue;
    const k=symbol+"|"+s.side+"|"+s.datetime;if(lastSignal.get(symbol)===k)continue;lastSignal.set(symbol,k);signalHistory.unshift({...s,timeframe:"15min",createdAt:new Date().toISOString()});if(signalHistory.length>100)signalHistory.length=100;saveSignalHistory();
    const digits=symbol==="USD/JPY"?3:symbol==="XAU/USD"||symbol==="BTC/USD"?2:5;
    await pushNotification("ForexPilot AI · "+s.side+" "+symbol,"Entry "+s.price.toFixed(digits)+" · SL "+s.sl.toFixed(digits)+" · TP "+s.tp.toFixed(digits)+" · M15 · score "+s.score+"/100",{type:"signal",symbol,side:s.side,entry:s.price,sl:s.sl,tp:s.tp,timeframe:"15min",score:s.score});
@@ -72,7 +73,7 @@ async function scanMarkets(){
 async function monitorPositions(){
  for(const [id,t] of positions){
   try{const d=await getSeries(t.symbol,"1min"),last=d.values.at(-1);if(!last)continue;const sl=t.side==="BUY"?last.low<=t.sl:last.high>=t.sl,tp=t.side==="BUY"?last.high>=t.tp:last.low<=t.tp;
-   if(sl||tp){const exit=sl?t.sl:t.tp;positions.delete(id);await pushNotification("ForexPilot AI · "+(sl?"STOP LOSS":"TAKE PROFIT")+" · "+t.symbol,"Position closed by "+(sl?"SL":"TP")+" at "+exit,{type:"exit",id,symbol:t.symbol,side:t.side,exit,reason:sl?"SL":"TP"});}
+   if(sl||tp){const exit=sl?t.sl:t.tp;positions.delete(id);savePositions();await pushNotification("ForexPilot AI · "+(sl?"STOP LOSS":"TAKE PROFIT")+" · "+t.symbol,"Position closed by "+(sl?"SL":"TP")+" at "+exit,{type:"exit",id,symbol:t.symbol,side:t.side,exit,reason:sl?"SL":"TP"});}
   }catch(e){console.warn("Position monitor",t.symbol,e.message)}
  }
 }
@@ -82,7 +83,10 @@ const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url,"http://"+(req.headers.host||"localhost"));
  if(req.method==="OPTIONS"){res.writeHead(204,{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type"});return res.end()}
  if(req.method==="GET"&&url.pathname==="/api/health")return send(res,200,{ok:true,provider:"Twelve Data",apiKeyConfigured:Boolean(TD_KEY),pushConfigured:firebaseReady,registeredDevices:tokens.size,scanner:"server-side-3min",mode:"alerts-and-paper"});
- if(req.method==="GET"&&url.pathname==="/api/push/config")return send(res,200,{firebaseConfig,vapidKey:process.env.FCM_VAPID_KEY||"",configured:firebaseReady});\n if(req.method==="GET"&&url.pathname==="/api/scanner")return send(res,200,{symbols:SYMBOLS,interval:"15min",updatedAt:new Date().toISOString(),results:SYMBOLS.map(symbol=>scannerResults.get(symbol)||{symbol,side:"LOADING",reason:"Waiting for first scan"})});\n if(req.method==="GET"&&url.pathname==="/api/signals/history")return send(res,200,{signals:signalHistory});\n if(req.method==="POST"&&url.pathname==="/api/signals/history/clear"){signalHistory.length=0;saveSignalHistory();return send(res,200,{ok:true});}
+ if(req.method==="GET"&&url.pathname==="/api/push/config")return send(res,200,{firebaseConfig,vapidKey:process.env.FCM_VAPID_KEY||"",configured:firebaseReady});
+ if(req.method==="GET"&&url.pathname==="/api/scanner")return send(res,200,{symbols:SYMBOLS,interval:"15min",updatedAt:new Date().toISOString(),results:SYMBOLS.map(symbol=>scannerResults.get(symbol)||{symbol,side:"LOADING",reason:"Waiting for first scan"})});
+ if(req.method==="GET"&&url.pathname==="/api/signals/history")return send(res,200,{signals:signalHistory});
+ if(req.method==="POST"&&url.pathname==="/api/signals/history/clear"){signalHistory.length=0;saveSignalHistory();return send(res,200,{ok:true});}
  if(req.method==="POST"&&url.pathname==="/api/push/register"){try{const b=await body(req),token=String(b.token||"").trim();if(token.length<80||token.length>5000)return send(res,400,{error:"Invalid FCM token"});tokens.add(token);saveTokens();return send(res,200,{ok:true,registered:tokens.size})}catch(e){return send(res,400,{error:e.message})}}
  if(req.method==="POST"&&url.pathname==="/api/push/unregister"){try{const b=await body(req);tokens.delete(String(b.token||""));saveTokens();return send(res,200,{ok:true})}catch(e){return send(res,400,{error:e.message})}}
  if(req.method==="POST"&&url.pathname==="/api/trades/register"){try{const t=await body(req),id=String(t.id||crypto.randomUUID()),symbol=String(t.symbol||"").toUpperCase(),side=t.side,entry=Number(t.entry),sl=Number(t.sl),tp=Number(t.tp);if(!SYMBOLS.includes(symbol)||!["BUY","SELL"].includes(side)||![entry,sl,tp].every(Number.isFinite))return send(res,400,{error:"Invalid trade payload"});positions.set(id,{...t,id,symbol,side,entry,sl,tp,entryAlert:false});savePositions();return send(res,200,{ok:true,id,active:positions.size})}catch(e){return send(res,400,{error:e.message})}}
