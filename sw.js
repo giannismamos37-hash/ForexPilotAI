@@ -1,10 +1,6 @@
-const C="fpai-v9";
+const C="fpai-v10";
 self.addEventListener("install",e=>e.waitUntil((async()=>{const c=await caches.open(C);await c.addAll(["./","./index.html","./manifest.json"]);await self.skipWaiting()})()));
-self.addEventListener("activate",e=>e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==C).map(k=>caches.delete(k)));await self.clients.claim()})()));
-self.addEventListener("fetch",e=>{
- const u=new URL(e.request.url);
- if(e.request.method!=="GET"||u.pathname.startsWith("/api/"))return;
- if(e.request.mode==="navigate"||u.pathname.endsWith(".html")){
-  e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(C).then(c=>c.put(e.request,copy))}return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match("./index.html"))));
- }
-});
+self.addEventListener("activate",e=>e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==C).map(k=>caches.delete(k)));await clients.claim()})()));
+self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.method!=="GET"||u.pathname.startsWith("/api/"))return;if(e.request.mode==="navigate"||u.pathname.endsWith(".html"))e.respondWith(fetch(e.request).then(r=>{if(r.ok)caches.open(C).then(c=>c.put(e.request,r.clone()));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match("./index.html"))))});
+self.addEventListener("push",e=>{if(!e.data)return;let d={};try{d=e.data.json()}catch{d={body:e.data.text()}}const n=d.notification||d;e.waitUntil(self.registration.showNotification(n.title||"ForexPilot AI",{body:n.body||"Νέα ενημέρωση αγοράς",icon:n.icon||"./icon-192.png",badge:"./icon-192.png",tag:n.tag||"forexpilot-alert",data:d.data||{},renotify:false}))});
+self.addEventListener("notificationclick",e=>{e.notification.close();e.waitUntil(clients.matchAll({type:"window",includeUncontrolled:true}).then(cs=>{for(const c of cs)if("focus"in c)return c.focus();return clients.openWindow("./")}))});
