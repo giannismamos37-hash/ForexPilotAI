@@ -67,7 +67,7 @@ function strategy(symbol,bars){
 }
 async function scanMarkets(){
  if(!TD_KEY){scannerStatus={state:"blocked",reason:"Twelve Data API key missing",lastRun:new Date().toISOString()};return}
- scannerStatus={state:"running",reason:"",lastRun:new Date().toISOString()};
+ scannerStatus={state:"running",reason:"",lastRun:new Date().toISOString(),updated:0,expected:SYMBOLS.length,errors:0,waitCount:0,signalCandidates:0};
  let errors=0,updated=0,waitCount=0,signalCandidates=0;
  for(const symbol of SYMBOLS){
   try{const d=await getSeries(symbol,"15min"),s=strategy(symbol,d.values);updated++;if(!s){waitCount++;scannerResults.set(symbol,{symbol,side:"WAIT",reason:"Insufficient candle history",timeframe:"15min",updatedAt:new Date().toISOString(),quality:"WAIT"});continue}scannerResults.set(symbol,{...s,timeframe:"15min",updatedAt:new Date().toISOString(),quality:s.side==="WAIT"?"WAIT":s.score>=80?"STRONG":s.score>=70?"GOOD":"LOW"});if(s.side==="WAIT"){waitCount++;continue}if(s.side==="BUY"||s.side==="SELL")signalCandidates++;if(s.side!=="BUY"&&s.side!=="SELL")continue;if(!Number.isFinite(s.score)||s.score<70||!Number.isFinite(s.price)||s.price<=0||!Number.isFinite(s.sl)||!Number.isFinite(s.tp))continue;const candleTime=Date.parse(s.datetime),ageMs=Date.now()-candleTime;if(typeof s.datetime!=="string"||!Number.isFinite(candleTime)||ageMs>45*60*1000||ageMs< -5*60*1000){scannerResults.set(symbol,{...s,quality:"STALE",isStale:true,alertEligible:false,reason:"Signal candle is stale or timestamp invalid; alert suppressed",timeframe:"15min",updatedAt:new Date().toISOString()});continue;}
