@@ -22,13 +22,23 @@ Build ForexPilot AI as a complete, mobile-first trading platform—not a static 
 - UI preferences: compact phone UI, dark theme first but configurable, palette choices, accessible contrast, minimal taps, chart occupying the primary screen, controls organized in mobile bottom sheets/scrollable toolbars, safe-area support.
 - APK distributed directly (not necessarily Play Store), with release version, installation instructions and tested build.
 
-## Strategy foundations — four books (pending exact titles)
-The strategy is intended to be grounded in four books chosen by the user. Their titles/authors have not yet been provided in this checkpoint. Do not guess or substitute books. Once supplied:
-1. Extract the principles, setups, filters, risk rules and invalidation conditions from each.
-2. Map them to testable rules, preserving distinctions between the books.
-3. Create strategy modules with explicit inputs, outputs, confidence/quality criteria and risk limits.
-4. Backtest and paper-test; do not imply profitability or guarantee results.
-5. Keep signals informational until the user explicitly authorizes a real-broker execution integration.
+## Strategy foundations — four recommended books (selected 23 Nov 2026)
+The four-book foundation selected to cover candle interpretation, technical context, Forex-specific market drivers, and decision psychology:
+
+1. **Japanese Candlestick Charting Techniques — Steve Nison**: candle patterns, reversal/continuation context, and reading buyer/seller behavior. Candles must be combined with trend, location, confirmation, and risk rules—not used as standalone signals.
+2. **Technical Analysis of the Financial Markets — John J. Murphy**: broad chart-analysis framework—trends, support/resistance, chart patterns, indicators, and market relationships. Provides context and filters for setups across symbols.
+3. **Day Trading and Swing Trading the Currency Market — Kathy Lien**: Forex-specific drivers, currency behavior, macroeconomic/central-bank context, and practical trading setups.
+4. **Trading in the Zone — Mark Douglas**: probabilistic decision-making, discipline, execution consistency, and accepting losses without emotional rule-breaking.
+
+Use these as a framework, not a guarantee of profitability. When implementing, extract each book's concepts into distinct, testable rules; identify context, trigger, confirmation, invalidation, stop/risk, exit, and logging requirements; then backtest and paper-test before considering live use. This is a curated recommendation based on the user's goal, not a claim that the books were read in full.
+
+## Strategy foundations — implementation workflow
+- Keep a separate source/concept map for each book.
+- Build signal features from candle structure, trend/market context, and Forex drivers where appropriate.
+- Do not label a candle pattern alone as a BUY/SELL signal.
+- Add risk filters, position sizing, stop/target logic, and invalidation.
+- Track outcomes by symbol, timeframe, market regime and setup; backtest and paper trade.
+- Clearly mark signals as educational/analysis until broker execution is explicitly configured and authorized.
 
 ## Notification and mobile UX research (web checked 23 Nov 2026)
 Research findings used as design reference:
